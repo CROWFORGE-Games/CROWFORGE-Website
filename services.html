@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dienstleistungen | CROWFORGE Web Services</title>
+<link rel="icon" type="image/png" href="CROWFORGE_Games_Translucent.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#08090b;
+  --black-2:#0d0f12;
+  --black-3:#111418;
+  --black-4:#171b22;
+  --navy:#0f1621;
+  --blue:#2d6aab;
+  --blue-soft:rgba(45,106,171,.16);
+  --silver:#a8b4c0;
+  --silver-bright:#d8e1ea;
+  --text:#b8c0cc;
+  --text-dim:#6b7585;
+  --white:#f2f5f9;
+  --gold:#d4aa62;
+  --gold-soft:rgba(212,170,98,.18);
+  --border:rgba(255,255,255,.08);
+  --border-strong:rgba(168,180,192,.18);
+  --green:#72c58b;
+  --shadow:0 26px 70px rgba(0,0,0,.34);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(circle at 14% 12%,rgba(69,97,145,.18),transparent 24%),
+    radial-gradient(circle at 78% 18%,rgba(212,170,98,.1),transparent 24%),
+    linear-gradient(180deg,#060709 0%,#0b0f15 32%,#0d131b 100%);
+  color:var(--text);
+  font-family:"Inter","Segoe UI",system-ui,sans-serif;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(168,180,192,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(168,180,192,.025) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:radial-gradient(circle at center,rgba(0,0,0,.9),transparent 82%);
+}
+a{color:inherit}
+img{max-width:100%;display:block}
+
+nav{
+  position:sticky;
+  top:0;
+  z-index:200;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1.5rem;
+  padding:0 3rem;
+  height:70px;
+  background:rgba(8,9,11,.86);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(18px);
+  box-shadow:0 10px 30px rgba(0,0,0,.22);
+}
+.nav-left{display:flex;align-items:center;gap:1rem;text-decoration:none}
+.nav-logo{height:28px;width:auto;opacity:.94}
+.nav-brand{
+  font-family:"Raleway",sans-serif;
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--silver);
+}
+.nav-links{display:flex;align-items:center;gap:1.7rem;list-style:none}
+.nav-links a{
+  font-family:"Raleway",sans-serif;
+  font-size:.74rem;
+  font-weight:600;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  text-decoration:none;
+  color:var(--text-dim);
+  transition:color .2s;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--silver-bright)}
+.nav-right{display:flex;align-items:center;gap:.95rem}
+.nav-cta{
+  font-family:"Raleway",sans-serif;
+  font-size:.73rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  text-decoration:none;
+  padding:.7rem 1.35rem;
+  border:1px solid rgba(168,180,192,.2);
+  border-radius:999px;
+  color:var(--silver-bright);
+  background:rgba(16,23,34,.75);
+  transition:all .25s;
+}
+.nav-cta:hover{
+  border-color:rgba(168,180,192,.42);
+  background:rgba(21,32,47,.95);
+  transform:translateY(-1px);
+}
+.lang-switch{display:flex;align-items:center;gap:.35rem}
+.lang-sep{font-family:"Raleway",sans-serif;font-size:.7rem;color:var(--text-dim);opacity:.65}
+.lang-btn{
+  font-family:"Raleway",sans-serif;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  background:none;
+  border:1px solid transparent;
+  padding:.3rem .55rem;
+  cursor:pointer;
+  transition:all .2s;
+}
+.lang-btn:hover{color:var(--silver)}
+.lang-btn.active{color:var(--silver-bright);border-color:rgba(168,180,192,.3)}
+
+.hero{
+  position:relative;
+  padding:6.5rem 4rem 4.5rem;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 18% 20%,rgba(123,146,202,.15),transparent 22%),
+    radial-gradient(circle at 78% 28%,rgba(212,170,98,.09),transparent 18%),
+    linear-gradient(180deg,rgba(255,255,255,.015),transparent 60%);
+  pointer-events:none;
+}
+.hero-shell{
+  position:relative;
+  z-index:1;
+  max-width:1240px;
+  margin:0 auto;
+  padding:4.5rem 4rem;
+  border:1px solid var(--border-strong);
+  background:linear-gradient(180deg,rgba(11,15,22,.9),rgba(10,14,20,.82));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.hero-shell::after{
+  content:"";
+  position:absolute;
+  right:-120px;
+  bottom:-140px;
+  width:360px;
+  height:360px;
+  background:radial-gradient(circle,rgba(45,106,171,.14),transparent 72%);
+}
+.eyebrow{
+  font-family:"Raleway",sans-serif;
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--silver);
+  opacity:.86;
+  margin-bottom:1.1rem;
+}
+.hero-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);
+  gap:3rem;
+  align-items:end;
+}
+.hero-copy h1{
+  font-family:"Raleway",sans-serif;
+  font-size:clamp(2.6rem,5vw,4.5rem);
+  font-weight:700;
+  line-height:1.02;
+  color:var(--white);
+  margin-bottom:1.2rem;
+}
+.hero-copy h1 span{color:var(--gold)}
+.hero-copy p{
+  font-size:1.08rem;
+  color:var(--text);
+  max-width:720px;
+}
+.hero-points{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.9rem;
+  margin-top:2rem;
+}
+.hero-point{
+  padding:1rem 1.05rem;
+  border:1px solid rgba(168,180,192,.11);
+  background:rgba(255,255,255,.03);
+}
+.hero-point strong{
+  display:block;
+  font-family:"Raleway",sans-serif;
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--silver-bright);
+  margin-bottom:.3rem;
+}
+.hero-point span{font-size:.95rem;color:var(--text-dim)}
+.hero-side{
+  padding:1.4rem;
+  border:1px solid rgba(168,180,192,.12);
+  background:linear-gradient(180deg,rgba(19,27,40,.78),rgba(11,16,24,.85));
+}
+.hero-side-label{
+  font-family:"Raleway",sans-serif;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--silver);
+  margin-bottom:.8rem;
+}
+.hero-side-title{
+  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
+  font-size:1.65rem;
+  font-weight:700;
+  color:var(--white);
+  line-height:1.15;
+  margin-bottom:.9rem;
+}
+.hero-side p{color:var(--text-dim);font-size:.98rem}
+.hero-actions{
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+  margin-top:2rem;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  font-family:"Raleway",sans-serif;
+  font-size:.76rem;
+  font-weight:700;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  padding:.95rem 1.5rem;
+  transition:all .25s;
+}
+.btn-primary{
+  background:linear-gradient(180deg,#f0c86f 0%,#d4aa62 100%);
+  color:#120f08;
+  border:1px solid rgba(255,226,169,.28);
+  box-shadow:0 12px 32px rgba(212,170,98,.18);
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 16px 36px rgba(212,170,98,.24)}
+.btn-secondary{
+  border:1px solid var(--border-strong);
+  color:var(--silver-bright);
+  background:rgba(255,255,255,.02);
+}
+.btn-secondary:hover{
+  background:rgba(255,255,255,.05);
+  border-color:rgba(168,180,192,.35);
+  transform:translateY(-1px);
+}
+
+.section{
+  padding:0 4rem 5rem;
+}
+.wrap{max-width:1240px;margin:0 auto}
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:1.5rem;
+  margin-bottom:2rem;
+  padding-bottom:1.25rem;
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.section-head h2{
+  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
+  font-size:clamp(2rem,4vw,3.4rem);
+  font-weight:700;
+  line-height:1.05;
+  color:var(--white);
+}
+.section-head p{
+  max-width:540px;
+  color:var(--text-dim);
+}
+
+.pricing-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1px;
+  background:var(--border);
+}
+.price-card{
+  position:relative;
+  background:var(--black-3);
+  padding:2rem 1.7rem 1.8rem;
+  display:flex;
+  flex-direction:column;
+  min-height:100%;
+  transition:background .3s,transform .25s,box-shadow .25s,border-color .25s;
+}
+.price-card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:2px;
+  background:linear-gradient(to right,transparent,rgba(168,180,192,.4),transparent);
+}
+.price-card.featured{
+  background:linear-gradient(180deg,rgba(212,170,98,.15),rgba(17,20,24,.98));
+}
+.price-card.featured::before{
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+}
+.price-card:hover{
+  background:var(--black-4);
+  transform:translateY(-4px);
+  box-shadow:0 18px 40px rgba(0,0,0,.22);
+}
+.price-card.featured:hover{
+  background:linear-gradient(180deg,rgba(212,170,98,.2),rgba(23,27,34,.98));
+  box-shadow:0 22px 44px rgba(0,0,0,.24);
+}
+.price-badge{
+  align-self:flex-start;
+  margin-bottom:1rem;
+  font-family:"Raleway",sans-serif;
+  font-size:.62rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  padding:.25rem .65rem;
+  border:1px solid rgba(168,180,192,.22);
+  color:var(--silver);
+}
+.price-card.featured .price-badge{
+  border-color:rgba(212,170,98,.36);
+  color:var(--gold);
+  background:rgba(212,170,98,.08);
+}
+.price-tier{
+  font-family:"Raleway",sans-serif;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--silver);
+  margin-bottom:.8rem;
+}
+.price-card h3{
+  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
+  font-size:1.65rem;
+  color:var(--white);
+  line-height:1.15;
+  margin-bottom:.8rem;
+}
+.price-copy{color:var(--text-dim);font-size:.97rem;margin-bottom:1.1rem}
+.price{
+  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
+  font-size:2.35rem;
+  font-weight:700;
+  color:var(--white);
+  line-height:1;
+  margin-bottom:1rem;
+}
+.price small{
+  display:block;
+  margin-top:.4rem;
+  font-size:.72rem;
+  font-weight:600;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+}
+.price-features{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:.6rem;
+  color:var(--text);
+  margin-top:.4rem;
+  flex:1;
+}
+.price-features li{
+  position:relative;
+  padding-left:1rem;
+  font-size:.97rem;
+}
+.price-features li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.82rem;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:var(--silver);
+}
+.price-select{
+  margin-top:1.25rem;
+  width:100%;
+  border:1px solid rgba(168,180,192,.18);
+  background:rgba(255,255,255,.02);
+  color:var(--silver-bright);
+}
+.price-select:hover{
+  background:rgba(255,255,255,.05);
+  border-color:rgba(168,180,192,.38);
+}
+
+.signal-grid{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:1rem;
+}
+.signal-card,.addons-card,.maint-card,.use-card,.contact-card{
+  border:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(16,21,30,.88),rgba(11,15,22,.84));
+  box-shadow:var(--shadow);
+}
+.signal-card{padding:2rem}
+.signal-card h3,.addons-card h3,.maint-card h3,.use-card h3,.contact-card h3{
+  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
+  font-size:1.55rem;
+  color:var(--white);
+  margin-bottom:.8rem;
+}
+.signal-card p{color:var(--text);max-width:760px}
+.signal-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.8rem;
+  margin-top:1.4rem;
+}
+.signal-item{
+  padding:1rem 1rem .95rem;
+  border:1px solid rgba(168,180,192,.1);
+  background:rgba(255,255,255,.025);
+}
+.signal-item strong{
+  display:block;
+  font-family:"Raleway",sans-serif;
+  font-size:.66rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--silver-bright);
+  margin-bottom:.4rem;
+}
+.signal-item span{font-size:.95rem;color:var(--text-dim)}
+
+.addons-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1rem;
+}
+.addons-card{
+  padding:1.7rem;
+  transition:background .3s,transform .25s,box-shadow .25s,border-color .25s;
+}
+.addons-card:hover{
+  background:linear-gradient(180deg,rgba(22,28,39,.96),rgba(13,18,27,.92));
+  transform:translateY(-4px);
+  box-shadow:0 18px 40px rgba(0,0,0,.22);
+  border-color:rgba(168,180,192,.18);
+}
+.addons-list{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+}
+.addons-list li{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  padding-bottom:.75rem;
+  border-bottom:1px solid rgba(168,180,192,.08);
+}
+.addons-list li:last-child{padding-bottom:0;border-bottom:none}
+.addons-list span{color:var(--text)}
+.addons-list strong{
+  color:var(--silver-bright);
+  font-size:.92rem;
+  white-space:nowrap;
+}
+
+.maint-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1rem;
+}
+.maint-card{
+  padding:1.7rem;
+  transition:background .3s,transform .25s,box-shadow .25s,border-color .25s;
+}
+.maint-card:hover{
+  background:linear-gradient(180deg,rgba(22,28,39,.96),rgba(13,18,27,.92));
+  transform:translateY(-4px);
+  box-shadow:0 18px 40px rgba(0,0,0,.22);
+  border-color:rgba(168,180,192,.18);
+}
+.maint-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:start;
+  gap:1rem;
+  margin-bottom:.9rem;
+}
+.maint-label{
+  font-family:"Raleway",sans-serif;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--silver);
+}
+.maint-price{
+  font-size:2rem;
+  font-weight:700;
+  color:var(--white);
+  line-height:1;
+}
+.maint-price small{
+  display:block;
+  margin-top:.35rem;
+  font-size:.72rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+}
+.maint-alt{
+  display:block;
+  margin-top:.45rem;
+  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
+  font-size:1rem;
+  font-weight:600;
+  color:var(--silver-bright);
+}
+.maint-card ul{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:.55rem;
+}
+.maint-card li{
+  position:relative;
+  padding-left:.95rem;
+  color:var(--text);
+}
+.maint-card li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.8rem;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:var(--silver);
+}
+.maint-note{
+  margin-top:1rem;
+  padding:1rem 1.1rem;
+  border:1px solid rgba(168,180,192,.1);
+  background:rgba(255,255,255,.025);
+  color:var(--text-dim);
+  font-size:.95rem;
+}
+.maint-note strong{color:var(--silver-bright)}
+.billing-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1rem;
+  margin-top:1rem;
+}
+.billing-card{
+  padding:1rem 1.1rem;
+  border:1px solid rgba(168,180,192,.1);
+  background:rgba(255,255,255,.025);
+  transition:background .3s,transform .25s,box-shadow .25s,border-color .25s;
+}
+.billing-card:hover{
+  background:rgba(255,255,255,.045);
+  transform:translateY(-4px);
+  box-shadow:0 18px 40px rgba(0,0,0,.18);
+  border-color:rgba(168,180,192,.18);
+}
+.billing-card strong{
+  display:block;
+  font-family:"Raleway",sans-serif;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--silver-bright);
+  margin-bottom:.35rem;
+}
+.billing-card span{
+  display:block;
+  color:var(--text-dim);
+  font-size:.94rem;
+}
+
+.use-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1rem;
+}
+.use-card{
+  padding:1.8rem;
+  transition:background .3s,transform .25s,box-shadow .25s,border-color .25s;
+}
+.use-card:hover{
+  background:linear-gradient(180deg,rgba(22,28,39,.96),rgba(13,18,27,.92));
+  transform:translateY(-4px);
+  box-shadow:0 18px 40px rgba(0,0,0,.22);
+  border-color:rgba(168,180,192,.18);
+}
+.use-kicker{
+  font-family:"Raleway",sans-serif;
+  font-size:.66rem;
+  font-weight:700;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--blue);
+  margin-bottom:.7rem;
+}
+.use-card p{color:var(--text-dim)}
+
+.contact-card{
+  padding:2.2rem;
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:2rem;
+  align-items:center;
+}
+.contact-copy p{
+  color:var(--text);
+  max-width:720px;
+}
+.contact-points{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:.6rem;
+  margin-top:1rem;
+}
+.contact-points li{
+  position:relative;
+  padding-left:1rem;
+  color:var(--text-dim);
+}
+.contact-points li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.82rem;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:var(--green);
+}
+.contact-box{
+  padding:1.4rem;
+  border:1px solid rgba(168,180,192,.12);
+  background:rgba(255,255,255,.03);
+}
+.contact-box .mini{
+  font-family:"Raleway",sans-serif;
+  font-size:.66rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--silver);
+  margin-bottom:.7rem;
+}
+.contact-mail{
+  display:block;
+  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
+  font-size:1.25rem;
+  font-weight:700;
+  color:var(--white);
+  text-decoration:none;
+  margin-bottom:.8rem;
+  word-break:break-word;
+}
+.contact-note{color:var(--text-dim);font-size:.95rem}
+.request-shell{
+  border:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(16,21,30,.88),rgba(11,15,22,.84));
+  box-shadow:var(--shadow);
+  padding:2rem;
+}
+.request-grid{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:1.2rem;
+}
+.request-form{
+  display:flex;
+  flex-direction:column;
+  gap:1.2rem;
+}
+.form-block{
+  padding:1.25rem;
+  border:1px solid rgba(168,180,192,.1);
+  background:rgba(255,255,255,.025);
+}
+.form-block h3{
+  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
+  font-size:1.2rem;
+  color:var(--white);
+  margin-bottom:.35rem;
+}
+.form-block p{
+  color:var(--text-dim);
+  font-size:.94rem;
+  margin-bottom:.95rem;
+}
+.field-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.9rem;
+}
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:.45rem;
+}
+.field.full{grid-column:1 / -1}
+.field label{
+  font-family:"Raleway",sans-serif;
+  font-size:.66rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--silver);
+}
+.field input,.field select,.field textarea{
+  width:100%;
+  border:1px solid rgba(168,180,192,.14);
+  background:rgba(8,12,18,.85);
+  color:var(--white);
+  padding:.9rem .95rem;
+  font:inherit;
+  outline:none;
+  transition:border-color .2s,background .2s,box-shadow .2s;
+}
+.field textarea{
+  min-height:150px;
+  resize:vertical;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:rgba(168,180,192,.34);
+  background:rgba(11,16,24,.95);
+  box-shadow:0 0 0 3px rgba(45,106,171,.12);
+}
+.package-options{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.8rem;
+}
+.option-card{
+  position:relative;
+}
+.option-card input{
+  position:absolute;
+  opacity:0;
+  inset:0;
+  cursor:pointer;
+}
+.option-card label{
+  display:block;
+  height:100%;
+  padding:1rem;
+  border:1px solid rgba(168,180,192,.12);
+  background:linear-gradient(180deg,rgba(17,22,30,.92),rgba(11,15,22,.92));
+  cursor:pointer;
+  transition:all .22s;
+}
+.option-card strong{
+  display:block;
+  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
+  font-size:1.05rem;
+  color:var(--white);
+  margin-bottom:.25rem;
+}
+.option-card span{
+  display:block;
+  color:var(--text-dim);
+  font-size:.92rem;
+}
+.option-card em{
+  display:block;
+  margin-top:.55rem;
+  font-style:normal;
+  font-family:"Raleway",sans-serif;
+  font-size:.66rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--silver);
+}
+.option-card input:checked + label{
+  border-color:rgba(212,170,98,.42);
+  background:linear-gradient(180deg,rgba(212,170,98,.14),rgba(17,20,24,.98));
+  transform:translateY(-2px);
+  box-shadow:0 16px 36px rgba(0,0,0,.22);
+}
+.checks{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.75rem;
+}
+.check{
+  display:flex;
+  align-items:flex-start;
+  gap:.65rem;
+  padding:.85rem .9rem;
+  border:1px solid rgba(168,180,192,.08);
+  background:rgba(255,255,255,.02);
+}
+.check input{
+  margin-top:.25rem;
+  accent-color:#d4aa62;
+}
+.check label{
+  display:flex;
+  flex-direction:column;
+  gap:.15rem;
+  cursor:pointer;
+}
+.check strong{
+  font-size:.95rem;
+  color:var(--white);
+}
+.check span{
+  font-size:.88rem;
+  color:var(--text-dim);
+}
+.request-summary{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+.summary-card{
+  padding:1.3rem;
+  border:1px solid rgba(168,180,192,.1);
+  background:linear-gradient(180deg,rgba(19,27,40,.78),rgba(11,16,24,.85));
+}
+.summary-card h3{
+  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
+  font-size:1.3rem;
+  color:var(--white);
+  margin-bottom:.65rem;
+}
+.summary-mini{
+  font-family:"Raleway",sans-serif;
+  font-size:.66rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--silver);
+  margin-bottom:.55rem;
+}
+.summary-list{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+}
+.summary-list li{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  color:var(--text);
+  font-size:.95rem;
+}
+.summary-list strong{color:var(--silver-bright)}
+.summary-note{
+  color:var(--text-dim);
+  font-size:.92rem;
+}
+.request-actions{
+  display:flex;
+  gap:.8rem;
+  flex-wrap:wrap;
+  margin-top:.2rem;
+}
+.request-submit{
+  border:none;
+  cursor:pointer;
+}
+.request-secondary{
+  font-family:"Raleway",sans-serif;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--silver);
+  text-decoration:none;
+  padding:.95rem 1.2rem;
+  border:1px solid rgba(168,180,192,.18);
+  background:rgba(255,255,255,.02);
+}
+.request-secondary:hover{
+  border-color:rgba(168,180,192,.36);
+  background:rgba(255,255,255,.05);
+}
+.request-status{
+  min-height:0;
+  display:none;
+  padding:.9rem 1rem;
+  border:1px solid rgba(168,180,192,.12);
+  background:rgba(255,255,255,.03);
+  color:var(--text-dim);
+  font-size:.92rem;
+  line-height:1.6;
+}
+.request-status.is-visible{display:block}
+.request-status.success{
+  color:var(--green);
+  border-color:rgba(114,197,139,.28);
+  background:rgba(114,197,139,.08);
+}
+.request-status.error{
+  color:#f0b0b0;
+  border-color:rgba(216,112,112,.26);
+  background:rgba(216,112,112,.08);
+}
+.hp-field{
+  position:absolute !important;
+  left:-9999px !important;
+  width:1px !important;
+  height:1px !important;
+  overflow:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+footer{
+  padding:0 4rem 3.5rem;
+}
+.footer-wrap{
+  max-width:1240px;
+  margin:0 auto;
+  padding-top:1.4rem;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+.footer-wrap p{
+  font-family:"Raleway",sans-serif;
+  font-size:.7rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+}
+.footer-powered{
+  color:var(--silver);
+}
+
+@media(max-width:1120px){
+  .hero-grid,
+  .signal-grid,
+  .contact-card,
+  .request-grid{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .addons-grid{grid-template-columns:1fr}
+  .maint-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .billing-grid{grid-template-columns:1fr}
+  .use-grid{grid-template-columns:1fr}
+}
+@media(max-width:860px){
+  nav{padding:0 1.3rem;height:auto;min-height:70px;flex-wrap:wrap;padding-top:.8rem;padding-bottom:.8rem}
+  .nav-links{width:100%;justify-content:flex-start;flex-wrap:wrap;gap:1rem}
+  .hero,.section,footer{padding-left:1.3rem;padding-right:1.3rem}
+  .hero-shell{padding:2.5rem 1.4rem}
+  .hero-points,.signal-list,.field-grid,.package-options,.checks{grid-template-columns:1fr}
+  .pricing-grid,.maint-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-left" href="index.html">
+    <img class="nav-logo" src="CROWFORGE_Games_Translucent.png" alt="CROWFORGE Games">
+    <span class="nav-brand">CROWFORGE Web Services</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#pakete">Pakete</a></li>
+    <li><a href="#addons">Add-ons</a></li>
+    <li><a href="#wartung">Wartung</a></li>
+    <li><a href="#usecases">Use Cases</a></li>
+    <li><a href="#kontakt" class="active">Kontakt</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="nav-cta" href="index.html">Zur Hauptseite</a>
+    <div class="lang-switch">
+      <button class="lang-btn" type="button" onclick="setLang('en')" id="btn-en">EN</button>
+      <span class="lang-sep">|</span>
+      <button class="lang-btn active" type="button" onclick="setLang('de')" id="btn-de">DE</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-shell">
+    <p class="eyebrow">CROWFORGE Web Services</p>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <h1>Websites &amp; Apps <span>aus einer Hand</span></h1>
+        <p>Ich baue nicht einfach nur Webseiten. Ich entwickle digitale L&ouml;sungen, die modern aussehen, schnell laden, Kunden f&uuml;hren und bei Bedarf sp&auml;ter zu Buchungssystemen, Dashboards oder Web Apps wachsen k&ouml;nnen.</p>
+        <div class="hero-points">
+          <div class="hero-point">
+            <strong>Positionierung</strong>
+            <span>Digitale L&ouml;sungen f&uuml;r moderne Businesses</span>
+          </div>
+          <div class="hero-point">
+            <strong>Ansatz</strong>
+            <span>Kein Template-Gef&uuml;hl, sondern individuelle Auftritte mit klarer Struktur</span>
+          </div>
+          <div class="hero-point">
+            <strong>Vorteil</strong>
+            <span>Von Website bis App verbunden gedacht statt isoliert gebaut</span>
+          </div>
+          <div class="hero-point">
+            <strong>Ziel</strong>
+            <span>Mehr Anfragen, mehr Vertrauen, mehr Erweiterbarkeit</span>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#kontakt">Projekt anfragen</a>
+          <a class="btn btn-secondary" href="#pakete">Pakete ansehen</a>
+        </div>
+      </div>
+      <aside class="hero-side">
+        <div class="hero-side-label">F&uuml;r wen</div>
+        <div class="hero-side-title">F&uuml;r Businesses, die online professionell auftreten wollen</div>
+        <p>Vom schlanken Onepager bis zur vernetzten Web App: Die L&ouml;sung wird so geplant, dass sie heute funktioniert und morgen sauber erweiterbar bleibt.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pakete">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Angebote</p>
+        <h2>Pakete f&uuml;r unterschiedliche<br>Projektgr&ouml;&szlig;en</h2>
+      </div>
+      <p>Jedes Paket deckt einen anderen Bedarf ab: vom schnellen Auftritt bis zur individuellen Plattform mit Login, Datenbank oder App-Anbindung.</p>
+    </div>
+    <div class="pricing-grid">
+      <article class="price-card">
+        <div class="price-badge">Starter</div>
+        <div class="price-tier">Starter</div>
+        <h3>Onepager</h3>
+        <p class="price-copy">F&uuml;r kleine Businesses, schnelle Online-Pr&auml;senz und einen klaren Einstieg ohne unn&ouml;tigen Overhead.</p>
+        <div class="price">ab 690&euro;<small>f&uuml;r schnelle Sichtbarkeit</small></div>
+        <ul class="price-features">
+          <li>1 Seite / Landingpage</li>
+          <li>modernes, responsives Design</li>
+          <li>Kontaktformular</li>
+          <li>Basis SEO</li>
+          <li>schnelle Ladezeiten</li>
+        </ul>
+        <button class="btn price-select" type="button" data-package-target="pkg-starter">Dieses Paket w&auml;hlen</button>
+      </article>
+
+      <article class="price-card featured">
+        <div class="price-badge">Meist gew&auml;hlt</div>
+        <div class="price-tier">Business Website</div>
+        <h3>3 bis 5 Seiten</h3>
+        <p class="price-copy">F&uuml;r Unternehmen, die professionell auftreten und &uuml;ber ihre Website neue Kunden gewinnen wollen.</p>
+        <div class="price">ab 1.290&euro;<small>ideal f&uuml;r Kundengewinnung</small></div>
+        <ul class="price-features">
+          <li>Start, Leistungen, About, Kontakt und mehr</li>
+          <li>individuelles Design ohne Template-Gef&uuml;hl</li>
+          <li>mobil optimiert</li>
+          <li>klare Struktur und Kontaktformular</li>
+          <li>einfach erweiterbar</li>
+        </ul>
+        <button class="btn price-select" type="button" data-package-target="pkg-business">Dieses Paket w&auml;hlen</button>
+      </article>
+
+      <article class="price-card">
+        <div class="price-badge">Premium</div>
+        <div class="price-tier">Professional Website</div>
+        <h3>5 bis 10 Seiten</h3>
+        <p class="price-copy">F&uuml;r gr&ouml;&szlig;ere Projekte mit mehr Inhalten, besserer Userf&uuml;hrung und Reserven f&uuml;r sp&auml;tere Ausbauten.</p>
+        <div class="price">ab 2.190&euro;<small>f&uuml;r umfangreichere Auftritte</small></div>
+        <ul class="price-features">
+          <li>individuelles UI/UX Design</li>
+          <li>strukturierte Inhalte und bessere Userf&uuml;hrung</li>
+          <li>Performance optimiert</li>
+          <li>f&uuml;r Erweiterungen vorbereitet</li>
+          <li>ideal f&uuml;r ernsthafte Kundenprojekte</li>
+        </ul>
+        <button class="btn price-select" type="button" data-package-target="pkg-professional">Dieses Paket w&auml;hlen</button>
+      </article>
+
+      <article class="price-card">
+        <div class="price-badge">Custom</div>
+        <div class="price-tier">Web App / Solution</div>
+        <h3>Systeme &amp; Tools</h3>
+        <p class="price-copy">Hier beginnt der echte Unterschied: individuelle Features, Prozesse und digitale Werkzeuge statt nur statischer Seiten.</p>
+        <div class="price">2.900&euro; &ndash; 7.500&euro;+<small>individuell kalkuliert</small></div>
+        <ul class="price-features">
+          <li>Login-Systeme</li>
+          <li>Datenbanken und APIs</li>
+          <li>Mobile App Anbindung</li>
+          <li>Dashboards und interne Tools</li>
+          <li>individuelle Features nach Bedarf</li>
+        </ul>
+        <button class="btn price-select" type="button" data-package-target="pkg-custom">Dieses Paket w&auml;hlen</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="signal-grid">
+      <div class="signal-card">
+        <p class="eyebrow">Warum CROWFORGE</p>
+        <h3>Mehr als nur eine sch&ouml;ne Website</h3>
+        <p>Jedes Projekt wird so aufgebaut, dass Design, Struktur, Performance und Erweiterbarkeit zusammenpassen. So entsteht kein kurzfristiger Webauftritt, sondern eine saubere digitale Basis f&uuml;r Wachstum.</p>
+        <div class="signal-list">
+          <div class="signal-item">
+            <strong>Individuell</strong>
+            <span>kein typischer Template-Look, sondern ein Auftritt mit eigener Handschrift</span>
+          </div>
+          <div class="signal-item">
+            <strong>Responsiv</strong>
+            <span>optimiert f&uuml;r Desktop, Tablet und Smartphone</span>
+          </div>
+          <div class="signal-item">
+            <strong>Erweiterbar</strong>
+            <span>sp&auml;tere Funktionen wie Buchungen, Logins oder Dashboards k&ouml;nnen sauber angebunden werden</span>
+          </div>
+          <div class="signal-item">
+            <strong>Schnell</strong>
+            <span>starker Fokus auf Ladezeit, Klarheit und gute Nutzerf&uuml;hrung</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <p class="eyebrow">Ansatz</p>
+        <h3>Websites &amp; Apps aus einer Hand</h3>
+        <p>Wenn ein Projekt mehr braucht als nur Seiten und Texte, kann daraus eine vernetzte L&ouml;sung werden: mit Formularen, Logins, Prozessen, APIs oder einer sp&auml;teren App-Anbindung.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="addons">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Add-ons</p>
+        <h2>Add-ons f&uuml;r mehr Umfang<br>und mehr Funktion</h2>
+      </div>
+      <p>Zus&auml;tzliche Seiten, Inhalte, Features oder Branding k&ouml;nnen flexibel zum Paket dazugebucht werden. So bleibt jedes Projekt passend zum Bedarf skalierbar.</p>
+    </div>
+    <div class="addons-grid">
+      <article class="addons-card">
+        <h3>Seiten &amp; Content</h3>
+        <ul class="addons-list">
+          <li><span>zus&auml;tzliche Seite</span><strong>+200€</strong></li>
+          <li><span>Texte erstellen</span><strong>+150 – 400€</strong></li>
+        </ul>
+      </article>
+      <article class="addons-card">
+        <h3>Features</h3>
+        <ul class="addons-list">
+          <li><span>erweitertes Formular</span><strong>+150€</strong></li>
+          <li><span>Buchungssystem</span><strong>+500 – 1.200€</strong></li>
+          <li><span>Login / User-System</span><strong>+800 – 2.000€</strong></li>
+          <li><span>Mehrsprachigkeit</span><strong>+300 – 800€</strong></li>
+        </ul>
+      </article>
+      <article class="addons-card">
+        <h3>Design &amp; Branding</h3>
+        <ul class="addons-list">
+          <li><span>individuelles UI Upgrade</span><strong>+400 – 900€</strong></li>
+          <li><span>Logo / Branding</span><strong>+200 – 600€</strong></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="wartung">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Wartung</p>
+        <h2>Betreuung nach dem<br>Launch</h2>
+      </div>
+      <p>Wartung ist die laufende Betreuung nach dem Launch: Hosting, technische Pflege, Support und je nach Paket auch kleinere &Auml;nderungen. Gr&ouml;&szlig;ere neue Aufgaben oder Features werden separat geplant.</p>
+    </div>
+    <div class="maint-grid">
+      <article class="maint-card">
+        <div class="maint-top">
+          <div class="maint-label">Basic</div>
+          <div class="maint-price">29€<small>pro Monat</small></div>
+        </div>
+        <div class="maint-alt">oder 290€ pro Jahr</div>
+        <ul>
+          <li>Hosting, technische Basis-Pflege und Backups</li>
+          <li>f&uuml;r kleine Websites mit planbarer Betreuung</li>
+        </ul>
+      </article>
+      <article class="maint-card">
+        <div class="maint-top">
+          <div class="maint-label">Standard</div>
+          <div class="maint-price">49€<small>pro Monat</small></div>
+        </div>
+        <div class="maint-alt">oder 490€ pro Jahr</div>
+        <ul>
+          <li>Hosting, Betreuung und laufende technische Pflege</li>
+          <li>inklusive kleiner Inhalts&auml;nderungen nach Absprache</li>
+        </ul>
+      </article>
+      <article class="maint-card">
+        <div class="maint-top">
+          <div class="maint-label">Premium</div>
+          <div class="maint-price">99€<small>pro Monat</small></div>
+        </div>
+        <div class="maint-alt">oder 990€ pro Jahr</div>
+        <ul>
+          <li>priorisierte Betreuung f&uuml;r wichtige Projekte</li>
+          <li>mehr laufende Unterst&uuml;tzung und schnellere Reaktion</li>
+        </ul>
+      </article>
+      <article class="maint-card">
+        <div class="maint-top">
+          <div class="maint-label">Domains &amp; Extras</div>
+          <div class="maint-price">ab 70€<small>pro Stunde</small></div>
+        </div>
+        <div class="maint-alt">Domains separat kalkuliert</div>
+        <ul>
+          <li>Domains und Mail-Postf&auml;cher werden je nach Anbieter separat berechnet</li>
+          <li>der Stundensatz gilt nur f&uuml;r gr&ouml;&szlig;ere neue Features oder Umbauten au&szlig;erhalb des Wartungspakets</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="billing-grid">
+      <div class="billing-card">
+        <strong>Jahrespreise</strong>
+        <span>Basic: 290&euro; / Jahr<br>Standard: 490&euro; / Jahr<br>Premium: 990&euro; / Jahr</span>
+      </div>
+      <div class="billing-card">
+        <strong>Warum Wartung?</strong>
+        <span>Die monatlichen oder j&auml;hrlichen Pakete decken Hosting, technische Pflege und Support ab. Bei Standard und Premium sind kleine &Auml;nderungen bereits mitgedacht.</span>
+      </div>
+      <div class="billing-card">
+        <strong>Domains &amp; Extras</strong>
+        <span>Domains behandle ich separat, weil .at, .de, .com usw. unterschiedlich kosten. Der Stundensatz gilt nur f&uuml;r gr&ouml;&szlig;ere neue Arbeiten au&szlig;erhalb des Pakets.</span>
+      </div>
+    </div>
+    <p class="maint-note"><strong>Einfach gesagt:</strong> Wartung = laufende Betreuung. <strong>70&euro;/h</strong> = gr&ouml;&szlig;ere neue &Auml;nderungen oder Features. Wer ein Jahrespaket nimmt, zahlt weniger als bei 12 einzelnen Monatszahlungen.</p>
+  </div>
+</section>
+
+<section class="section" id="usecases">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Typische Projekte</p>
+        <h2>So kann dein Setup<br>aussehen</h2>
+      </div>
+      <p>Je nach Ziel kann aus einer Website deutlich mehr entstehen. Diese Beispiele zeigen typische Kombinationen, die sich in der Praxis besonders gut eignen.</p>
+    </div>
+    <div class="use-grid">
+      <article class="use-card">
+        <div class="use-kicker">Projekt 01</div>
+        <h3>Website + Buchungssystem</h3>
+        <p>Ideal f&uuml;r Betriebe, die nicht nur sichtbar sein wollen, sondern direkt Anfragen, Reservierungen oder Termine digital abwickeln m&ouml;chten.</p>
+      </article>
+      <article class="use-card">
+        <div class="use-kicker">Projekt 02</div>
+        <h3>Website + App + Verwaltung</h3>
+        <p>Perfekt f&uuml;r moderne Businesses mit digitalem Kern. Frontend f&uuml;r Kunden, Admin-Bereich f&uuml;r intern und saubere Prozesse im Hintergrund.</p>
+      </article>
+      <article class="use-card">
+        <div class="use-kicker">Projekt 03</div>
+        <h3>Website + internes Tool</h3>
+        <p>Wenn eine normale Website nicht reicht, kann daraus ein individuelles Dashboard, Login-System oder Workflow-Tool wachsen.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="kontakt">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Anfrage</p>
+        <h2>Projekt anfragen<br>mit Paketwahl</h2>
+      </div>
+      <p>W&auml;hle das passende Paket, markiere gew&uuml;nschte Add-ons und schicke direkt eine strukturierte Anfrage. So ist sofort klar, in welche Richtung das Projekt gehen soll.</p>
+    </div>
+    <div class="request-shell">
+      <div class="request-grid">
+        <form class="request-form" id="request-form">
+          <div class="hp-field" aria-hidden="true">
+            <label for="website">Website</label>
+            <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <input type="hidden" id="form-started-at" name="form_started_at" value="">
+          <div class="form-block">
+            <h3>Paket ausw&auml;hlen</h3>
+            <p>W&auml;hle die Option, die deinem geplanten Umfang am n&auml;chsten kommt.</p>
+            <div class="package-options">
+              <div class="option-card">
+                <input type="radio" name="package" id="pkg-starter" value="Starter – Onepager" data-price="ab 790&euro;" checked>
+                <label for="pkg-starter">
+                  <strong>Starter &ndash; Onepager</strong>
+                  <span>1 Seite f&uuml;r eine schnelle, professionelle Online-Pr&auml;senz</span>
+                  <em>ab 790&euro;</em>
+                </label>
+              </div>
+              <div class="option-card">
+                <input type="radio" name="package" id="pkg-business" value="Business Website" data-price="ab 1.490&euro;">
+                <label for="pkg-business">
+                  <strong>Business Website</strong>
+                  <span>3 bis 5 Seiten f&uuml;r Unternehmen mit Fokus auf Kundengewinnung</span>
+                  <em>ab 1.490&euro;</em>
+                </label>
+              </div>
+              <div class="option-card">
+                <input type="radio" name="package" id="pkg-professional" value="Professional Website" data-price="ab 2.490&euro;">
+                <label for="pkg-professional">
+                  <strong>Professional Website</strong>
+                  <span>5 bis 10 Seiten mit st&auml;rkerer Struktur, UX und Performance</span>
+                  <em>ab 2.490&euro;</em>
+                </label>
+              </div>
+              <div class="option-card">
+                <input type="radio" name="package" id="pkg-custom" value="Web App / Custom Solution" data-price="3.000&euro; &ndash; 8.000&euro;+">
+                <label for="pkg-custom">
+                  <strong>Web App / Custom Solution</strong>
+                  <span>F&uuml;r Systeme, Dashboards, Logins, APIs und individuelle Features</span>
+                  <em>3.000&euro; &ndash; 8.000&euro;+</em>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h3>Add-ons &amp; Betreuung</h3>
+            <p>Optional ausw&auml;hlen, wenn der Umfang schon klar ist.</p>
+            <div class="checks">
+              <div class="check"><input type="checkbox" id="addon-page" name="addon" value="Zus&auml;tzliche Seite"><label for="addon-page"><strong>Zus&auml;tzliche Seite</strong><span>mehr Content oder Unterseiten</span></label></div>
+              <div class="check"><input type="checkbox" id="addon-text" name="addon" value="Texte erstellen"><label for="addon-text"><strong>Texte erstellen</strong><span>Texte und Struktur mit ausarbeiten</span></label></div>
+              <div class="check"><input type="checkbox" id="addon-form" name="addon" value="Erweitertes Formular"><label for="addon-form"><strong>Erweitertes Formular</strong><span>mehr Felder, Auswahl-Logik oder Uploads</span></label></div>
+              <div class="check"><input type="checkbox" id="addon-booking" name="addon" value="Buchungssystem"><label for="addon-booking"><strong>Buchungssystem</strong><span>Reservierungen oder Terminbuchung</span></label></div>
+              <div class="check"><input type="checkbox" id="addon-login" name="addon" value="Login / User-System"><label for="addon-login"><strong>Login / User-System</strong><span>Benutzerbereiche und Accounts</span></label></div>
+              <div class="check"><input type="checkbox" id="addon-multi" name="addon" value="Mehrsprachigkeit"><label for="addon-multi"><strong>Mehrsprachigkeit</strong><span>mehrere Sprachversionen</span></label></div>
+              <div class="check"><input type="checkbox" id="addon-ui" name="addon" value="Individuelles UI Upgrade"><label for="addon-ui"><strong>UI Upgrade</strong><span>st&auml;rkeres individuelles Interface</span></label></div>
+              <div class="check"><input type="checkbox" id="addon-branding" name="addon" value="Logo / Branding"><label for="addon-branding"><strong>Logo / Branding</strong><span>visuelle Basis oder Auffrischung</span></label></div>
+            </div>
+            <div class="field-grid" style="margin-top:1rem">
+              <div class="field">
+                <label for="maintenance">Wartung</label>
+                <select id="maintenance" name="maintenance">
+                  <option value="Kein Wartungspaket">Kein Wartungspaket</option>
+                  <option value="Basic Wartung – 29€/Monat">Basic – 29&euro;/Monat</option>
+                  <option value="Basic Wartung – 290€/Jahr">Basic – 290&euro;/Jahr</option>
+                  <option value="Standard Wartung – 49€/Monat">Standard – 49&euro;/Monat</option>
+                  <option value="Standard Wartung – 490€/Jahr">Standard – 490&euro;/Jahr</option>
+                  <option value="Premium Wartung – 99€/Monat">Premium – 99&euro;/Monat</option>
+                  <option value="Premium Wartung – 990€/Jahr">Premium – 990&euro;/Jahr</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="budget">Budget</label>
+                <select id="budget" name="budget">
+                  <option value="Noch offen">Noch offen</option>
+                  <option value="Unter 1.000€">Unter 1.000&euro;</option>
+                  <option value="1.000€ – 2.000€">1.000&euro; &ndash; 2.000&euro;</option>
+                  <option value="2.000€ – 5.000€">2.000&euro; &ndash; 5.000&euro;</option>
+                  <option value="5.000€+">5.000&euro;+</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h3>Projektinfos</h3>
+            <p>Je klarer Ziel, Umfang und Zeitrahmen sind, desto genauer kann das Projekt eingesch&auml;tzt werden.</p>
+            <div class="field-grid">
+              <div class="field">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" placeholder="Dein Name" required>
+              </div>
+              <div class="field">
+                <label for="company">Unternehmen</label>
+                <input id="company" name="company" type="text" placeholder="Firmenname / Projektname">
+              </div>
+              <div class="field">
+                <label for="email">E-Mail</label>
+                <input id="email" name="email" type="email" placeholder="name@beispiel.at" required>
+              </div>
+              <div class="field">
+                <label for="timeline">Zeitrahmen</label>
+                <select id="timeline" name="timeline">
+                  <option value="So bald wie m&ouml;glich">So bald wie m&ouml;glich</option>
+                  <option value="In den n&auml;chsten 2 bis 4 Wochen">In den n&auml;chsten 2 bis 4 Wochen</option>
+                  <option value="In 1 bis 3 Monaten">In 1 bis 3 Monaten</option>
+                  <option value="Sp&auml;ter / noch offen">Sp&auml;ter / noch offen</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label for="goal">Ziel der Website / L&ouml;sung</label>
+                <textarea id="goal" name="goal" placeholder="Was soll die Website oder App erreichen? Zum Beispiel: neue Kunden gewinnen, Buchungen erm&ouml;glichen, internen Prozess digitalisieren, bestehende Seite neu aufsetzen ..." required></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <aside class="request-summary">
+          <div class="summary-card">
+            <div class="summary-mini">Zusammenfassung</div>
+            <h3>Deine Auswahl</h3>
+            <ul class="summary-list">
+              <li><span>Paket</span><strong id="summary-package">Starter &ndash; Onepager</strong></li>
+              <li><span>Preisrahmen</span><strong id="summary-price">ab 690&euro;</strong></li>
+              <li><span>Wartung</span><strong id="summary-maintenance">Kein Wartungspaket</strong></li>
+              <li><span>Add-ons</span><strong id="summary-addons">Keine ausgew&auml;hlt</strong></li>
+            </ul>
+          </div>
+          <div class="summary-card">
+            <div class="summary-mini">Projektinfos</div>
+            <h3>Anfrage direkt vorbereiten</h3>
+            <p class="summary-note">Beim Klick auf den Button wird eine strukturierte Anfrage mit allen ausgew&auml;hlten Angaben direkt gesendet.</p>
+            <div class="request-actions">
+              <button class="btn btn-primary request-submit" id="request-submit" type="submit" form="request-form">Anfrage senden</button>
+            </div>
+            <p class="request-status" id="request-status"></p>
+          </div>
+          <div class="summary-card">
+            <div class="summary-mini">Kontakt</div>
+            <h3>CROWFORGE Web Services</h3>
+            <a class="contact-mail" href="mailto:contact@crowforge-games.com?subject=Anfrage%20Web%20Services">contact@crowforge-games.com</a>
+            <p class="summary-note">Falls du noch nicht sicher bist, welches Paket passt, reicht auch eine kurze Beschreibung deines Vorhabens.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-wrap">
+    <p>CROWFORGE Web Services</p>
+    <p>Websites, Apps und Systeme mit klarer Struktur</p>
+    <p class="footer-powered">Powered by CROWFORGE Websites</p>
+  </div>
+</footer>
+
+<script>
+const requestForm = document.getElementById('request-form');
+const packageInputs = Array.from(document.querySelectorAll('input[name="package"]'));
+const addonInputs = Array.from(document.querySelectorAll('input[name="addon"]'));
+const maintenanceSelect = document.getElementById('maintenance');
+const summaryPackage = document.getElementById('summary-package');
+const summaryPrice = document.getElementById('summary-price');
+const summaryMaintenance = document.getElementById('summary-maintenance');
+const summaryAddons = document.getElementById('summary-addons');
+const requestStatus = document.getElementById('request-status');
+const requestSubmit = document.getElementById('request-submit');
+const packageButtons = Array.from(document.querySelectorAll('.price-select'));
+const formStartedAt = document.getElementById('form-started-at');
+
+if (formStartedAt) {
+  formStartedAt.value = String(Date.now());
+}
+
+function getSelectedPackage() {
+  return packageInputs.find(function(input) { return input.checked; }) || packageInputs[0];
+}
+
+function getSelectedAddons() {
+  return addonInputs
+    .filter(function(input) { return input.checked; })
+    .map(function(input) { return input.value; });
+}
+
+function updateRequestSummary() {
+  if (window.updateRequestSummary && window.updateRequestSummary !== updateRequestSummary) {
+    window.updateRequestSummary();
+    return;
+  }
+  const selectedPackage = getSelectedPackage();
+  const addons = getSelectedAddons();
+  summaryPackage.innerHTML = selectedPackage ? selectedPackage.value : 'Nicht gew&auml;hlt';
+  summaryPrice.innerHTML = selectedPackage ? selectedPackage.dataset.price : 'Offen';
+  summaryMaintenance.textContent = maintenanceSelect.value || 'Kein Wartungspaket';
+  summaryAddons.textContent = addons.length ? addons.join(', ') : 'Keine ausgew&auml;hlt';
+}
+
+function setRequestStatus(type, message) {
+  if (window.setRequestStatus && window.setRequestStatus !== setRequestStatus) {
+    window.setRequestStatus(type, message);
+    return;
+  }
+  requestStatus.textContent = message;
+  requestStatus.className = 'request-status is-visible' + (type ? ' ' + type : '');
+}
+
+function buildRequestPayload() {
+  const selectedPackage = getSelectedPackage();
+  return {
+    package: selectedPackage ? selectedPackage.value : '',
+    packagePrice: selectedPackage ? selectedPackage.dataset.price : '',
+    addons: getSelectedAddons(),
+    maintenance: maintenanceSelect.value || '',
+    budget: document.getElementById('budget').value,
+    timeline: document.getElementById('timeline').value,
+    name: document.getElementById('name').value.trim(),
+    company: document.getElementById('company').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    goal: document.getElementById('goal').value.trim(),
+    website: document.getElementById('website').value.trim(),
+    formStartedAt: formStartedAt ? formStartedAt.value : ''
+  };
+}
+
+function buildMailBody() {
+  if (window.buildMailBody && window.buildMailBody !== buildMailBody) {
+    return window.buildMailBody();
+  }
+  const payload = buildRequestPayload();
+
+  return [
+    'Hallo CROWFORGE,',
+    '',
+    'ich m\u00f6chte ein Projekt anfragen.',
+    '',
+    'Paket: ' + payload.package,
+    'Preisrahmen Paket: ' + payload.packagePrice,
+    'Add-ons: ' + (payload.addons.length ? payload.addons.join(', ') : 'Keine'),
+    'Wartung: ' + payload.maintenance,
+    'Budget: ' + payload.budget,
+    'Zeitrahmen: ' + payload.timeline,
+    '',
+    'Name: ' + (payload.name || '-'),
+    'Unternehmen: ' + (payload.company || '-'),
+    'E-Mail: ' + (payload.email || '-'),
+    '',
+    'Projektziel / Infos:',
+    payload.goal || '-',
+    '',
+    'Beste Gr\u00fc\u00dfe'
+  ].join('\n');
+}
+
+packageInputs.forEach(function(input) {
+  input.addEventListener('change', updateRequestSummary);
+});
+addonInputs.forEach(function(input) {
+  input.addEventListener('change', updateRequestSummary);
+});
+maintenanceSelect.addEventListener('change', updateRequestSummary);
+
+packageButtons.forEach(function(button) {
+  button.addEventListener('click', function() {
+    const target = document.getElementById(button.dataset.packageTarget);
+    if (!target) return;
+    target.checked = true;
+    updateRequestSummary();
+    const contactSection = document.getElementById('kontakt');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+requestForm.addEventListener('submit', async function(event) {
+  event.preventDefault();
+  if (!requestForm.reportValidity()) return;
+
+  const payload = buildRequestPayload();
+  setRequestStatus('', 'Anfrage wird gesendet...');
+  requestSubmit.disabled = true;
+  requestSubmit.textContent = 'Wird gesendet...';
+
+  try {
+    const response = await fetch('/.netlify/functions/send-services-request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...payload,
+        mailBody: buildMailBody()
+      })
+    });
+
+    const raw = await response.text();
+    let result = {};
+    try {
+      result = raw ? JSON.parse(raw) : {};
+    } catch (parseError) {
+      throw new Error(raw ? 'Ungültige Serverantwort: ' + raw.slice(0, 180) : 'Der Server hat keine gültige JSON-Antwort zurückgegeben.');
+    }
+    if (!response.ok) {
+      throw new Error(result && result.message ? result.message : 'Versand fehlgeschlagen.');
+    }
+
+    setRequestStatus('success', 'Anfrage erfolgreich gesendet. Du erh&auml;ltst die Best&auml;tigung direkt &uuml;ber den eingerichteten Versand an contact@crowforge-games.com.');
+    requestForm.reset();
+    document.getElementById('pkg-starter').checked = true;
+    if (formStartedAt) {
+      formStartedAt.value = String(Date.now());
+    }
+    updateRequestSummary();
+  } catch (error) {
+    setRequestStatus('error', error.message || 'Beim Senden ist ein Fehler aufgetreten.');
+  } finally {
+    requestSubmit.disabled = false;
+    requestSubmit.textContent = 'Anfrage senden';
+  }
+});
+
+updateRequestSummary();
+</script>
+
+<script>
+(function() {
+  const packageInputs2 = Array.from(document.querySelectorAll('input[name="package"]'));
+  const addonInputs2 = Array.from(document.querySelectorAll('input[name="addon"]'));
+  const maintenanceSelect2 = document.getElementById('maintenance');
+  const budgetSelect2 = document.getElementById('budget');
+  const timelineSelect2 = document.getElementById('timeline');
+  const summaryPackage2 = document.getElementById('summary-package');
+  const summaryPrice2 = document.getElementById('summary-price');
+  const summaryMaintenance2 = document.getElementById('summary-maintenance');
+  const summaryAddons2 = document.getElementById('summary-addons');
+  const requestSubmit2 = document.getElementById('request-submit');
+  let currentLang2 = localStorage.getItem('siteLang') || 'de';
+
+  function text(node) {
+    return node ? node.textContent.trim() : '';
+  }
+
+  function html(node) {
+    return node ? node.innerHTML : '';
+  }
+
+  function setText(node, value) {
+    if (node) node.textContent = value;
+  }
+
+  function setHtml(node, value) {
+    if (node) node.innerHTML = value;
+  }
+
+  function getPriceBits(node) {
+    const small = node ? node.querySelector('small') : null;
+    const clone = node ? node.cloneNode(true) : null;
+    if (clone && clone.querySelector('small')) clone.querySelector('small').remove();
+    return {
+      price: clone ? clone.textContent.trim() : '',
+      sub: small ? small.textContent.trim() : ''
+    };
+  }
+
+  function captureGerman() {
+    const signalCards = document.querySelectorAll('.signal-card');
+    const formBlocks = document.querySelectorAll('.form-block');
+    return {
+      title: document.title,
+      nav: Array.from(document.querySelectorAll('.nav-links a')).map(text),
+      navCta: text(document.querySelector('.nav-cta')),
+      heroTitle: html(document.querySelector('.hero-copy h1')),
+      heroLead: text(document.querySelector('.hero-copy p')),
+      heroPoints: Array.from(document.querySelectorAll('.hero-point')).map(function(point) {
+        return [text(point.querySelector('strong')), text(point.querySelector('span'))];
+      }),
+      heroButtons: Array.from(document.querySelectorAll('.hero-actions a')).map(text),
+      heroSide: [text(document.querySelector('.hero-side-label')), text(document.querySelector('.hero-side-title')), text(document.querySelector('.hero-side p'))],
+      packagesHead: [text(document.querySelector('#pakete .eyebrow')), html(document.querySelector('#pakete h2')), text(document.querySelector('#pakete .section-head > p'))],
+      priceCards: Array.from(document.querySelectorAll('.pricing-grid .price-card')).map(function(card) {
+        const bits = getPriceBits(card.querySelector('.price'));
+        return {
+          badge: html(card.querySelector('.price-badge')),
+          tier: html(card.querySelector('.price-tier')),
+          title: html(card.querySelector('h3')),
+          copy: text(card.querySelector('.price-copy')),
+          price: bits.price,
+          sub: bits.sub,
+          features: Array.from(card.querySelectorAll('.price-features li')).map(text),
+          button: text(card.querySelector('.price-select'))
+        };
+      }),
+      signal: {
+        leftEyebrow: text(signalCards[0].querySelector('.eyebrow')),
+        leftTitle: html(signalCards[0].querySelector('h3')),
+        leftCopy: text(signalCards[0].querySelector('p:not(.eyebrow)')),
+        items: Array.from(signalCards[0].querySelectorAll('.signal-item')).map(function(item) {
+          return [text(item.querySelector('strong')), text(item.querySelector('span'))];
+        }),
+        rightEyebrow: text(signalCards[1].querySelector('.eyebrow')),
+        rightTitle: html(signalCards[1].querySelector('h3')),
+        rightCopy: text(signalCards[1].querySelector('p:not(.eyebrow)'))
+      },
+      addonsHead: [text(document.querySelector('#addons .eyebrow')), html(document.querySelector('#addons h2')), text(document.querySelector('#addons .section-head > p'))],
+      maintenanceHead: [text(document.querySelector('#wartung .eyebrow')), html(document.querySelector('#wartung h2')), text(document.querySelector('#wartung .section-head > p'))],
+      usecasesHead: [text(document.querySelector('#usecases .eyebrow')), html(document.querySelector('#usecases h2')), text(document.querySelector('#usecases .section-head > p'))],
+      usecases: Array.from(document.querySelectorAll('.use-card')).map(function(card) {
+        return [text(card.querySelector('.use-kicker')), html(card.querySelector('h3')), text(card.querySelector('p'))];
+      }),
+      contactHead: [text(document.querySelector('#kontakt .eyebrow')), html(document.querySelector('#kontakt h2')), text(document.querySelector('#kontakt .section-head > p'))],
+      form: {
+        packageTitle: html(formBlocks[0].querySelector('h3')),
+        packageCopy: text(formBlocks[0].querySelector('p')),
+        packageOptions: packageInputs2.map(function(input) {
+          const label = input.nextElementSibling;
+          return {
+            value: input.value,
+            price: input.dataset.price,
+            strong: text(label.querySelector('strong')),
+            span: text(label.querySelector('span')),
+            em: text(label.querySelector('em'))
+          };
+        }),
+        addonsTitle: html(formBlocks[1].querySelector('h3')),
+        addonsCopy: text(formBlocks[1].querySelector('p')),
+        addonOptions: addonInputs2.map(function(input) {
+          const label = input.nextElementSibling;
+          return [input.value, text(label.querySelector('strong')), text(label.querySelector('span'))];
+        }),
+        maintenanceLabel: text(document.querySelector('label[for="maintenance"]')),
+        maintenanceOptions: Array.from(maintenanceSelect2.options).map(function(opt) { return { value: opt.value, label: opt.textContent }; }),
+        budgetLabel: text(document.querySelector('label[for="budget"]')),
+        budgetOptions: Array.from(budgetSelect2.options).map(function(opt) { return { value: opt.value, label: opt.textContent }; }),
+        infoTitle: text(formBlocks[2].querySelector('h3')),
+        infoCopy: text(formBlocks[2].querySelector('p')),
+        labels: {
+          name: text(document.querySelector('label[for="name"]')),
+          company: text(document.querySelector('label[for="company"]')),
+          email: text(document.querySelector('label[for="email"]')),
+          timeline: text(document.querySelector('label[for="timeline"]')),
+          goal: text(document.querySelector('label[for="goal"]'))
+        },
+        placeholders: {
+          name: document.getElementById('name').placeholder,
+          company: document.getElementById('company').placeholder,
+          email: document.getElementById('email').placeholder,
+          goal: document.getElementById('goal').placeholder
+        },
+        timelineOptions: Array.from(timelineSelect2.options).map(function(opt) { return { value: opt.value, label: opt.textContent }; })
+      },
+      summary: {
+        minis: Array.from(document.querySelectorAll('.summary-mini')).map(text),
+        titles: Array.from(document.querySelectorAll('.request-summary .summary-card h3')).map(html),
+        labels: Array.from(document.querySelectorAll('.summary-list li span')).map(text),
+        defaults: {
+          none: 'Nicht gewählt',
+          open: 'Offen',
+          maintenance: text(summaryMaintenance2),
+          addons: text(summaryAddons2)
+        },
+        actionNote: text(document.querySelectorAll('.summary-note')[0]),
+        button: text(requestSubmit2),
+        contactNote: text(document.querySelectorAll('.summary-note')[1]),
+        mailSubject: 'Anfrage Web Services'
+      },
+      footer: Array.from(document.querySelectorAll('.footer-wrap p')).map(text),
+      status: {
+        sending: 'Anfrage wird gesendet...',
+        buttonSending: 'Wird gesendet...',
+        success: 'Anfrage erfolgreich gesendet. Du erhältst die Bestätigung direkt über den eingerichteten Versand an contact@crowforge-games.com.',
+        fallbackError: 'Beim Senden ist ein Fehler aufgetreten.'
+      },
+      mail: {
+        greeting: 'Hallo CROWFORGE,',
+        intro: 'ich möchte ein Projekt anfragen.',
+        package: 'Paket',
+        packagePrice: 'Preisrahmen Paket',
+        addons: 'Add-ons',
+        maintenance: 'Wartung',
+        budget: 'Budget',
+        timeline: 'Zeitrahmen',
+        name: 'Name',
+        company: 'Unternehmen',
+        email: 'E-Mail',
+        goal: 'Projektziel / Infos',
+        none: 'Keine',
+        dash: '-',
+        regards: 'Beste Grüße'
+      }
+    };
+  }
+
+  const T = {
+    de: captureGerman(),
+    en: {
+      title: 'Services | CROWFORGE Web Services',
+      nav: ['Packages', 'Add-ons', 'Maintenance', 'Use Cases', 'Contact'],
+      navCta: 'Back to main site',
+      heroTitle: 'Websites &amp; Apps <span>from one source</span>',
+      heroLead: 'I do not just build websites. I create digital solutions that look modern, load fast, guide customers and can later grow into booking systems, dashboards or web apps when needed.',
+      heroPoints: [['Positioning', 'Digital solutions for modern businesses'], ['Approach', 'No template feel, but custom presences with clear structure'], ['Advantage', 'Website to app, planned as one connected system'], ['Goal', 'More inquiries, more trust, more room to grow']],
+      heroButtons: ['Request project', 'View packages'],
+      heroSide: ['Who it is for', 'For businesses that want a professional online presence', 'From a lean one-pager to a connected web app: every solution is planned to work today and stay cleanly extendable for tomorrow.'],
+      packagesHead: ['Offers', 'Packages for different<br>project sizes', 'Each package covers a different need: from a fast online presence to an individual platform with login, database or app integration.'],
+      priceCards: [
+        { badge: 'Starter', tier: 'Starter', title: 'One-pager', copy: 'For small businesses, a quick online presence and a clear entry point without unnecessary overhead.', price: 'from €790', sub: 'for fast visibility', features: ['1 page / landing page', 'modern, responsive design', 'contact form', 'basic SEO', 'fast loading times'], button: 'Choose this package' },
+        { badge: 'Most chosen', tier: 'Business Website', title: '3 to 5 pages', copy: 'For companies that want to look professional and win new customers through their website.', price: 'from €1,490', sub: 'ideal for lead generation', features: ['Home, services, about, contact and more', 'custom design without a template feel', 'mobile optimized', 'clear structure and contact form', 'easy to expand'], button: 'Choose this package' },
+        { badge: 'Premium', tier: 'Professional Website', title: '5 to 10 pages', copy: 'For larger projects with more content, better user guidance and room for future expansion.', price: 'from €2,490', sub: 'for broader presences', features: ['custom UI/UX design', 'structured content and stronger user guidance', 'performance optimized', 'prepared for future extensions', 'ideal for serious client projects'], button: 'Choose this package' },
+        { badge: 'Custom', tier: 'Web App / Solution', title: 'Systems &amp; Tools', copy: 'This is where the real difference starts: individual features, processes and digital tools instead of static pages only.', price: '€3,000 – €8,000+', sub: 'custom quoted', features: ['login systems', 'databases and APIs', 'mobile app integration', 'dashboards and internal tools', 'custom features as needed'], button: 'Choose this package' }
+      ],
+      signal: {
+        leftEyebrow: 'Why CROWFORGE',
+        leftTitle: 'More than just a beautiful website',
+        leftCopy: 'Every project is built so that design, structure, performance and scalability work together. The result is not a short-term web presence, but a clean digital foundation for growth.',
+        items: [['Custom', 'not a typical template look, but a presence with its own character'], ['Responsive', 'optimized for desktop, tablet and smartphone'], ['Scalable', 'future features like bookings, logins or dashboards can be integrated cleanly'], ['Fast', 'strong focus on loading speed, clarity and good user guidance']],
+        rightEyebrow: 'Approach',
+        rightTitle: 'Websites &amp; Apps from one source',
+        rightCopy: 'If a project needs more than just pages and copy, it can grow into a connected solution with forms, logins, processes, APIs or a later app connection.'
+      },
+      addonsHead: ['Add-ons', 'Add-ons for more scope<br>and more function', 'Additional pages, content, features or branding can be added flexibly to any package.'],
+      maintenanceHead: ['Maintenance', 'Support after<br>launch', 'Maintenance covers ongoing support after launch: hosting, technical care, support and, depending on the plan, smaller changes.'],
+      usecasesHead: ['Typical projects', 'What your setup<br>can look like', 'Depending on the goal, a website can become much more. These examples show combinations that work especially well in practice.'],
+      usecases: [['Project 01', 'Website + booking system', 'Ideal for businesses that want to handle inquiries, reservations or appointments digitally.'], ['Project 02', 'Website + app + administration', 'Perfect for modern businesses with a digital core and clean internal processes.'], ['Project 03', 'Website + internal tool', 'If a normal website is not enough, it can grow into an individual dashboard, login system or workflow tool.']],
+      contactHead: ['Inquiry', 'Request your project<br>with package selection', 'Choose the right package, mark the add-ons you want and send a structured inquiry right away.'],
+      form: {
+        packageTitle: 'Choose package',
+        packageCopy: 'Select the option that comes closest to your planned scope.',
+        packageOptions: [
+          { value: 'Starter – One-pager', price: 'from €790', strong: 'Starter – One-pager', span: '1 page for a fast, professional online presence', em: 'from €790' },
+          { value: 'Business Website', price: 'from €1,490', strong: 'Business Website', span: '3 to 5 pages for companies focused on lead generation', em: 'from €1,490' },
+          { value: 'Professional Website', price: 'from €2,490', strong: 'Professional Website', span: '5 to 10 pages with stronger structure, UX and performance', em: 'from €2,490' },
+          { value: 'Web App / Custom Solution', price: '€3,000 – €8,000+', strong: 'Web App / Custom Solution', span: 'For systems, dashboards, logins, APIs and custom features', em: '€3,000 – €8,000+' }
+        ],
+        addonsTitle: 'Add-ons &amp; support',
+        addonsCopy: 'Optional, if the project scope is already clear.',
+        addonOptions: [['Additional page', 'Additional page', 'more content or subpages'], ['Copywriting', 'Copywriting', 'support with copy and structure'], ['Advanced form', 'Advanced form', 'more fields, logic or uploads'], ['Booking system', 'Booking system', 'reservations or appointment booking'], ['Login / User system', 'Login / User system', 'user areas and accounts'], ['Multilingual setup', 'Multilingual setup', 'multiple language versions'], ['Custom UI upgrade', 'UI upgrade', 'stronger custom interface'], ['Logo / Branding', 'Logo / Branding', 'visual foundation or refresh']],
+        maintenanceLabel: 'Maintenance',
+        maintenanceOptions: [{ value: 'No maintenance plan', label: 'No maintenance plan' }, { value: 'Basic maintenance – €29/month', label: 'Basic – €29/month' }, { value: 'Basic maintenance – €290/year', label: 'Basic – €290/year' }, { value: 'Standard maintenance – €49/month', label: 'Standard – €49/month' }, { value: 'Standard maintenance – €490/year', label: 'Standard – €490/year' }, { value: 'Premium maintenance – €99/month', label: 'Premium – €99/month' }, { value: 'Premium maintenance – €990/year', label: 'Premium – €990/year' }],
+        budgetLabel: 'Budget',
+        budgetOptions: [{ value: 'Still open', label: 'Still open' }, { value: 'Under €1,000', label: 'Under €1,000' }, { value: '€1,000 – €2,000', label: '€1,000 – €2,000' }, { value: '€2,000 – €5,000', label: '€2,000 – €5,000' }, { value: '€5,000+', label: '€5,000+' }],
+        infoTitle: 'Project info',
+        infoCopy: 'The clearer the goal, scope and timeline are, the more accurately the project can be estimated.',
+        labels: { name: 'Name', company: 'Company', email: 'Email', timeline: 'Timeline', goal: 'Goal of the website / solution' },
+        placeholders: { name: 'Your name', company: 'Company / project name', email: 'name@example.com', goal: 'What should the website or app achieve? For example: generate new customers, enable bookings, digitize an internal process, relaunch an existing website ...' },
+        timelineOptions: [{ value: 'As soon as possible', label: 'As soon as possible' }, { value: 'Within the next 2 to 4 weeks', label: 'Within the next 2 to 4 weeks' }, { value: 'Within 1 to 3 months', label: 'Within 1 to 3 months' }, { value: 'Later / still open', label: 'Later / still open' }]
+      },
+      summary: {
+        minis: ['Summary', 'Project info', 'Contact'],
+        titles: ['Your selection', 'Prepare inquiry directly', 'CROWFORGE Web Services'],
+        labels: ['Package', 'Price range', 'Maintenance', 'Add-ons'],
+        defaults: { none: 'Not selected', open: 'Open', maintenance: 'No maintenance plan', addons: 'None selected' },
+        actionNote: 'Clicking the button sends a structured inquiry with all selected details.',
+        button: 'Send inquiry',
+        contactNote: 'If you are not sure which package fits yet, a short description of your project is enough.',
+        mailSubject: 'Web Services Inquiry'
+      },
+      footer: ['CROWFORGE Web Services', 'Websites, apps and systems with clear structure', 'Powered by CROWFORGE Websites'],
+      status: { sending: 'Sending inquiry...', buttonSending: 'Sending...', success: 'Inquiry sent successfully. You will receive confirmation through the configured delivery to contact@crowforge-games.com.', fallbackError: 'An error occurred while sending.' },
+      mail: { greeting: 'Hello CROWFORGE,', intro: 'I would like to request a project.', package: 'Package', packagePrice: 'Package price range', addons: 'Add-ons', maintenance: 'Maintenance', budget: 'Budget', timeline: 'Timeline', name: 'Name', company: 'Company', email: 'Email', goal: 'Project goal / details', none: 'None', dash: '-', regards: 'Best regards' }
+    }
+  };
+
+  T.de.priceCards = [
+    { badge: 'Starter', tier: 'Starter', title: 'Onepager', copy: 'Für kleine Businesses, schnelle Online-Präsenz und einen klaren Einstieg ohne unnötigen Overhead.', price: 'ab 690&euro;', sub: 'für schnelle Sichtbarkeit', features: ['1 Seite / Landingpage', 'modernes, responsives Design', 'Kontaktformular', 'Basis SEO', 'schnelle Ladezeiten'], button: 'Dieses Paket wählen' },
+    { badge: 'Meist gewählt', tier: 'Business Website', title: '3 bis 5 Seiten', copy: 'Für Unternehmen, die professionell auftreten und über ihre Website neue Kunden gewinnen wollen.', price: 'ab 1.290&euro;', sub: 'ideal für Kundengewinnung', features: ['Start, Leistungen, About, Kontakt und mehr', 'individuelles Design ohne Template-Gefühl', 'mobil optimiert', 'klare Struktur und Kontaktformular', 'einfach erweiterbar'], button: 'Dieses Paket wählen' },
+    { badge: 'Premium', tier: 'Professional Website', title: '5 bis 10 Seiten', copy: 'Für größere Projekte mit mehr Inhalten, besserer Userführung und Reserven für spätere Ausbauten.', price: 'ab 2.190&euro;', sub: 'für umfangreichere Auftritte', features: ['individuelles UI/UX Design', 'strukturierte Inhalte und bessere Userführung', 'Performance optimiert', 'für Erweiterungen vorbereitet', 'ideal für ernsthafte Kundenprojekte'], button: 'Dieses Paket wählen' },
+    { badge: 'Custom', tier: 'Web App / Solution', title: 'Systeme &amp; Tools', copy: 'Hier beginnt der echte Unterschied: individuelle Features, Prozesse und digitale Werkzeuge statt nur statischer Seiten.', price: '2.900&euro; &ndash; 7.500&euro;+', sub: 'individuell kalkuliert', features: ['Login-Systeme', 'Datenbanken und APIs', 'Mobile App Anbindung', 'Dashboards und interne Tools', 'individuelle Features nach Bedarf'], button: 'Dieses Paket wählen' }
+  ];
+  T.de.addonCards = [
+    { title: 'Seiten &amp; Content', items: [['zusätzliche Seite', '+200€'], ['Texte erstellen', '+150 – 400€']] },
+    { title: 'Features', items: [['erweitertes Formular', '+150€'], ['Buchungssystem', '+500 – 1.200€'], ['Login / User-System', '+800 – 2.000€'], ['Mehrsprachigkeit', '+300 – 800€']] },
+    { title: 'Design &amp; Branding', items: [['individuelles UI Upgrade', '+400 – 900€'], ['Logo / Branding', '+200 – 600€']] }
+  ];
+  T.de.maintenanceCards = [
+    { label: 'Basic', price: '29€', unit: 'pro Monat', alt: 'oder 290€ pro Jahr', items: ['Hosting, technische Basis-Pflege und Backups', 'für kleine Websites mit planbarer Betreuung'] },
+    { label: 'Standard', price: '49€', unit: 'pro Monat', alt: 'oder 490€ pro Jahr', items: ['Hosting, Betreuung und laufende technische Pflege', 'inklusive kleiner Inhaltsänderungen nach Absprache'] },
+    { label: 'Premium', price: '99€', unit: 'pro Monat', alt: 'oder 990€ pro Jahr', items: ['priorisierte Betreuung für wichtige Projekte', 'mehr laufende Unterstützung und schnellere Reaktion'] },
+    { label: 'Domains &amp; Extras', price: 'ab 70€', unit: 'pro Stunde', alt: 'Domains separat kalkuliert', items: ['Domains und Mail-Postfächer werden je nach Anbieter separat berechnet', 'der Stundensatz gilt nur für größere neue Features oder Umbauten außerhalb des Wartungspakets'] }
+  ];
+  T.de.billing = [
+    ['Jahrespreise', 'Basic: 290&euro; / Jahr<br>Standard: 490&euro; / Jahr<br>Premium: 990&euro; / Jahr'],
+    ['Warum Wartung?', 'Die monatlichen oder jährlichen Pakete decken Hosting, technische Pflege und Support ab. Bei Standard und Premium sind kleine Änderungen bereits mitgedacht.'],
+    ['Domains &amp; Extras', 'Domains behandle ich separat, weil .at, .de, .com usw. unterschiedlich kosten. Der Stundensatz gilt nur für größere neue Arbeiten außerhalb des Pakets.']
+  ];
+  T.de.form.packageOptions = [
+    { value: 'Starter – Onepager', price: 'ab 690\u20ac', strong: 'Starter – Onepager', span: '1 Seite für eine schnelle, professionelle Online-Präsenz', em: 'ab 690\u20ac' },
+    { value: 'Business Website', price: 'ab 1.290\u20ac', strong: 'Business Website', span: '3 bis 5 Seiten für Unternehmen mit Fokus auf Kundengewinnung', em: 'ab 1.290\u20ac' },
+    { value: 'Professional Website', price: 'ab 2.190\u20ac', strong: 'Professional Website', span: '5 bis 10 Seiten mit stärkerer Struktur, UX und Performance', em: 'ab 2.190\u20ac' },
+    { value: 'Web App / Custom Solution', price: '2.900\u20ac – 7.500\u20ac+', strong: 'Web App / Custom Solution', span: 'Für Systeme, Dashboards, Logins, APIs und individuelle Features', em: '2.900\u20ac – 7.500\u20ac+' }
+  ];
+  T.de.summary.defaults.open = 'Offen';
+  T.de.summary.defaults.none = 'Nicht gewählt';
+  T.de.summary.actionNote = 'Beim Klick auf den Button wird eine strukturierte Anfrage mit allen ausgewählten Angaben direkt gesendet.';
+  T.de.maintNote = '<strong>Einfach gesagt:</strong> Wartung = laufende Betreuung. <strong>70&euro;/h</strong> = gr&ouml;&szlig;ere neue &Auml;nderungen oder Features. Wer ein Jahrespaket nimmt, zahlt weniger als bei 12 einzelnen Monatszahlungen.';
+
+  T.en.addonCards = [
+    { title: 'Pages &amp; Content', items: [['additional page', '+\u20ac200'], ['copywriting', '+\u20ac150 – \u20ac400']] },
+    { title: 'Features', items: [['advanced form', '+\u20ac150'], ['booking system', '+\u20ac500 – \u20ac1,200'], ['login / user system', '+\u20ac800 – \u20ac2,000'], ['multilingual setup', '+\u20ac300 – \u20ac800']] },
+    { title: 'Design &amp; Branding', items: [['custom UI upgrade', '+\u20ac400 – \u20ac900'], ['logo / branding', '+\u20ac200 – \u20ac600']] }
+  ];
+  T.en.maintenanceCards = [
+    { label: 'Basic', price: '\u20ac29', unit: 'per month', alt: 'or \u20ac290 per year', items: ['hosting, basic technical care and backups', 'for smaller websites with predictable support needs'] },
+    { label: 'Standard', price: '\u20ac49', unit: 'per month', alt: 'or \u20ac490 per year', items: ['hosting, support and ongoing technical care', 'includes small content changes by arrangement'] },
+    { label: 'Premium', price: '\u20ac99', unit: 'per month', alt: 'or \u20ac990 per year', items: ['priority support for important projects', 'more ongoing assistance and faster response times'] },
+    { label: 'Domains &amp; Extras', price: 'from \u20ac70', unit: 'per hour', alt: 'domains quoted separately', items: ['domains and mailboxes are billed separately depending on the provider', 'the hourly rate only applies to larger new features or rebuilds outside the maintenance plan'] }
+  ];
+  T.en.billing = [
+    ['Yearly pricing', 'Basic: \u20ac290 / year<br>Standard: \u20ac490 / year<br>Premium: \u20ac990 / year'],
+    ['Why maintenance?', 'Monthly or yearly plans cover hosting, technical care and support. Standard and Premium already include small changes.'],
+    ['Domains &amp; Extras', 'I quote domains separately because .at, .de, .com and similar endings have different costs. The hourly rate only applies to larger new work outside the plan.']
+  ];
+  T.en.maintNote = '<strong>In short:</strong> maintenance = ongoing support. <strong>\u20ac70/h</strong> = larger new changes or features. A yearly plan costs less than 12 individual monthly payments.';
+  T.en.priceCards = [
+    { badge: 'Starter', tier: 'Starter', title: 'One-pager', copy: 'For small businesses, a quick online presence and a clear entry point without unnecessary overhead.', price: 'from \u20ac690', sub: 'for fast visibility', features: ['1 page / landing page', 'modern, responsive design', 'contact form', 'basic SEO', 'fast loading times'], button: 'Choose this package' },
+    { badge: 'Most chosen', tier: 'Business Website', title: '3 to 5 pages', copy: 'For companies that want to look professional and win new customers through their website.', price: 'from \u20ac1,290', sub: 'ideal for lead generation', features: ['Home, services, about, contact and more', 'custom design without a template feel', 'mobile optimized', 'clear structure and contact form', 'easy to expand'], button: 'Choose this package' },
+    { badge: 'Premium', tier: 'Professional Website', title: '5 to 10 pages', copy: 'For larger projects with more content, better user guidance and room for future expansion.', price: 'from \u20ac2,190', sub: 'for broader presences', features: ['custom UI/UX design', 'structured content and stronger user guidance', 'performance optimized', 'prepared for future extensions', 'ideal for serious client projects'], button: 'Choose this package' },
+    { badge: 'Custom', tier: 'Web App / Solution', title: 'Systems &amp; Tools', copy: 'This is where the real difference starts: individual features, processes and digital tools instead of static pages only.', price: '\u20ac2,900 – \u20ac7,500+', sub: 'custom quoted', features: ['login systems', 'databases and APIs', 'mobile app integration', 'dashboards and internal tools', 'custom features as needed'], button: 'Choose this package' }
+  ];
+  T.en.form.packageOptions = [
+    { value: 'Starter – One-pager', price: 'from \u20ac690', strong: 'Starter – One-pager', span: '1 page for a fast, professional online presence', em: 'from \u20ac690' },
+    { value: 'Business Website', price: 'from \u20ac1,290', strong: 'Business Website', span: '3 to 5 pages for companies focused on lead generation', em: 'from \u20ac1,290' },
+    { value: 'Professional Website', price: 'from \u20ac2,190', strong: 'Professional Website', span: '5 to 10 pages with stronger structure, UX and performance', em: 'from \u20ac2,190' },
+    { value: 'Web App / Custom Solution', price: '\u20ac2,900 – \u20ac7,500+', strong: 'Web App / Custom Solution', span: 'For systems, dashboards, logins, APIs and custom features', em: '\u20ac2,900 – \u20ac7,500+' }
+  ];
+
+  function setSelectOptions(select, options) {
+    const selectedIndex = Math.min(select.selectedIndex, options.length - 1);
+    select.innerHTML = '';
+    options.forEach(function(option) {
+      const el = document.createElement('option');
+      el.value = option.value;
+      el.textContent = option.label;
+      select.appendChild(el);
+    });
+    select.selectedIndex = selectedIndex < 0 ? 0 : selectedIndex;
+  }
+
+  function applyServiceLang(lang) {
+    currentLang2 = lang;
+    localStorage.setItem('siteLang', lang);
+    document.documentElement.lang = lang;
+    document.title = T[lang].title;
+    document.getElementById('btn-en')?.classList.toggle('active', lang === 'en');
+    document.getElementById('btn-de')?.classList.toggle('active', lang === 'de');
+    const t = T[lang];
+    const signalCards = document.querySelectorAll('.signal-card');
+    const formBlocks = document.querySelectorAll('.form-block');
+
+    document.querySelectorAll('.nav-links a').forEach(function(link, index) { setText(link, t.nav[index]); });
+    setText(document.querySelector('.nav-cta'), t.navCta);
+    setHtml(document.querySelector('.hero-copy h1'), t.heroTitle);
+    setText(document.querySelector('.hero-copy p'), t.heroLead);
+    document.querySelectorAll('.hero-point').forEach(function(point, index) {
+      setText(point.querySelector('strong'), t.heroPoints[index][0]);
+      setText(point.querySelector('span'), t.heroPoints[index][1]);
+    });
+    document.querySelectorAll('.hero-actions a').forEach(function(link, index) { setText(link, t.heroButtons[index]); });
+    setText(document.querySelector('.hero-side-label'), t.heroSide[0]);
+    setText(document.querySelector('.hero-side-title'), t.heroSide[1]);
+    setText(document.querySelector('.hero-side p'), t.heroSide[2]);
+
+    setText(document.querySelector('#pakete .eyebrow'), t.packagesHead[0]);
+    setHtml(document.querySelector('#pakete h2'), t.packagesHead[1]);
+    setText(document.querySelector('#pakete .section-head > p'), t.packagesHead[2]);
+    document.querySelectorAll('.pricing-grid .price-card').forEach(function(card, index) {
+      const item = t.priceCards[index];
+      setHtml(card.querySelector('.price-badge'), item.badge);
+      setHtml(card.querySelector('.price-tier'), item.tier);
+      setHtml(card.querySelector('h3'), item.title);
+      setText(card.querySelector('.price-copy'), item.copy);
+      setHtml(card.querySelector('.price'), item.price + '<small>' + item.sub + '</small>');
+      card.querySelectorAll('.price-features li').forEach(function(li, liIndex) { setText(li, item.features[liIndex]); });
+      setText(card.querySelector('.price-select'), item.button);
+    });
+
+    setText(signalCards[0].querySelector('.eyebrow'), t.signal.leftEyebrow);
+    setHtml(signalCards[0].querySelector('h3'), t.signal.leftTitle);
+    setText(signalCards[0].querySelector('p:not(.eyebrow)'), t.signal.leftCopy);
+    signalCards[0].querySelectorAll('.signal-item').forEach(function(item, index) {
+      setText(item.querySelector('strong'), t.signal.items[index][0]);
+      setText(item.querySelector('span'), t.signal.items[index][1]);
+    });
+    setText(signalCards[1].querySelector('.eyebrow'), t.signal.rightEyebrow);
+    setHtml(signalCards[1].querySelector('h3'), t.signal.rightTitle);
+    setText(signalCards[1].querySelector('p:not(.eyebrow)'), t.signal.rightCopy);
+
+    setText(document.querySelector('#addons .eyebrow'), t.addonsHead[0]);
+    setHtml(document.querySelector('#addons h2'), t.addonsHead[1]);
+    setText(document.querySelector('#addons .section-head > p'), t.addonsHead[2]);
+    document.querySelectorAll('#addons .addons-card').forEach(function(card, index) {
+      const item = t.addonCards[index];
+      if (!item) return;
+      setHtml(card.querySelector('h3'), item.title);
+      card.querySelectorAll('.addons-list li').forEach(function(li, liIndex) {
+        setText(li.querySelector('span'), item.items[liIndex][0]);
+        setText(li.querySelector('strong'), item.items[liIndex][1]);
+      });
+    });
+    setText(document.querySelector('#wartung .eyebrow'), t.maintenanceHead[0]);
+    setHtml(document.querySelector('#wartung h2'), t.maintenanceHead[1]);
+    setText(document.querySelector('#wartung .section-head > p'), t.maintenanceHead[2]);
+    document.querySelectorAll('#wartung .maint-card').forEach(function(card, index) {
+      const item = t.maintenanceCards[index];
+      if (!item) return;
+      setHtml(card.querySelector('.maint-label'), item.label);
+      setHtml(card.querySelector('.maint-price'), item.price + '<small>' + item.unit + '</small>');
+      setText(card.querySelector('.maint-alt'), item.alt);
+      card.querySelectorAll('li').forEach(function(li, liIndex) {
+        setText(li, item.items[liIndex]);
+      });
+    });
+    document.querySelectorAll('.billing-card').forEach(function(card, index) {
+      if (!t.billing[index]) return;
+      setHtml(card.querySelector('strong'), t.billing[index][0]);
+      setHtml(card.querySelector('span'), t.billing[index][1]);
+    });
+    if (t.maintNote) {
+      setHtml(document.querySelector('.maint-note'), t.maintNote);
+    }
+    setText(document.querySelector('#usecases .eyebrow'), t.usecasesHead[0]);
+    setHtml(document.querySelector('#usecases h2'), t.usecasesHead[1]);
+    setText(document.querySelector('#usecases .section-head > p'), t.usecasesHead[2]);
+    document.querySelectorAll('.use-card').forEach(function(card, index) {
+      setText(card.querySelector('.use-kicker'), t.usecases[index][0]);
+      setHtml(card.querySelector('h3'), t.usecases[index][1]);
+      setText(card.querySelector('p'), t.usecases[index][2]);
+    });
+
+    setText(document.querySelector('#kontakt .eyebrow'), t.contactHead[0]);
+    setHtml(document.querySelector('#kontakt h2'), t.contactHead[1]);
+    setText(document.querySelector('#kontakt .section-head > p'), t.contactHead[2]);
+    setHtml(formBlocks[0].querySelector('h3'), t.form.packageTitle);
+    setText(formBlocks[0].querySelector('p'), t.form.packageCopy);
+    packageInputs2.forEach(function(input, index) {
+      const item = t.form.packageOptions[index];
+      input.value = item.value;
+      input.dataset.price = item.price;
+      const label = input.nextElementSibling;
+      setText(label.querySelector('strong'), item.strong);
+      setText(label.querySelector('span'), item.span);
+      setText(label.querySelector('em'), item.em);
+    });
+    setHtml(formBlocks[1].querySelector('h3'), t.form.addonsTitle);
+    setText(formBlocks[1].querySelector('p'), t.form.addonsCopy);
+    addonInputs2.forEach(function(input, index) {
+      const item = t.form.addonOptions[index];
+      input.value = item[0];
+      const label = input.nextElementSibling;
+      setText(label.querySelector('strong'), item[1]);
+      setText(label.querySelector('span'), item[2]);
+    });
+    setText(document.querySelector('label[for="maintenance"]'), t.form.maintenanceLabel);
+    setSelectOptions(maintenanceSelect2, t.form.maintenanceOptions);
+    setText(document.querySelector('label[for="budget"]'), t.form.budgetLabel);
+    setSelectOptions(budgetSelect2, t.form.budgetOptions);
+    setText(formBlocks[2].querySelector('h3'), t.form.infoTitle);
+    setText(formBlocks[2].querySelector('p'), t.form.infoCopy);
+    setText(document.querySelector('label[for="name"]'), t.form.labels.name);
+    setText(document.querySelector('label[for="company"]'), t.form.labels.company);
+    setText(document.querySelector('label[for="email"]'), t.form.labels.email);
+    setText(document.querySelector('label[for="timeline"]'), t.form.labels.timeline);
+    setText(document.querySelector('label[for="goal"]'), t.form.labels.goal);
+    document.getElementById('name').placeholder = t.form.placeholders.name;
+    document.getElementById('company').placeholder = t.form.placeholders.company;
+    document.getElementById('email').placeholder = t.form.placeholders.email;
+    document.getElementById('goal').placeholder = t.form.placeholders.goal;
+    setSelectOptions(timelineSelect2, t.form.timelineOptions);
+
+    document.querySelectorAll('.summary-mini').forEach(function(node, index) { setText(node, t.summary.minis[index]); });
+    document.querySelectorAll('.request-summary .summary-card h3').forEach(function(node, index) { setHtml(node, t.summary.titles[index]); });
+    document.querySelectorAll('.summary-list li span').forEach(function(node, index) { setText(node, t.summary.labels[index]); });
+    setText(document.querySelectorAll('.summary-note')[0], t.summary.actionNote);
+    setText(document.querySelectorAll('.summary-note')[1], t.summary.contactNote);
+    if (!requestSubmit2.disabled) setText(requestSubmit2, t.summary.button);
+    document.querySelector('.request-summary .contact-mail').href = 'mailto:contact@crowforge-games.com?subject=' + encodeURIComponent(t.summary.mailSubject);
+    document.querySelectorAll('.footer-wrap p').forEach(function(node, index) { setText(node, t.footer[index]); });
+    window.updateRequestSummary();
+  }
+
+  window.updateRequestSummary = function() {
+    const t = T[currentLang2].summary.defaults;
+    const selectedPackage = packageInputs2.find(function(input) { return input.checked; }) || packageInputs2[0];
+    const addons = addonInputs2.filter(function(input) { return input.checked; }).map(function(input) { return input.value; });
+    summaryPackage2.textContent = selectedPackage ? selectedPackage.value : t.none;
+    summaryPrice2.textContent = selectedPackage ? selectedPackage.dataset.price : t.open;
+    summaryMaintenance2.textContent = maintenanceSelect2.value || t.maintenance;
+    summaryAddons2.textContent = addons.length ? addons.join(', ') : t.addons;
+  };
+
+  window.buildMailBody = function() {
+    const t = T[currentLang2].mail;
+    const selectedPackage = packageInputs2.find(function(input) { return input.checked; }) || packageInputs2[0];
+    const addons = addonInputs2.filter(function(input) { return input.checked; }).map(function(input) { return input.value; });
+    return [
+      t.greeting, '', t.intro, '',
+      t.package + ': ' + (selectedPackage ? selectedPackage.value : ''),
+      t.packagePrice + ': ' + (selectedPackage ? selectedPackage.dataset.price : ''),
+      t.addons + ': ' + (addons.length ? addons.join(', ') : t.none),
+      t.maintenance + ': ' + (maintenanceSelect2.value || ''),
+      t.budget + ': ' + budgetSelect2.value,
+      t.timeline + ': ' + timelineSelect2.value,
+      '',
+      t.name + ': ' + (document.getElementById('name').value.trim() || t.dash),
+      t.company + ': ' + (document.getElementById('company').value.trim() || t.dash),
+      t.email + ': ' + (document.getElementById('email').value.trim() || t.dash),
+      '',
+      t.goal + ':',
+      document.getElementById('goal').value.trim() || t.dash,
+      '',
+      t.regards
+    ].join('\n');
+  };
+
+  window.setRequestStatus = function(type, message) {
+    const status = document.getElementById('request-status');
+    if (currentLang2 === 'en') {
+      if (message.indexOf('Anfrage wird gesendet') !== -1) message = T.en.status.sending;
+      if (message.indexOf('Anfrage erfolgreich gesendet') !== -1) message = T.en.status.success;
+      if (message.indexOf('Beim Senden ist ein Fehler') !== -1) message = T.en.status.fallbackError;
+    }
+    status.textContent = message;
+    status.className = 'request-status is-visible' + (type ? ' ' + type : '');
+  };
+
+  window.setLang = function(lang) {
+    applyServiceLang(lang);
+  };
+
+  packageInputs2.forEach(function(input) { input.addEventListener('change', window.updateRequestSummary); });
+  addonInputs2.forEach(function(input) { input.addEventListener('change', window.updateRequestSummary); });
+  maintenanceSelect2.addEventListener('change', window.updateRequestSummary);
+  document.querySelectorAll('.price-select').forEach(function(button) {
+    button.addEventListener('click', function() {
+      const target = document.getElementById(button.dataset.packageTarget);
+      if (!target) return;
+      target.checked = true;
+      window.updateRequestSummary();
+    });
+  });
+  new MutationObserver(function() {
+    if (currentLang2 === 'en') {
+      if (requestSubmit2.disabled && requestSubmit2.textContent === 'Wird gesendet...') requestSubmit2.textContent = T.en.status.buttonSending;
+      if (!requestSubmit2.disabled && requestSubmit2.textContent === 'Anfrage senden') requestSubmit2.textContent = T.en.summary.button;
+    } else {
+      if (requestSubmit2.disabled && requestSubmit2.textContent === 'Sending...') requestSubmit2.textContent = T.de.status.buttonSending;
+      if (!requestSubmit2.disabled && requestSubmit2.textContent === 'Send inquiry') requestSubmit2.textContent = T.de.summary.button;
+    }
+  }).observe(requestSubmit2, { childList: true, subtree: true, characterData: true });
+  applyServiceLang(currentLang2);
+})();
+</script>
+
+</body>
+</html>
