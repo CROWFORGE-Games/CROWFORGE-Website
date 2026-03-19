@@ -39,7 +39,7 @@
   ]
 }
 </script>
-<link rel="icon" type="image/png" href="CROWFORGE_Games_Translucent.png">
+<link rel="icon" type="image/png" href="CROWFORGE_Crow.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -527,12 +527,23 @@ nav{
 .addons-list li{
   display:flex;
   justify-content:space-between;
+  align-items:flex-start;
   gap:1rem;
   padding-bottom:.75rem;
   border-bottom:1px solid rgba(168,180,192,.08);
 }
 .addons-list li:last-child{padding-bottom:0;border-bottom:none}
-.addons-list span{color:var(--text)}
+.addon-copy{
+  display:flex;
+  flex-direction:column;
+  gap:.35rem;
+}
+.addons-list span{color:var(--text);font-weight:600}
+.addon-desc{
+  color:var(--text-dim);
+  font-size:.9rem;
+  line-height:1.55;
+}
 .addons-list strong{
   color:var(--silver-bright);
   font-size:.92rem;
@@ -574,6 +585,7 @@ nav{
   font-weight:700;
   color:var(--white);
   line-height:1;
+  white-space:nowrap;
 }
 .maint-price small{
   display:block;
@@ -611,6 +623,28 @@ nav{
   height:4px;
   border-radius:50%;
   background:var(--silver);
+}
+.maint-card:last-child{
+  background:linear-gradient(180deg,rgba(34,20,20,.94),rgba(16,11,15,.94));
+  border-color:rgba(209,98,98,.2);
+}
+.maint-card:last-child:hover{
+  background:linear-gradient(180deg,rgba(46,24,24,.98),rgba(19,11,15,.96));
+  border-color:rgba(209,98,98,.34);
+  box-shadow:0 18px 40px rgba(64,18,18,.28);
+}
+.maint-card:last-child .maint-label{
+  color:#ffb4b4;
+}
+.maint-card:last-child .maint-price{
+  font-size:1.78rem;
+  text-align:right;
+}
+.maint-card:last-child .maint-alt{
+  color:#f0b7b7;
+}
+.maint-card:last-child li::before{
+  background:#d87070;
 }
 .maint-note{
   margin-top:1rem;
@@ -832,6 +866,13 @@ nav{
   cursor:pointer;
   transition:all .22s;
 }
+.option-card:hover label,
+.option-card:focus-within label{
+  transform:translateY(-2px);
+  border-color:rgba(168,180,192,.32);
+  background:linear-gradient(180deg,rgba(26,33,44,.96),rgba(13,18,27,.94));
+  box-shadow:0 16px 36px rgba(0,0,0,.18);
+}
 .option-card strong{
   display:block;
   font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
@@ -867,22 +908,38 @@ nav{
   gap:.75rem;
 }
 .check{
-  display:flex;
-  align-items:flex-start;
-  gap:.65rem;
-  padding:.85rem .9rem;
-  border:1px solid rgba(168,180,192,.08);
-  background:rgba(255,255,255,.02);
+  position:relative;
 }
 .check input{
-  margin-top:.25rem;
+  position:absolute;
+  inset:0;
+  opacity:0;
+  cursor:pointer;
+  margin:0;
   accent-color:#d4aa62;
 }
 .check label{
   display:flex;
   flex-direction:column;
-  gap:.15rem;
+  gap:.18rem;
+  height:100%;
+  padding:.9rem 1rem;
+  border:1px solid rgba(168,180,192,.1);
+  background:linear-gradient(180deg,rgba(17,22,30,.9),rgba(11,15,22,.9));
+  transition:all .22s;
   cursor:pointer;
+}
+.check:hover label,
+.check:focus-within label{
+  transform:translateY(-2px);
+  border-color:rgba(168,180,192,.28);
+  background:linear-gradient(180deg,rgba(26,33,44,.95),rgba(14,18,27,.93));
+  box-shadow:0 14px 30px rgba(0,0,0,.18);
+}
+.check input:checked + label{
+  border-color:rgba(212,170,98,.42);
+  background:linear-gradient(180deg,rgba(212,170,98,.14),rgba(17,20,24,.98));
+  box-shadow:0 16px 34px rgba(0,0,0,.22);
 }
 .check strong{
   font-size:.95rem;
@@ -891,6 +948,14 @@ nav{
 .check span{
   font-size:.88rem;
   color:var(--text-dim);
+}
+.check small{
+  font-size:.8rem;
+  color:var(--silver-bright);
+  font-family:"Raleway",sans-serif;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
 }
 .request-summary{
   display:flex;
@@ -1128,7 +1193,7 @@ footer{
       </article>
 
       <article class="price-card featured">
-        <div class="price-badge">Meist gew&auml;hlt</div>
+        <div class="price-badge">Empfohlen</div>
         <div class="price-tier">Business Website</div>
         <h3>3 bis 5 Seiten</h3>
         <p class="price-copy">F&uuml;r Unternehmen, die professionell auftreten und &uuml;ber ihre Website neue Kunden gewinnen wollen.</p>
@@ -1218,32 +1283,32 @@ footer{
     <div class="section-head">
       <div>
         <p class="eyebrow">Add-ons</p>
-        <h2>Add-ons f&uuml;r mehr Umfang<br>und mehr Funktion</h2>
+        <h2>Erweiterungen &amp; Add-ons</h2>
       </div>
-      <p>Zus&auml;tzliche Seiten, Inhalte, Features oder Branding k&ouml;nnen flexibel zum Paket dazugebucht werden. So bleibt jedes Projekt passend zum Bedarf skalierbar.</p>
+      <p>Erweiterungen k&ouml;nnen jederzeit hinzugebucht werden und werden individuell an dein Projekt angepasst.</p>
     </div>
     <div class="addons-grid">
       <article class="addons-card">
-        <h3>Seiten &amp; Content</h3>
+        <h3>Seiten &amp; Inhalte</h3>
         <ul class="addons-list">
-          <li><span>zus&auml;tzliche Seite</span><strong>+200 &euro;</strong></li>
-          <li><span>Texte erstellen</span><strong>+150 &ndash; 400 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Zus&auml;tzliche Seite</span><small class="addon-desc">(z. B. neue Unterseite f&uuml;r Leistungen, Team oder Angebote)</small></div><strong>+200 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Texterstellung</span><small class="addon-desc">(individuelle Inhalte passend zu deinem Unternehmen)</small></div><strong>+150 &ndash; 400 &euro;</strong></li>
         </ul>
       </article>
       <article class="addons-card">
         <h3>Features</h3>
         <ul class="addons-list">
-          <li><span>erweitertes Formular</span><strong>+150 &euro;</strong></li>
-          <li><span>Buchungssystem</span><strong>+500 &ndash; 1.200 &euro;</strong></li>
-          <li><span>Login / User-System</span><strong>+800 &ndash; 2.000 &euro;</strong></li>
-          <li><span>Mehrsprachigkeit</span><strong>+300 &ndash; 800 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Erweitertes Formular</span><small class="addon-desc">(z. B. mehrere Felder, Auswahloptionen, bessere Anfragen)</small></div><strong>+150 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Buchungssystem</span><small class="addon-desc">(z. B. Terminbuchung oder Reservierungen direkt &uuml;ber die Website)</small></div><strong>+500 &ndash; 1.200 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Login- / Benutzerbereich</span><small class="addon-desc">(z. B. Kundenbereiche, interne Tools oder gesch&uuml;tzte Inhalte)</small></div><strong>+800 &ndash; 2.000 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Mehrsprachigkeit</span><small class="addon-desc">(Website in mehreren Sprachen verf&uuml;gbar)</small></div><strong>+300 &ndash; 800 &euro;</strong></li>
         </ul>
       </article>
       <article class="addons-card">
         <h3>Design &amp; Branding</h3>
         <ul class="addons-list">
-          <li><span>individuelles UI Upgrade</span><strong>+400 &ndash; 900 &euro;</strong></li>
-          <li><span>Logo / Branding</span><strong>+200 &ndash; 600 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Individuelles Premium Design</span><small class="addon-desc">(aufwendigeres Design, mehr Details, hochwertigere Optik)</small></div><strong>+400 &ndash; 900 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Logo &amp; Branding</span><small class="addon-desc">(Logo-Erstellung oder &Uuml;berarbeitung inkl. passendem Stil)</small></div><strong>+200 &ndash; 600 &euro;</strong></li>
         </ul>
       </article>
     </div>
@@ -1257,7 +1322,7 @@ footer{
         <p class="eyebrow">Wartung</p>
         <h2>Betreuung nach dem<br>Launch</h2>
       </div>
-      <p>Wartung ist die laufende Betreuung nach dem Launch: Hosting, technische Pflege, Support und je nach Paket auch kleinere &Auml;nderungen. Gr&ouml;&szlig;ere neue Aufgaben oder Features werden separat geplant.</p>
+      <p>Wartung ist die laufende Betreuung nach dem Launch: Domain, Hosting, technische Pflege, Backups und je nach Paket auch kleinere Änderungen. Größere neue Aufgaben oder Erweiterungen werden separat geplant.</p>
     </div>
     <div class="maint-grid">
       <article class="maint-card">
@@ -1267,8 +1332,10 @@ footer{
         </div>
         <div class="maint-alt">oder 290 &euro; pro Jahr</div>
         <ul>
-          <li>Hosting, technische Basis-Pflege und Backups</li>
-          <li>f&uuml;r kleine Websites mit planbarer Betreuung</li>
+          <li>inkl. Domain &amp; Hosting</li>
+          <li>kleine Website</li>
+          <li>Technische Basispflege und Backups</li>
+          <li>kein Support / nur minimal</li>
         </ul>
       </article>
       <article class="maint-card">
@@ -1278,8 +1345,10 @@ footer{
         </div>
         <div class="maint-alt">oder 490 &euro; pro Jahr</div>
         <ul>
-          <li>Hosting, Betreuung und laufende technische Pflege</li>
-          <li>inklusive kleiner Inhalts&auml;nderungen nach Absprache</li>
+          <li>inkl. Domain &amp; Hosting</li>
+          <li>Bis zu 2 kleinere Änderungen / Monat inklusive</li>
+          <li>Laufende technische Pflege und Backups</li>
+          <li>E-Mail Support</li>
         </ul>
       </article>
       <article class="maint-card">
@@ -1289,19 +1358,24 @@ footer{
         </div>
         <div class="maint-alt">oder 990 &euro; pro Jahr</div>
         <ul>
-          <li>priorisierte Betreuung f&uuml;r wichtige Projekte</li>
-          <li>mehr laufende Unterst&uuml;tzung und schnellere Reaktion</li>
+          <li>inkl. Domain &amp; Hosting</li>
+          <li>Priorität Support</li>
+          <li>Laufende technische Pflege und Backups</li>
+          <li>Bis zu 4 kleinere Änderungen / Monat inklusive</li>
+          <li>schnelle Reaktionszeit</li>
         </ul>
       </article>
       <article class="maint-card">
         <div class="maint-top">
-          <div class="maint-label">Domains &amp; Extras</div>
+          <div class="maint-label">Nicht enthalten</div>
           <div class="maint-price">ab 70 &euro;<small>pro Stunde</small></div>
         </div>
-        <div class="maint-alt">Domains separat kalkuliert</div>
+        <div class="maint-alt">größere Aufgaben separat</div>
         <ul>
-          <li>Domains und Mail-Postf&auml;cher werden je nach Anbieter separat berechnet</li>
-          <li>der Stundensatz gilt nur f&uuml;r gr&ouml;&szlig;ere neue Features oder Umbauten au&szlig;erhalb des Wartungspakets</li>
+          <li>neue Seiten oder Unterseiten</li>
+          <li>neue Funktionen oder Features</li>
+          <li>größere Design- oder Strukturänderungen</li>
+          <li>Integrationen, z. B. Buchungssysteme oder APIs</li>
         </ul>
       </article>
     </div>
@@ -1317,14 +1391,14 @@ footer{
       </div>
       <div class="billing-card">
         <strong>Warum Wartung?</strong>
-        <span>Die monatlichen oder j&auml;hrlichen Pakete decken Hosting, technische Pflege und Support ab. Bei Standard und Premium sind kleine &Auml;nderungen bereits mitgedacht.</span>
+        <span>Die monatlichen oder jährlichen Pakete decken Domain, Hosting, technische Pflege und laufende Betreuung ab. Bei Standard und Premium sind kleinere Änderungen bereits inklusive.</span>
       </div>
       <div class="billing-card">
-        <strong>Domains &amp; Extras</strong>
-        <span>Domains behandle ich separat, weil .at, .de, .com usw. unterschiedlich kosten. Der Stundensatz gilt nur f&uuml;r gr&ouml;&szlig;ere neue Arbeiten au&szlig;erhalb des Pakets.</span>
+        <strong>Hinweis</strong>
+        <span>Nicht genutzte Änderungen verfallen am Monatsende. Wartungspakete dienen der laufenden Pflege und kleineren Anpassungen. Für größere Erweiterungen wird ein individuelles Angebot erstellt.</span>
       </div>
     </div>
-    <p class="maint-note"><strong>Einfach gesagt:</strong> Wartung = laufende Betreuung. <strong>70 &euro;/h</strong> = gr&ouml;&szlig;ere neue &Auml;nderungen oder Features. Wer ein Jahrespaket nimmt, zahlt weniger als bei 12 einzelnen Monatszahlungen.</p>
+    <p class="maint-note"><strong>Nicht enthalten:</strong> Größere Änderungen und Erweiterungen sind nicht im Wartungspaket enthalten. Zusätzliche Arbeiten werden transparent nach Aufwand berechnet: <strong>70 &euro; pro Stunde</strong>. Vor Beginn größerer Aufgaben erfolgt immer eine kurze Abstimmung.</p>
   </div>
 </section>
 
@@ -1417,14 +1491,14 @@ footer{
             <h3>Add-ons &amp; Betreuung</h3>
             <p>Optional ausw&auml;hlen, wenn der Umfang schon klar ist.</p>
             <div class="checks" role="group" aria-label="Add-ons ausw&auml;hlen">
-              <div class="check"><input type="checkbox" id="addon-page" name="addon" value="Zus&auml;tzliche Seite"><label for="addon-page"><strong>Zus&auml;tzliche Seite</strong><span>mehr Content oder Unterseiten</span></label></div>
-              <div class="check"><input type="checkbox" id="addon-text" name="addon" value="Texte erstellen"><label for="addon-text"><strong>Texte erstellen</strong><span>Texte und Struktur mit ausarbeiten</span></label></div>
-              <div class="check"><input type="checkbox" id="addon-form" name="addon" value="Erweitertes Formular"><label for="addon-form"><strong>Erweitertes Formular</strong><span>mehr Felder, Auswahl-Logik oder Uploads</span></label></div>
-              <div class="check"><input type="checkbox" id="addon-booking" name="addon" value="Buchungssystem"><label for="addon-booking"><strong>Buchungssystem</strong><span>Reservierungen oder Terminbuchung</span></label></div>
-              <div class="check"><input type="checkbox" id="addon-login" name="addon" value="Login / User-System"><label for="addon-login"><strong>Login / User-System</strong><span>Benutzerbereiche und Accounts</span></label></div>
-              <div class="check"><input type="checkbox" id="addon-multi" name="addon" value="Mehrsprachigkeit"><label for="addon-multi"><strong>Mehrsprachigkeit</strong><span>mehrere Sprachversionen</span></label></div>
-              <div class="check"><input type="checkbox" id="addon-ui" name="addon" value="Individuelles UI Upgrade"><label for="addon-ui"><strong>UI Upgrade</strong><span>st&auml;rkeres individuelles Interface</span></label></div>
-              <div class="check"><input type="checkbox" id="addon-branding" name="addon" value="Logo / Branding"><label for="addon-branding"><strong>Logo / Branding</strong><span>visuelle Basis oder Auffrischung</span></label></div>
+              <div class="check"><input type="checkbox" id="addon-page" name="addon" value="Zus&auml;tzliche Seite"><label for="addon-page"><strong>Zus&auml;tzliche Seite</strong><span>mehr Content oder Unterseiten</span><small>+200 &euro;</small></label></div>
+              <div class="check"><input type="checkbox" id="addon-text" name="addon" value="Texte erstellen"><label for="addon-text"><strong>Texterstellung</strong><span>Texte und Struktur mit ausarbeiten</span><small>+150 &ndash; 400 &euro;</small></label></div>
+              <div class="check"><input type="checkbox" id="addon-form" name="addon" value="Erweitertes Formular"><label for="addon-form"><strong>Erweitertes Formular</strong><span>mehr Felder, Auswahl-Logik oder Uploads</span><small>+150 &euro;</small></label></div>
+              <div class="check"><input type="checkbox" id="addon-booking" name="addon" value="Buchungssystem"><label for="addon-booking"><strong>Buchungssystem</strong><span>Reservierungen oder Terminbuchung</span><small>+500 &ndash; 1.200 &euro;</small></label></div>
+              <div class="check"><input type="checkbox" id="addon-login" name="addon" value="Login / User-System"><label for="addon-login"><strong>Login- / Benutzerbereich</strong><span>Benutzerbereiche und Accounts</span><small>+800 &ndash; 2.000 &euro;</small></label></div>
+              <div class="check"><input type="checkbox" id="addon-multi" name="addon" value="Mehrsprachigkeit"><label for="addon-multi"><strong>Mehrsprachigkeit</strong><span>mehrere Sprachversionen</span><small>+300 &ndash; 800 &euro;</small></label></div>
+              <div class="check"><input type="checkbox" id="addon-ui" name="addon" value="Individuelles UI Upgrade"><label for="addon-ui"><strong>Individuelles Premium Design</strong><span>st&auml;rkeres individuelles Interface</span><small>+400 &ndash; 900 &euro;</small></label></div>
+              <div class="check"><input type="checkbox" id="addon-branding" name="addon" value="Logo / Branding"><label for="addon-branding"><strong>Logo &amp; Branding</strong><span>visuelle Basis oder Auffrischung</span><small>+200 &ndash; 600 &euro;</small></label></div>
             </div>
             <div class="field-grid" style="margin-top:1rem">
               <div class="field">
@@ -1794,7 +1868,7 @@ updateRequestSummary();
         addonsCopy: text(formBlocks[1].querySelector('p')),
         addonOptions: addonInputs2.map(function(input) {
           const label = input.nextElementSibling;
-          return [input.value, text(label.querySelector('strong')), text(label.querySelector('span'))];
+          return [input.value, text(label.querySelector('strong')), text(label.querySelector('span')), text(label.querySelector('small'))];
         }),
         maintenanceLabel: text(document.querySelector('label[for="maintenance"]')),
         maintenanceOptions: Array.from(maintenanceSelect2.options).map(function(opt) { return { value: opt.value, label: opt.textContent }; }),
@@ -1873,7 +1947,7 @@ updateRequestSummary();
       packagesHead: ['Offers', 'Packages for different<br>project sizes', 'Each package covers a different need: from a fast online presence to an individual platform with login, database or app integration.'],
       priceCards: [
         { badge: 'Starter', tier: 'Starter', title: 'One-pager', copy: 'For small businesses, a quick online presence and a clear entry point without unnecessary overhead.', price: 'from &euro;690', sub: 'for fast visibility', features: ['1 page / landing page', 'modern, responsive design', 'contact form', 'basic SEO', 'fast loading times'], button: 'Choose this package' },
-        { badge: 'Most chosen', tier: 'Business Website', title: '3 to 5 pages', copy: 'For companies that want to look professional and win new customers through their website.', price: 'from &euro;1,290', sub: 'ideal for lead generation', features: ['Home, services, about, contact and more', 'custom design without a template feel', 'mobile optimized', 'clear structure and contact form', 'easy to expand'], button: 'Choose this package' },
+        { badge: 'Recommended', tier: 'Business Website', title: '3 to 5 pages', copy: 'For companies that want to look professional and win new customers through their website.', price: 'from &euro;1,290', sub: 'ideal for lead generation', features: ['Home, services, about, contact and more', 'custom design without a template feel', 'mobile optimized', 'clear structure and contact form', 'easy to expand'], button: 'Choose this package' },
         { badge: 'Premium', tier: 'Professional Website', title: '5 to 10 pages', copy: 'For larger projects with more content, better user guidance and room for future expansion.', price: 'from &euro;2,190', sub: 'for broader presences', features: ['custom UI/UX design', 'structured content and stronger user guidance', 'performance optimized', 'prepared for future extensions', 'ideal for serious client projects'], button: 'Choose this package' },
         { badge: 'Custom', tier: 'Web App / Solution', title: 'Systems &amp; Tools', copy: 'This is where the real difference starts: individual features, processes and digital tools instead of static pages only.', price: '&euro;2,900 &ndash; &euro;7,500+', sub: 'custom quoted', features: ['login systems', 'databases and APIs', 'mobile app integration', 'dashboards and internal tools', 'custom features as needed'], button: 'Choose this package' }
       ],
@@ -1887,7 +1961,7 @@ updateRequestSummary();
         rightCopy: 'If a project needs more than just pages and copy, it can grow into a connected solution with forms, logins, processes, APIs or a later app connection.'
       },
       addonsHead: ['Add-ons', 'Add-ons for more scope<br>and more function', 'Additional pages, content, features or branding can be added flexibly to any package.'],
-      maintenanceHead: ['Maintenance', 'Support after<br>launch', 'Maintenance covers ongoing support after launch: hosting, technical care, support and, depending on the plan, smaller changes.'],
+      maintenanceHead: ['Maintenance', 'Support after<br>launch', 'Maintenance covers ongoing support after launch: domain, hosting, technical care, backups and, depending on the plan, smaller changes. Larger new tasks or expansions are quoted separately.'],
       usecasesHead: ['Typical projects', 'What your setup<br>can look like', 'Depending on the goal, a website can become much more. These examples show combinations that work especially well in practice.'],
       usecases: [['Project 01', 'Website + booking system', 'Ideal for businesses that want to handle inquiries, reservations or appointments digitally.'], ['Project 02', 'Website + app + administration', 'Perfect for modern businesses with a digital core and clean internal processes.'], ['Project 03', 'Website + internal tool', 'If a normal website is not enough, it can grow into an individual dashboard, login system or workflow tool.']],
       contactHead: ['Inquiry', 'Request your project<br>with package selection', 'Choose the right package, mark the add-ons you want and send a structured inquiry right away.'],
@@ -1902,7 +1976,7 @@ updateRequestSummary();
         ],
         addonsTitle: 'Add-ons &amp; support',
         addonsCopy: 'Optional, if the project scope is already clear.',
-        addonOptions: [['Additional page', 'Additional page', 'more content or subpages'], ['Copywriting', 'Copywriting', 'support with copy and structure'], ['Advanced form', 'Advanced form', 'more fields, logic or uploads'], ['Booking system', 'Booking system', 'reservations or appointment booking'], ['Login / User system', 'Login / User system', 'user areas and accounts'], ['Multilingual setup', 'Multilingual setup', 'multiple language versions'], ['Custom UI upgrade', 'UI upgrade', 'stronger custom interface'], ['Logo / Branding', 'Logo / Branding', 'visual foundation or refresh']],
+        addonOptions: [['Additional page', 'Additional page', 'more content or subpages', '+€200'], ['Copywriting', 'Copywriting', 'support with copy and structure', '+€150 - €400'], ['Advanced form', 'Advanced form', 'more fields, logic or uploads', '+€150'], ['Booking system', 'Booking system', 'reservations or appointment booking', '+€500 - €1,200'], ['Login / User system', 'Login / user area', 'user areas and accounts', '+€800 - €2,000'], ['Multilingual setup', 'Multilingual setup', 'multiple language versions', '+€300 - €800'], ['Custom UI upgrade', 'Custom premium design', 'stronger custom interface', '+€400 - €900'], ['Logo / Branding', 'Logo & branding', 'visual foundation or refresh', '+€200 - €600']],
         maintenanceLabel: 'Maintenance',
         maintenanceOptions: [{ value: 'No maintenance plan', label: 'No maintenance plan' }, { value: 'Basic maintenance - €29/month', label: 'Basic - €29/month' }, { value: 'Basic maintenance - €290/year', label: 'Basic - €290/year' }, { value: 'Standard maintenance - €49/month', label: 'Standard - €49/month' }, { value: 'Standard maintenance - €490/year', label: 'Standard - €490/year' }, { value: 'Premium maintenance - €99/month', label: 'Premium - €99/month' }, { value: 'Premium maintenance - €990/year', label: 'Premium - €990/year' }],
         budgetLabel: 'Budget',
@@ -1931,25 +2005,26 @@ updateRequestSummary();
 
   T.de.priceCards = [
     { badge: 'Starter', tier: 'Starter', title: 'Onepager', copy: 'Für kleine Businesses, schnelle Online-Präsenz und einen klaren Einstieg ohne unnötigen Overhead.', price: 'ab 690 €', sub: 'für schnelle Sichtbarkeit', features: ['1 Seite / Landingpage', 'modernes, responsives Design', 'Kontaktformular', 'Basis SEO', 'schnelle Ladezeiten'], button: 'Dieses Paket wählen' },
-    { badge: 'Meist gewählt', tier: 'Business Website', title: '3 bis 5 Seiten', copy: 'Für Unternehmen, die professionell auftreten und über ihre Website neue Kunden gewinnen wollen.', price: 'ab 1.290 €', sub: 'ideal für Kundengewinnung', features: ['Start, Leistungen, About, Kontakt und mehr', 'individuelles Design ohne Template-Gefühl', 'mobil optimiert', 'klare Struktur und Kontaktformular', 'einfach erweiterbar'], button: 'Dieses Paket wählen' },
+    { badge: 'Empfohlen', tier: 'Business Website', title: '3 bis 5 Seiten', copy: 'Für Unternehmen, die professionell auftreten und über ihre Website neue Kunden gewinnen wollen.', price: 'ab 1.290 €', sub: 'ideal für Kundengewinnung', features: ['Start, Leistungen, About, Kontakt und mehr', 'individuelles Design ohne Template-Gefühl', 'mobil optimiert', 'klare Struktur und Kontaktformular', 'einfach erweiterbar'], button: 'Dieses Paket wählen' },
     { badge: 'Premium', tier: 'Professional Website', title: '5 bis 10 Seiten', copy: 'Für größere Projekte mit mehr Inhalten, besserer Userführung und Reserven für spätere Ausbauten.', price: 'ab 2.190 €', sub: 'für umfangreichere Auftritte', features: ['individuelles UI/UX Design', 'strukturierte Inhalte und bessere Userführung', 'Performance optimiert', 'für Erweiterungen vorbereitet', 'ideal für ernsthafte Kundenprojekte'], button: 'Dieses Paket wählen' },
     { badge: 'Custom', tier: 'Web App / Solution', title: 'Systeme &amp; Tools', copy: 'Hier beginnt der echte Unterschied: individuelle Features, Prozesse und digitale Werkzeuge statt nur statischer Seiten.', price: '2.900 € - 7.500 €+', sub: 'individuell kalkuliert', features: ['Login-Systeme', 'Datenbanken und APIs', 'Mobile App Anbindung', 'Dashboards und interne Tools', 'individuelle Features nach Bedarf'], button: 'Dieses Paket wählen' }
   ];
+  T.de.addonsHead = ['Add-ons', 'Erweiterungen & Add-ons', 'Erweiterungen können jederzeit hinzugebucht werden und werden individuell an dein Projekt angepasst.'];
   T.de.addonCards = [
-    { title: 'Seiten & Content', items: [['zusätzliche Seite', '+200 €'], ['Texte erstellen', '+150 - 400 €']] },
-    { title: 'Features', items: [['erweitertes Formular', '+150 €'], ['Buchungssystem', '+500 - 1.200 €'], ['Login / User-System', '+800 - 2.000 €'], ['Mehrsprachigkeit', '+300 - 800 €']] },
-    { title: 'Design & Branding', items: [['individuelles UI Upgrade', '+400 - 900 €'], ['Logo / Branding', '+200 - 600 €']] }
+    { title: 'Seiten & Inhalte', items: [['Zusätzliche Seite', '+200 €', '(z. B. neue Unterseite für Leistungen, Team oder Angebote)'], ['Texterstellung', '+150 - 400 €', '(individuelle Inhalte passend zu deinem Unternehmen)']] },
+    { title: 'Funktionen', items: [['Erweitertes Formular', '+150 €', '(z. B. mehrere Felder, Auswahloptionen, bessere Anfragen)'], ['Buchungssystem', '+500 - 1.200 €', '(z. B. Terminbuchung oder Reservierungen direkt über die Website)'], ['Login- / Benutzerbereich', '+800 - 2.000 €', '(z. B. Kundenbereiche, interne Tools oder geschützte Inhalte)'], ['Mehrsprachigkeit', '+300 - 800 €', '(Website in mehreren Sprachen verfügbar)']] },
+    { title: 'Design & Branding', items: [['Individuelles Premium Design', '+400 - 900 €', '(aufwendigeres Design, mehr Details, hochwertigere Optik)'], ['Logo & Branding', '+200 - 600 €', '(Logo-Erstellung oder Überarbeitung inkl. passendem Stil)']] }
   ];
   T.de.maintenanceCards = [
-    { label: 'Basic', price: '29 €', unit: 'pro Monat', alt: 'oder 290 € pro Jahr', items: ['Hosting, technische Basis-Pflege und Backups', 'für kleine Websites mit planbarer Betreuung'] },
-    { label: 'Standard', price: '49 €', unit: 'pro Monat', alt: 'oder 490 € pro Jahr', items: ['Hosting, Betreuung und laufende technische Pflege', 'inklusive kleiner Inhaltsänderungen nach Absprache'] },
-    { label: 'Premium', price: '99 €', unit: 'pro Monat', alt: 'oder 990 € pro Jahr', items: ['priorisierte Betreuung für wichtige Projekte', 'mehr laufende Unterstützung und schnellere Reaktion'] },
-    { label: 'Domains &amp; Extras', price: 'ab 70 €', unit: 'pro Stunde', alt: 'Domains separat kalkuliert', items: ['Domains und Mail-Postfächer werden je nach Anbieter separat berechnet', 'der Stundensatz gilt nur für größere neue Features oder Umbauten außerhalb des Wartungspakets'] }
+    { label: 'Basic', price: '29 €', unit: 'pro Monat', alt: 'oder 290 € pro Jahr', items: ['inkl. Domain & Hosting', 'kleine Website', 'Technische Basispflege und Backups', 'kein Support / nur minimal'] },
+    { label: 'Standard', price: '49 €', unit: 'pro Monat', alt: 'oder 490 € pro Jahr', items: ['inkl. Domain & Hosting', 'Bis zu 2 kleinere Änderungen / Monat inklusive', 'Laufende technische Pflege und Backups', 'E-Mail Support'] },
+    { label: 'Premium', price: '99 €', unit: 'pro Monat', alt: 'oder 990 € pro Jahr', items: ['inkl. Domain & Hosting', 'Priorität Support', 'Laufende technische Pflege und Backups', 'Bis zu 4 kleinere Änderungen / Monat inklusive', 'schnelle Reaktionszeit'] },
+    { label: 'Nicht enthalten', price: 'ab 70 €', unit: 'pro Stunde', alt: 'größere Aufgaben separat', items: ['neue Seiten oder Unterseiten', 'neue Funktionen oder Features', 'größere Design- oder Strukturänderungen', 'Integrationen, z. B. Buchungssysteme oder APIs'] }
   ];
   T.de.billing = [
     ['Jahrespreise', 'Basic: 290 € / Jahr<br>Standard: 490 € / Jahr<br>Premium: 990 € / Jahr'],
-    ['Warum Wartung?', 'Die monatlichen oder jährlichen Pakete decken Hosting, technische Pflege und Support ab. Bei Standard und Premium sind kleine Änderungen bereits mitgedacht.'],
-    ['Domains &amp; Extras', 'Domains behandle ich separat, weil .at, .de, .com usw. unterschiedlich kosten. Der Stundensatz gilt nur für größere neue Arbeiten außerhalb des Pakets.']
+    ['Warum Wartung?', 'Die monatlichen oder jährlichen Pakete decken Domain, Hosting, technische Pflege und laufende Betreuung ab. Bei Standard und Premium sind kleinere Änderungen bereits inklusive.'],
+    ['Hinweis', 'Nicht genutzte Änderungen verfallen am Monatsende. Wartungspakete dienen der laufenden Pflege und kleineren Anpassungen. Für größere Erweiterungen wird ein individuelles Angebot erstellt.']
   ];
   T.de.form.packageOptions = [
     { value: 'Starter - Onepager', price: 'ab 690 €', strong: 'Starter - Onepager', span: '1 Seite für eine schnelle, professionelle Online-Präsenz', em: 'ab 690 €' },
@@ -1957,31 +2032,33 @@ updateRequestSummary();
     { value: 'Professional Website', price: 'ab 2.190 €', strong: 'Professional Website', span: '5 bis 10 Seiten mit stärkerer Struktur, UX und Performance', em: 'ab 2.190 €' },
     { value: 'Web App / Custom Solution', price: '2.900 € - 7.500 €+', strong: 'Web App / Custom Solution', span: 'Für Systeme, Dashboards, Logins, APIs und individuelle Features', em: '2.900 € - 7.500 €+' }
   ];
+  T.de.form.addonOptions = [['Zusätzliche Seite', 'Zusätzliche Seite', 'mehr Content oder Unterseiten', '+200 €'], ['Texte erstellen', 'Texterstellung', 'Texte und Struktur mit ausarbeiten', '+150 - 400 €'], ['Erweitertes Formular', 'Erweitertes Formular', 'mehr Felder, Auswahl-Logik oder Uploads', '+150 €'], ['Buchungssystem', 'Buchungssystem', 'Reservierungen oder Terminbuchung', '+500 - 1.200 €'], ['Login / User-System', 'Login- / Benutzerbereich', 'Benutzerbereiche und Accounts', '+800 - 2.000 €'], ['Mehrsprachigkeit', 'Mehrsprachigkeit', 'mehrere Sprachversionen', '+300 - 800 €'], ['Individuelles UI Upgrade', 'Individuelles Premium Design', 'stärkeres individuelles Interface', '+400 - 900 €'], ['Logo / Branding', 'Logo & Branding', 'visuelle Basis oder Auffrischung', '+200 - 600 €']];
   T.de.summary.defaults.open = 'Offen';
   T.de.summary.defaults.none = 'Nicht gewählt';
   T.de.summary.actionNote = 'Beim Klick auf den Button wird eine strukturierte Anfrage mit allen ausgewählten Angaben direkt gesendet.';
-  T.de.maintNote = '<strong>Einfach gesagt:</strong> Wartung = laufende Betreuung. <strong>70 €/h</strong> = größere neue Änderungen oder Features. Wer ein Jahrespaket nimmt, zahlt weniger als bei 12 einzelnen Monatszahlungen.';
+  T.de.maintNote = '<strong>Nicht enthalten:</strong> Größere Änderungen und Erweiterungen sind nicht im Wartungspaket enthalten. Zusätzliche Arbeiten werden transparent nach Aufwand berechnet: <strong>70 € pro Stunde</strong>. Vor Beginn größerer Aufgaben erfolgt immer eine kurze Abstimmung.';
 
+  T.en.addonsHead = ['Add-ons', 'Extensions & Add-ons', 'Extensions can be added at any time and are tailored individually to your project.'];
   T.en.addonCards = [
-    { title: 'Pages &amp; Content', items: [['additional page', '+€200'], ['copywriting', '+€150 - €400']] },
-    { title: 'Features', items: [['advanced form', '+€150'], ['booking system', '+€500 - €1,200'], ['login / user system', '+€800 - €2,000'], ['multilingual setup', '+€300 - €800']] },
-    { title: 'Design &amp; Branding', items: [['custom UI upgrade', '+€400 - €900'], ['logo / branding', '+€200 - €600']] }
+    { title: 'Pages & Content', items: [['Additional page', '+€200', '(e.g. a new subpage for services, team or offers)'], ['Copywriting', '+€150 - €400', '(individual website copy tailored to your business)']] },
+    { title: 'Features', items: [['Advanced form', '+€150', '(e.g. more fields, options and better inquiry flows)'], ['Booking system', '+€500 - €1,200', '(e.g. appointments or reservations directly through the website)'], ['Login / user area', '+€800 - €2,000', '(e.g. customer areas, internal tools or protected content)'], ['Multilingual setup', '+€300 - €800', '(website available in multiple languages)']] },
+    { title: 'Design & Branding', items: [['Custom premium design', '+€400 - €900', '(more refined design, more detail and a higher-end look)'], ['Logo & branding', '+€200 - €600', '(logo creation or refinement with a matching style)']] }
   ];
   T.en.maintenanceCards = [
-    { label: 'Basic', price: '\u20ac29', unit: 'per month', alt: 'or \u20ac290 per year', items: ['hosting, basic technical care and backups', 'for smaller websites with predictable support needs'] },
-    { label: 'Standard', price: '\u20ac49', unit: 'per month', alt: 'or \u20ac490 per year', items: ['hosting, support and ongoing technical care', 'includes small content changes by arrangement'] },
-    { label: 'Premium', price: '\u20ac99', unit: 'per month', alt: 'or \u20ac990 per year', items: ['priority support for important projects', 'more ongoing assistance and faster response times'] },
-    { label: 'Domains &amp; Extras', price: 'from \u20ac70', unit: 'per hour', alt: 'domains quoted separately', items: ['domains and mailboxes are billed separately depending on the provider', 'the hourly rate only applies to larger new features or rebuilds outside the maintenance plan'] }
+    { label: 'Basic', price: '€29', unit: 'per month', alt: 'or €290 per year', items: ['includes domain & hosting', 'small website', 'basic technical maintenance and backups', 'no support / minimal only'] },
+    { label: 'Standard', price: '€49', unit: 'per month', alt: 'or €490 per year', items: ['includes domain & hosting', 'up to 2 smaller changes per month included', 'ongoing technical maintenance and backups', 'email support'] },
+    { label: 'Premium', price: '€99', unit: 'per month', alt: 'or €990 per year', items: ['includes domain & hosting', 'priority support', 'ongoing technical maintenance and backups', 'up to 4 smaller changes per month included', 'fast response time'] },
+    { label: 'Not included', price: 'from €70', unit: 'per hour', alt: 'larger tasks quoted separately', items: ['new pages or subpages', 'new functions or features', 'larger design or structural changes', 'integrations such as booking systems or APIs'] }
   ];
   T.en.billing = [
     ['Yearly pricing', 'Basic: \u20ac290 / year<br>Standard: \u20ac490 / year<br>Premium: \u20ac990 / year'],
-    ['Why maintenance?', 'Monthly or yearly plans cover hosting, technical care and support. Standard and Premium already include small changes.'],
-    ['Domains &amp; Extras', 'I quote domains separately because .at, .de, .com and similar endings have different costs. The hourly rate only applies to larger new work outside the plan.']
+    ['Why maintenance?', 'Monthly or yearly plans cover domain, hosting, technical care and ongoing support. Standard and Premium already include smaller changes.'],
+    ['Note', 'Unused changes expire at the end of the month. Maintenance plans are for ongoing care and smaller adjustments. Larger expansions are quoted separately.']
   ];
-  T.en.maintNote = '<strong>In short:</strong> maintenance = ongoing support. <strong>\u20ac70/h</strong> = larger new changes or features. A yearly plan costs less than 12 individual monthly payments.';
+  T.en.maintNote = '<strong>Not included:</strong> Larger changes and expansions are not part of the maintenance plan. Additional work is billed transparently based on effort: <strong>€70 per hour</strong>. Before larger tasks start, there is always a short alignment first.';
   T.en.priceCards = [
     { badge: 'Starter', tier: 'Starter', title: 'One-pager', copy: 'For small businesses, a quick online presence and a clear entry point without unnecessary overhead.', price: 'from \u20ac690', sub: 'for fast visibility', features: ['1 page / landing page', 'modern, responsive design', 'contact form', 'basic SEO', 'fast loading times'], button: 'Choose this package' },
-    { badge: 'Most chosen', tier: 'Business Website', title: '3 to 5 pages', copy: 'For companies that want to look professional and win new customers through their website.', price: 'from \u20ac1,290', sub: 'ideal for lead generation', features: ['Home, services, about, contact and more', 'custom design without a template feel', 'mobile optimized', 'clear structure and contact form', 'easy to expand'], button: 'Choose this package' },
+    { badge: 'Recommended', tier: 'Business Website', title: '3 to 5 pages', copy: 'For companies that want to look professional and win new customers through their website.', price: 'from \u20ac1,290', sub: 'ideal for lead generation', features: ['Home, services, about, contact and more', 'custom design without a template feel', 'mobile optimized', 'clear structure and contact form', 'easy to expand'], button: 'Choose this package' },
     { badge: 'Premium', tier: 'Professional Website', title: '5 to 10 pages', copy: 'For larger projects with more content, better user guidance and room for future expansion.', price: 'from \u20ac2,190', sub: 'for broader presences', features: ['custom UI/UX design', 'structured content and stronger user guidance', 'performance optimized', 'prepared for future extensions', 'ideal for serious client projects'], button: 'Choose this package' },
     { badge: 'Custom', tier: 'Web App / Solution', title: 'Systems &amp; Tools', copy: 'This is where the real difference starts: individual features, processes and digital tools instead of static pages only.', price: '€2,900 - €7,500+', sub: 'custom quoted', features: ['login systems', 'databases and APIs', 'mobile app integration', 'dashboards and internal tools', 'custom features as needed'], button: 'Choose this package' }
   ];
@@ -1991,6 +2068,7 @@ updateRequestSummary();
     { value: 'Professional Website', price: 'from \u20ac2,190', strong: 'Professional Website', span: '5 to 10 pages with stronger structure, UX and performance', em: 'from \u20ac2,190' },
     { value: 'Web App / Custom Solution', price: '€2,900 - €7,500+', strong: 'Web App / Custom Solution', span: 'For systems, dashboards, logins, APIs and custom features', em: '€2,900 - €7,500+' }
   ];
+  T.en.form.addonOptions = [['Additional page', 'Additional page', 'more content or subpages', '+€200'], ['Copywriting', 'Copywriting', 'support with copy and structure', '+€150 - €400'], ['Advanced form', 'Advanced form', 'more fields, logic or uploads', '+€150'], ['Booking system', 'Booking system', 'reservations or appointment booking', '+€500 - €1,200'], ['Login / User system', 'Login / user area', 'user areas and accounts', '+€800 - €2,000'], ['Multilingual setup', 'Multilingual setup', 'multiple language versions', '+€300 - €800'], ['Custom UI upgrade', 'Custom premium design', 'stronger custom interface', '+€400 - €900'], ['Logo / Branding', 'Logo & branding', 'visual foundation or refresh', '+€200 - €600']];
 
   function setSelectOptions(select, options) {
     const selectedIndex = Math.min(select.selectedIndex, options.length - 1);
@@ -2063,6 +2141,7 @@ updateRequestSummary();
       card.querySelectorAll('.addons-list li').forEach(function(li, liIndex) {
         setText(li.querySelector('span'), item.items[liIndex][0]);
         setText(li.querySelector('strong'), item.items[liIndex][1]);
+        setText(li.querySelector('.addon-desc'), item.items[liIndex][2] || '');
       });
     });
     setText(document.querySelector('#wartung .eyebrow'), t.maintenanceHead[0]);
@@ -2117,6 +2196,7 @@ updateRequestSummary();
       const label = input.nextElementSibling;
       setText(label.querySelector('strong'), item[1]);
       setText(label.querySelector('span'), item[2]);
+      setText(label.querySelector('small'), item[3] || '');
     });
     setText(document.querySelector('label[for="maintenance"]'), t.form.maintenanceLabel);
     setSelectOptions(maintenanceSelect2, t.form.maintenanceOptions);
