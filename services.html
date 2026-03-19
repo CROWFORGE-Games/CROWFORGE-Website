@@ -1727,7 +1727,7 @@ requestForm.addEventListener('submit', async function(event) {
   requestSubmit.textContent = 'Wird gesendet...';
 
   try {
-    const response = await fetch('/.netlify/functions/send-services-request', {
+    const response = await fetch('/api/send-services-request', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

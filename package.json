@@ -1,0 +1,12 @@
+{
+  "name": "crowforge-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CROWFORGE Games website and services site for Cloud Run",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

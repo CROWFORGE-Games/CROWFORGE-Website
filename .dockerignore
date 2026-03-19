@@ -1,0 +1,6 @@
+.git
+.gitignore
+node_modules
+netlify
+send-services-request.php
+translucent_b64.txt
