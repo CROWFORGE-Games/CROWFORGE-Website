@@ -91,22 +91,25 @@ a{color:inherit}
 img{max-width:100%;display:block}
 
 nav{
-  position:sticky;
+  position:fixed;
   top:0;
+  left:0;
+  right:0;
   z-index:200;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:1.5rem;
-  padding:0 3rem;
-  height:70px;
-  background:rgba(8,9,11,.86);
+  gap:1.2rem;
+  padding:0 4rem;
+  height:64px;
+  background:rgba(8,9,11,.88);
   border-bottom:1px solid var(--border);
   backdrop-filter:blur(18px);
-  box-shadow:0 10px 30px rgba(0,0,0,.22);
+  box-shadow:0 10px 30px rgba(0,0,0,.28);
 }
 .nav-left{display:flex;align-items:center;gap:1rem;text-decoration:none}
-.nav-logo{height:28px;width:auto;opacity:.94}
+.nav-logo{height:24px;width:auto;opacity:.92;transition:opacity .2s}
+.nav-logo:hover{opacity:1}
 .nav-brand{
   font-family:"Raleway",sans-serif;
   font-size:.78rem;
@@ -115,35 +118,36 @@ nav{
   text-transform:uppercase;
   color:var(--silver);
 }
-.nav-links{display:flex;align-items:center;gap:1.7rem;list-style:none}
+.nav-links{display:flex;align-items:center;gap:2.2rem;list-style:none}
 .nav-links a{
   font-family:"Raleway",sans-serif;
-  font-size:.74rem;
-  font-weight:600;
-  letter-spacing:.14em;
+  font-size:.8rem;
+  font-weight:500;
+  letter-spacing:.12em;
   text-transform:uppercase;
   text-decoration:none;
   color:var(--text-dim);
   transition:color .2s;
 }
 .nav-links a:hover,.nav-links a.active{color:var(--silver-bright)}
-.nav-right{display:flex;align-items:center;gap:.95rem}
+.nav-right{display:flex;align-items:center}
 .nav-mobile-toggle{
   display:none;
-  width:44px;
-  height:44px;
   align-items:center;
   justify-content:center;
+  width:42px;
+  height:42px;
   border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
+  border-radius:999px;
+  background:rgba(10,16,24,.78);
   color:var(--silver-bright);
   cursor:pointer;
-  transition:background .25s,border-color .25s,transform .25s;
+  transition:all .2s;
 }
 .nav-mobile-toggle:hover{
-  background:rgba(255,255,255,.08);
-  border-color:rgba(168,180,192,.28);
-  transform:translateY(-1px);
+  color:var(--white);
+  border-color:rgba(168,180,192,.35);
+  background:rgba(18,28,40,.92);
 }
 .nav-mobile-toggle svg{
   width:18px;
@@ -152,24 +156,21 @@ nav{
 }
 .nav-cta{
   font-family:"Raleway",sans-serif;
-  font-size:.73rem;
-  font-weight:700;
+  font-size:.75rem;
+  font-weight:600;
   letter-spacing:.14em;
   text-transform:uppercase;
+  padding:.55rem 1.8rem;
+  border:1px solid var(--silver);
+  color:var(--silver);
   text-decoration:none;
-  padding:.7rem 1.35rem;
-  border:1px solid rgba(168,180,192,.2);
-  border-radius:999px;
-  color:var(--silver-bright);
-  background:rgba(16,23,34,.75);
   transition:all .25s;
 }
 .nav-cta:hover{
-  border-color:rgba(168,180,192,.42);
-  background:rgba(21,32,47,.95);
-  transform:translateY(-1px);
+  background:var(--silver);
+  color:var(--black);
 }
-.lang-switch{display:flex;align-items:center;gap:.35rem}
+.lang-switch{display:flex;align-items:center;gap:.35rem;margin-left:1.5rem}
 .lang-sep{font-family:"Raleway",sans-serif;font-size:.7rem;color:var(--text-dim);opacity:.65}
 .lang-btn{
   font-family:"Raleway",sans-serif;
@@ -191,7 +192,7 @@ nav{
   position:relative;
   overflow:hidden;
   padding:0 4rem 4.8rem;
-  padding-top:78px;
+  padding-top:70px;
 }
 .hero-bg{
   position:absolute;
@@ -1250,7 +1251,7 @@ footer{
   .use-grid{grid-template-columns:1fr}
 }
 @media(max-width:860px){
-  nav{padding:0 1.3rem;gap:1rem}
+  nav{padding:0 1.5rem;gap:1rem}
   .nav-mobile-toggle{display:inline-flex}
   .nav-right{gap:.65rem;margin-left:auto}
   .nav-links{
@@ -1301,7 +1302,7 @@ footer{
     <li><a href="#kontakt" class="active">Kontakt</a></li>
   </ul>
   <div class="nav-right">
-    <a class="nav-cta" href="index.html">Zur Hauptseite</a>
+    <a class="nav-cta" href="index.html">MAIN SITE</a>
     <div class="lang-switch">
       <button class="lang-btn" type="button" onclick="setLang('en')" id="btn-en">EN</button>
       <span class="lang-sep">|</span>
@@ -2131,7 +2132,7 @@ updateRequestSummary();
     en: {
       title: 'Services | CROWFORGE Web Services',
       nav: ['Packages', 'Add-ons', 'Maintenance', 'Use Cases', 'Contact'],
-      navCta: 'Back to main site',
+      navCta: 'MAIN SITE',
       heroRule: 'Web Design &middot; Apps &middot; Systems',
       heroTitle: 'Websites &amp; Apps <span>from one source</span>',
       heroLead: 'I create digital solutions that look modern, load fast, guide customers and can grow into booking systems, dashboards or web apps when needed.',

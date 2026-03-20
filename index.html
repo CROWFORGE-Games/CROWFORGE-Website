@@ -447,7 +447,7 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
     <li><a href="services.html" data-en="Services" data-de="Dienstleistungen">Services</a></li>
   </ul>
     <div class="nav-right">
-    <a href="https://store.steampowered.com/search/?developer=CROWFORGE+Games" target="_blank" class="nav-cta">Steam</a>
+    <a href="services.html" class="nav-cta">Website Services</a>
     <div class="lang-switch">
       <button class="lang-btn active" onclick="setLang('en')" id="btn-en">EN</button>
       <span class="lang-sep">|</span>
@@ -1059,6 +1059,7 @@ var translations = {
     navFeatures: 'Features',
     navUpdates: 'Updates',
     navStudio: 'Studio',
+    navCta: 'Website Services',
 
     gamesEyebrow: 'Our Games',
     gamesTitle: 'Two Worlds.<br>One Studio.',
@@ -1139,6 +1140,7 @@ var translations = {
     navFeatures: 'Features',
     navUpdates: 'Updates',
     navStudio: 'Studio',
+    navCta: 'Website Services',
 
     gamesEyebrow: 'Unsere Spiele',
     gamesTitle: 'Zwei Welten.<br>Ein Studio.',
@@ -1400,6 +1402,7 @@ function setLang(lang) {
   const t = translations[lang];
 
   setAllHtml('.nav-links a', [t.navGames, t.navFeatures, t.navUpdates, t.navStudio]);
+  setHtml('.nav-cta', t.navCta);
   setHtml('.hero-rule-mark', t.heroRule);
   setHtml('.hero-tagline', t.tagline);
 
