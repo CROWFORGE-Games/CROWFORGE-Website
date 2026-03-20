@@ -9,14 +9,14 @@
 <meta property="og:description" content="Websites, Web Apps und verbundene digitale L&ouml;sungen f&uuml;r moderne Businesses.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.crowforge-games.com/services.html">
-<meta property="og:image" content="https://www.crowforge-games.com/CROWFORGE_Games_Translucent.png">
+<meta property="og:image" content="https://www.crowforge-games.com/CROWFORGE_Websites.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="CROWFORGE Web Services">
 <meta name="twitter:description" content="Von Onepagern bis zu individuellen Plattformen: digitale L&ouml;sungen f&uuml;r moderne Businesses.">
-<meta name="twitter:image" content="https://www.crowforge-games.com/CROWFORGE_Games_Translucent.png">
+<meta name="twitter:image" content="https://www.crowforge-games.com/CROWFORGE_Websites.png">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://www.crowforge-games.com/services.html">
-<link rel="preload" as="image" href="CROWFORGE_Games_Translucent.png" fetchpriority="high">
+<link rel="preload" as="image" href="CROWFORGE_Websites.png" fetchpriority="high">
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -26,7 +26,7 @@
       "@id":"https://www.crowforge-games.com/#organization",
       "name":"CROWFORGE Games",
       "url":"https://www.crowforge-games.com/",
-      "logo":"https://www.crowforge-games.com/CROWFORGE_Games_Translucent.png",
+      "logo":"https://www.crowforge-games.com/CROWFORGE_Websites.png",
       "email":"contact@crowforge-games.com"
     },
     {
@@ -167,37 +167,56 @@ nav{
 
 .hero{
   position:relative;
-  padding:6.5rem 4rem 4.5rem;
+  overflow:hidden;
+  padding:0 4rem 4.8rem;
+  padding-top:78px;
 }
-.hero::before{
+.hero-bg{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 14% 18%,rgba(123,146,202,.22) 0%,rgba(123,146,202,.09) 16%,transparent 34%),
+    radial-gradient(circle at 28% 42%,rgba(101,122,175,.16) 0%,rgba(101,122,175,.06) 12%,transparent 28%),
+    radial-gradient(circle at 78% 38%,rgba(117,135,182,.14) 0%,rgba(117,135,182,.05) 13%,transparent 30%),
+    radial-gradient(circle at 68% 78%,rgba(132,150,201,.13) 0%,rgba(132,150,201,.05) 16%,transparent 34%),
+    linear-gradient(180deg,#010203 0%,#05070b 24%,#0c1119 62%,#070a10 100%);
+}
+.hero-bg::before{
   content:"";
   position:absolute;
   inset:0;
   background:
-    radial-gradient(circle at 18% 20%,rgba(123,146,202,.15),transparent 22%),
-    radial-gradient(circle at 78% 28%,rgba(212,170,98,.09),transparent 18%),
-    linear-gradient(180deg,rgba(255,255,255,.015),transparent 60%);
-  pointer-events:none;
+    radial-gradient(ellipse at 18% 22%,rgba(212,226,255,.16),transparent 24%),
+    radial-gradient(ellipse at 28% 48%,rgba(198,216,255,.12),transparent 18%);
+  filter:blur(30px);
+  opacity:.34;
+  animation:stormFlashLeft 16s linear 1s infinite;
+}
+.hero-bg::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse at 82% 28%,rgba(214,228,255,.15),transparent 24%),
+    radial-gradient(ellipse at 72% 44%,rgba(196,212,255,.11),transparent 18%);
+  filter:blur(30px);
+  opacity:.3;
+  animation:stormFlashRight 18s linear 5.8s infinite;
+}
+.hero-grid{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse at center 68%,rgba(255,255,255,.03),transparent 55%),
+    linear-gradient(180deg,transparent 0%,rgba(5,7,11,.12) 100%);
+  mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparent);
 }
 .hero-shell{
   position:relative;
   z-index:1;
   max-width:1240px;
   margin:0 auto;
-  padding:4.5rem 4rem;
-  border:1px solid var(--border-strong);
-  background:linear-gradient(180deg,rgba(11,15,22,.9),rgba(10,14,20,.82));
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-.hero-shell::after{
-  content:"";
-  position:absolute;
-  right:-120px;
-  bottom:-140px;
-  width:360px;
-  height:360px;
-  background:radial-gradient(circle,rgba(45,106,171,.14),transparent 72%);
+  text-align:center;
 }
 .eyebrow{
   font-family:"Raleway",sans-serif;
@@ -209,75 +228,154 @@ nav{
   opacity:.86;
   margin-bottom:1.1rem;
 }
-.hero-grid{
-  display:grid;
-  grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);
-  gap:3rem;
-  align-items:end;
+.hero-banner-wrap{
+  position:relative;
+  z-index:1;
+  width:min(48vw,1000px);
+  max-width:1000px;
+  margin:0 auto 1.05rem;
+  display:flex;
+  justify-content:center;
+  overflow:hidden;
+  filter:drop-shadow(0 34px 56px rgba(0,0,0,.34));
+  animation:heroFadeIn 1.2s ease both;
+}
+.hero-banner-wrap::before{
+  content:"";
+  position:absolute;
+  inset:14% 10% 18%;
+  background:radial-gradient(circle,rgba(92,118,170,.16),transparent 66%);
+  filter:blur(42px);
+  opacity:.8;
+  pointer-events:none;
+}
+.hero-banner-wrap::after{
+  content:"";
+  position:absolute;
+  left:18%;
+  right:18%;
+  bottom:4%;
+  height:20%;
+  background:radial-gradient(ellipse at center,rgba(168,180,192,.14),transparent 72%);
+  filter:blur(18px);
+  opacity:.7;
+  pointer-events:none;
+}
+.hero-banner-img{
+  position:relative;
+  width:100%;
+  height:auto;
+  display:block;
+  background:transparent;
+  margin:-8% 0 -10%;
+}
+.hero-inner{
+  position:relative;
+  z-index:1;
+  max-width:920px;
+  margin:0 auto;
+  padding:0 1rem;
+}
+.hero-rule{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:1.2rem;
+  margin-bottom:.9rem;
+  animation:fadeIn .8s ease both;
+}
+.hero-rule-line{width:50px;height:1px;background:linear-gradient(to right,transparent,var(--silver))}
+.hero-rule-line.r{background:linear-gradient(to left,transparent,var(--silver))}
+.hero-rule-mark{
+  font-family:"Raleway",sans-serif;
+  font-size:.75rem;
+  font-weight:500;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--silver);
+  opacity:.8;
 }
 .hero-copy h1{
   font-family:"Raleway",sans-serif;
-  font-size:clamp(2.6rem,5vw,4.5rem);
+  font-size:clamp(2.2rem,4.6vw,3.7rem);
   font-weight:700;
   line-height:1.02;
   color:var(--white);
-  margin-bottom:1.2rem;
+  margin-bottom:1rem;
 }
 .hero-copy h1 span{color:var(--gold)}
 .hero-copy p{
-  font-size:1.08rem;
+  font-size:clamp(1.02rem,2vw,1.24rem);
   color:var(--text);
-  max-width:720px;
+  opacity:.88;
+  animation:fadeIn .9s .15s ease both;
+  font-weight:300;
+  line-height:1.75;
+  font-style:italic;
+  max-width:820px;
+  margin:0 auto;
 }
-.hero-points{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:.9rem;
-  margin-top:2rem;
+.hero-package-icons{
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  gap:1rem;
+  flex-wrap:wrap;
+  margin-top:1.55rem;
+  animation:fadeIn 1s .25s ease both;
 }
-.hero-point{
-  padding:1rem 1.05rem;
-  border:1px solid rgba(168,180,192,.11);
-  background:rgba(255,255,255,.03);
-}
-.hero-point strong{
-  display:block;
-  font-family:"Raleway",sans-serif;
-  font-size:.68rem;
-  letter-spacing:.14em;
-  text-transform:uppercase;
+.hero-package-link{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.55rem;
+  min-width:92px;
+  text-decoration:none;
   color:var(--silver-bright);
-  margin-bottom:.3rem;
+  opacity:0;
+  animation:heroPackageIn .6s ease forwards;
 }
-.hero-point span{font-size:.95rem;color:var(--text-dim)}
-.hero-side{
-  padding:1.4rem;
-  border:1px solid rgba(168,180,192,.12);
-  background:linear-gradient(180deg,rgba(19,27,40,.78),rgba(11,16,24,.85));
+.hero-package-link:nth-child(1){animation-delay:.38s}
+.hero-package-link:nth-child(2){animation-delay:.5s}
+.hero-package-link:nth-child(3){animation-delay:.62s}
+.hero-package-link:nth-child(4){animation-delay:.74s}
+.hero-package-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:54px;
+  height:54px;
+  border:1px solid rgba(168,180,192,.18);
+  background:rgba(10,16,24,.68);
+  backdrop-filter:blur(10px);
+  border-radius:999px;
+  transition:all .25s;
+  box-shadow:0 12px 28px rgba(0,0,0,.28);
 }
-.hero-side-label{
+.hero-package-link:hover .hero-package-icon{
+  border-color:rgba(168,180,192,.45);
+  background:rgba(18,28,40,.9);
+  color:var(--white);
+  transform:translateY(-2px);
+}
+.hero-package-icon svg{width:24px;height:24px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hero-package-label{
   font-family:"Raleway",sans-serif;
-  font-size:.68rem;
+  font-size:.58rem;
   font-weight:700;
   letter-spacing:.14em;
   text-transform:uppercase;
   color:var(--silver);
-  margin-bottom:.8rem;
+  text-align:center;
 }
-.hero-side-title{
-  font-family:"Inter","Segoe UI",Calibri,Arial,sans-serif;
-  font-size:1.65rem;
-  font-weight:700;
-  color:var(--white);
-  line-height:1.15;
-  margin-bottom:.9rem;
-}
-.hero-side p{color:var(--text-dim);font-size:.98rem}
 .hero-actions{
   display:flex;
   gap:1rem;
+  justify-content:center;
   flex-wrap:wrap;
   margin-top:2rem;
+  margin-bottom:.4rem;
+  animation:fadeIn 1s .35s ease both;
 }
 .btn{
   display:inline-flex;
@@ -1082,11 +1180,47 @@ footer{
   color:var(--silver);
 }
 
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes heroFadeIn{
+  from{opacity:0;transform:translateY(14px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes heroPackageIn{
+  from{opacity:0;transform:translateX(-12px) translateY(6px)}
+  to{opacity:1;transform:translateX(0) translateY(0)}
+}
+@keyframes stormFlashLeft{
+  0%{opacity:.28;filter:blur(30px) brightness(1)}
+  1.8%{opacity:.78;filter:blur(28px) brightness(1.35)}
+  2.2%{opacity:1;filter:blur(23px) brightness(2)}
+  2.7%{opacity:.46;filter:blur(30px) brightness(1.08)}
+  12%,23%,25%,52%,54%,100%{opacity:.28;filter:blur(30px) brightness(1)}
+  23.4%{opacity:.62;filter:blur(28px) brightness(1.24)}
+  23.8%{opacity:.94;filter:blur(24px) brightness(1.8)}
+  24.2%{opacity:.5;filter:blur(29px) brightness(1.08)}
+  53%{opacity:.72;filter:blur(27px) brightness(1.35)}
+  53.4%{opacity:1;filter:blur(23px) brightness(1.95)}
+  53.8%{opacity:.44;filter:blur(30px) brightness(1.06)}
+}
+@keyframes stormFlashRight{
+  0%,18%,39%,41%,67%,69%,100%{opacity:.24;filter:blur(30px) brightness(1)}
+  39.3%{opacity:.58;filter:blur(28px) brightness(1.2)}
+  39.7%{opacity:.88;filter:blur(24px) brightness(1.7)}
+  40.1%{opacity:.42;filter:blur(29px) brightness(1.06)}
+  68.1%{opacity:.66;filter:blur(27px) brightness(1.28)}
+  68.5%{opacity:.96;filter:blur(23px) brightness(1.88)}
+  68.9%{opacity:.38;filter:blur(30px) brightness(1.04)}
+}
+
 @media(max-width:1120px){
   .hero-grid,
   .signal-grid,
   .contact-card,
   .request-grid{grid-template-columns:1fr}
+  .hero-banner-wrap{width:min(72vw,920px)}
   .pricing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .addons-grid{grid-template-columns:1fr}
   .maint-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -1097,8 +1231,14 @@ footer{
   nav{padding:0 1.3rem;height:auto;min-height:70px;flex-wrap:wrap;padding-top:.8rem;padding-bottom:.8rem}
   .nav-links{width:100%;justify-content:flex-start;flex-wrap:wrap;gap:1rem}
   .hero,.section,footer{padding-left:1.3rem;padding-right:1.3rem}
-  .hero-shell{padding:2.5rem 1.4rem}
-  .hero-points,.signal-list,.field-grid,.package-options,.checks{grid-template-columns:1fr}
+  .hero-shell{padding:0}
+  .hero-banner-wrap{width:100%;margin:0 auto .85rem}
+  .hero-banner-img{margin:-6% 0 -8%}
+  .hero-rule{gap:.8rem}
+  .hero-rule-line{width:28px}
+  .hero-package-icons{gap:.75rem}
+  .hero-package-link{min-width:78px}
+  .signal-list,.field-grid,.package-options,.checks{grid-template-columns:1fr}
   .pricing-grid,.maint-grid{grid-template-columns:1fr}
 }
 </style>
@@ -1107,7 +1247,7 @@ footer{
 
 <nav aria-label="Services navigation">
   <a class="nav-left" href="index.html">
-    <img class="nav-logo" src="CROWFORGE_Games_Translucent.png" alt="CROWFORGE Games" fetchpriority="high" decoding="async">
+    <img class="nav-logo" src="CROWFORGE_Websites.png" alt="CROWFORGE Websites" fetchpriority="high" decoding="async">
     <span class="nav-brand">CROWFORGE Web Services</span>
   </a>
   <ul class="nav-links">
@@ -1128,40 +1268,52 @@ footer{
 </nav>
 
 <section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
   <div class="hero-shell">
-    <p class="eyebrow">CROWFORGE Web Services</p>
-    <div class="hero-grid">
+    <div class="hero-banner-wrap">
+      <img src="CROWFORGE_Websites.png" class="hero-banner-img" alt="CROWFORGE Websites" fetchpriority="high" decoding="async">
+    </div>
+    <div class="hero-inner">
+      <div class="hero-rule">
+        <span class="hero-rule-line"></span>
+        <span class="hero-rule-mark">Webdesign &middot; Apps &middot; Systeme</span>
+        <span class="hero-rule-line r"></span>
+      </div>
       <div class="hero-copy">
         <h1>Websites &amp; Apps <span>aus einer Hand</span></h1>
-        <p>Ich baue nicht einfach nur Webseiten. Ich entwickle digitale L&ouml;sungen, die modern aussehen, schnell laden, Kunden f&uuml;hren und bei Bedarf sp&auml;ter zu Buchungssystemen, Dashboards oder Web Apps wachsen k&ouml;nnen.</p>
-        <div class="hero-points">
-          <div class="hero-point">
-            <strong>Positionierung</strong>
-            <span>Digitale L&ouml;sungen f&uuml;r moderne Businesses</span>
-          </div>
-          <div class="hero-point">
-            <strong>Ansatz</strong>
-            <span>Kein Template-Gef&uuml;hl, sondern individuelle Auftritte mit klarer Struktur</span>
-          </div>
-          <div class="hero-point">
-            <strong>Vorteil</strong>
-            <span>Von Website bis App verbunden gedacht statt isoliert gebaut</span>
-          </div>
-          <div class="hero-point">
-            <strong>Ziel</strong>
-            <span>Mehr Anfragen, mehr Vertrauen, mehr Erweiterbarkeit</span>
-          </div>
-        </div>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#kontakt">Projekt anfragen</a>
-          <a class="btn btn-secondary" href="#pakete">Pakete ansehen</a>
-        </div>
+        <p>Ich entwickle digitale L&ouml;sungen, die modern aussehen, schnell laden, Kunden f&uuml;hren und bei Bedarf sp&auml;ter zu Buchungssystemen, Dashboards oder Web Apps wachsen k&ouml;nnen.</p>
       </div>
-      <aside class="hero-side">
-        <div class="hero-side-label">F&uuml;r wen</div>
-        <div class="hero-side-title">F&uuml;r Businesses, die online professionell auftreten wollen</div>
-        <p>Vom schlanken Onepager bis zur vernetzten Web App: Die L&ouml;sung wird so geplant, dass sie heute funktioniert und morgen sauber erweiterbar bleibt.</p>
-      </aside>
+      <div class="hero-package-icons" aria-label="Website-Pakete">
+        <a href="#pakete" class="hero-package-link" aria-label="Starter Paket">
+          <span class="hero-package-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7.5h14M5 12h14M5 16.5h8"></path><rect x="4" y="5" width="16" height="14" rx="2"></rect></svg>
+          </span>
+          <span class="hero-package-label">Starter</span>
+        </a>
+        <a href="#pakete" class="hero-package-link" aria-label="Business Paket">
+          <span class="hero-package-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M9 5v14M15 5v14"></path></svg>
+          </span>
+          <span class="hero-package-label">Business</span>
+        </a>
+        <a href="#pakete" class="hero-package-link" aria-label="Professional Paket">
+          <span class="hero-package-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M8 9h8M8 12h8M8 15h5"></path></svg>
+          </span>
+          <span class="hero-package-label">Pro</span>
+        </a>
+        <a href="#pakete" class="hero-package-link" aria-label="Custom Lösung">
+          <span class="hero-package-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6.5 5.5 9 8 11.5M16 6.5 18.5 9 16 11.5M10 17.5 12 15l2 2.5M12 11v4"></path><circle cx="12" cy="9" r="7"></circle></svg>
+          </span>
+          <span class="hero-package-label">Custom</span>
+        </a>
+      </div>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#kontakt">Projekt anfragen</a>
+        <a class="btn btn-secondary" href="#pakete">Pakete ansehen</a>
+      </div>
     </div>
   </div>
 </section>
@@ -1245,79 +1397,7 @@ footer{
 
 <section class="section">
   <div class="wrap">
-    <div class="signal-grid">
-      <div class="signal-card">
-        <p class="eyebrow">Warum CROWFORGE</p>
-        <h3>Mehr als nur eine sch&ouml;ne Website</h3>
-        <p>Jedes Projekt wird so aufgebaut, dass Design, Struktur, Performance und Erweiterbarkeit zusammenpassen. So entsteht kein kurzfristiger Webauftritt, sondern eine saubere digitale Basis f&uuml;r Wachstum.</p>
-        <div class="signal-list">
-          <div class="signal-item">
-            <strong>Individuell</strong>
-            <span>kein typischer Template-Look, sondern ein Auftritt mit eigener Handschrift</span>
-          </div>
-          <div class="signal-item">
-            <strong>Responsiv</strong>
-            <span>optimiert f&uuml;r Desktop, Tablet und Smartphone</span>
-          </div>
-          <div class="signal-item">
-            <strong>Erweiterbar</strong>
-            <span>sp&auml;tere Funktionen wie Buchungen, Logins oder Dashboards k&ouml;nnen sauber angebunden werden</span>
-          </div>
-          <div class="signal-item">
-            <strong>Schnell</strong>
-            <span>starker Fokus auf Ladezeit, Klarheit und gute Nutzerf&uuml;hrung</span>
-          </div>
-        </div>
-      </div>
-      <div class="signal-card">
-        <p class="eyebrow">Ansatz</p>
-        <h3>Websites &amp; Apps aus einer Hand</h3>
-        <p>Wenn ein Projekt mehr braucht als nur Seiten und Texte, kann daraus eine vernetzte L&ouml;sung werden: mit Formularen, Logins, Prozessen, APIs oder einer sp&auml;teren App-Anbindung.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="addons">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">Add-ons</p>
-        <h2>Erweiterungen &amp; Add-ons</h2>
-      </div>
-      <p>Erweiterungen k&ouml;nnen jederzeit hinzugebucht werden und werden individuell an dein Projekt angepasst.</p>
-    </div>
-    <div class="addons-grid">
-      <article class="addons-card">
-        <h3>Seiten &amp; Inhalte</h3>
-        <ul class="addons-list">
-          <li><div class="addon-copy"><span>Zus&auml;tzliche Seite</span><small class="addon-desc">(z. B. neue Unterseite f&uuml;r Leistungen, Team oder Angebote)</small></div><strong>+200 &euro;</strong></li>
-          <li><div class="addon-copy"><span>Texterstellung</span><small class="addon-desc">(individuelle Inhalte passend zu deinem Unternehmen)</small></div><strong>+150 &ndash; 400 &euro;</strong></li>
-        </ul>
-      </article>
-      <article class="addons-card">
-        <h3>Features</h3>
-        <ul class="addons-list">
-          <li><div class="addon-copy"><span>Erweitertes Formular</span><small class="addon-desc">(z. B. mehrere Felder, Auswahloptionen, bessere Anfragen)</small></div><strong>+150 &euro;</strong></li>
-          <li><div class="addon-copy"><span>Buchungssystem</span><small class="addon-desc">(z. B. Terminbuchung oder Reservierungen direkt &uuml;ber die Website)</small></div><strong>+500 &ndash; 1.200 &euro;</strong></li>
-          <li><div class="addon-copy"><span>Login- / Benutzerbereich</span><small class="addon-desc">(z. B. Kundenbereiche, interne Tools oder gesch&uuml;tzte Inhalte)</small></div><strong>+800 &ndash; 2.000 &euro;</strong></li>
-          <li><div class="addon-copy"><span>Mehrsprachigkeit</span><small class="addon-desc">(Website in mehreren Sprachen verf&uuml;gbar)</small></div><strong>+300 &ndash; 800 &euro;</strong></li>
-        </ul>
-      </article>
-      <article class="addons-card">
-        <h3>Design &amp; Branding</h3>
-        <ul class="addons-list">
-          <li><div class="addon-copy"><span>Individuelles Premium Design</span><small class="addon-desc">(aufwendigeres Design, mehr Details, hochwertigere Optik)</small></div><strong>+400 &ndash; 900 &euro;</strong></li>
-          <li><div class="addon-copy"><span>Logo &amp; Branding</span><small class="addon-desc">(Logo-Erstellung oder &Uuml;berarbeitung inkl. passendem Stil)</small></div><strong>+200 &ndash; 600 &euro;</strong></li>
-        </ul>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="wartung">
-  <div class="wrap">
-    <div class="section-head">
+    <div class="section-head" id="wartung">
       <div>
         <p class="eyebrow">Wartung</p>
         <h2>Betreuung nach dem<br>Launch</h2>
@@ -1399,6 +1479,78 @@ footer{
       </div>
     </div>
     <p class="maint-note"><strong>Nicht enthalten:</strong> Größere Änderungen und Erweiterungen sind nicht im Wartungspaket enthalten. Zusätzliche Arbeiten werden transparent nach Aufwand berechnet: <strong>70 &euro; pro Stunde</strong>. Vor Beginn größerer Aufgaben erfolgt immer eine kurze Abstimmung.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="signal-grid">
+      <div class="signal-card">
+        <p class="eyebrow">Warum CROWFORGE</p>
+        <h3>Mehr als nur eine sch&ouml;ne Website</h3>
+        <p>Jedes Projekt wird so aufgebaut, dass Design, Struktur, Performance und Erweiterbarkeit zusammenpassen. So entsteht kein kurzfristiger Webauftritt, sondern eine saubere digitale Basis f&uuml;r Wachstum.</p>
+        <div class="signal-list">
+          <div class="signal-item">
+            <strong>Individuell</strong>
+            <span>kein typischer Template-Look, sondern ein Auftritt mit eigener Handschrift</span>
+          </div>
+          <div class="signal-item">
+            <strong>Responsiv</strong>
+            <span>optimiert f&uuml;r Desktop, Tablet und Smartphone</span>
+          </div>
+          <div class="signal-item">
+            <strong>Erweiterbar</strong>
+            <span>sp&auml;tere Funktionen wie Buchungen, Logins oder Dashboards k&ouml;nnen sauber angebunden werden</span>
+          </div>
+          <div class="signal-item">
+            <strong>Schnell</strong>
+            <span>starker Fokus auf Ladezeit, Klarheit und gute Nutzerf&uuml;hrung</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <p class="eyebrow">Ansatz</p>
+        <h3>Websites &amp; Apps aus einer Hand</h3>
+        <p>Wenn ein Projekt mehr braucht als nur Seiten und Texte, kann daraus eine vernetzte L&ouml;sung werden: mit Formularen, Logins, Prozessen, APIs oder einer sp&auml;teren App-Anbindung.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="addons">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Add-ons</p>
+        <h2>Erweiterungen &amp; Add-ons</h2>
+      </div>
+      <p>Erweiterungen k&ouml;nnen jederzeit hinzugebucht werden und werden individuell an dein Projekt angepasst.</p>
+    </div>
+    <div class="addons-grid">
+      <article class="addons-card">
+        <h3>Seiten &amp; Inhalte</h3>
+        <ul class="addons-list">
+          <li><div class="addon-copy"><span>Zus&auml;tzliche Seite</span><small class="addon-desc">(z. B. neue Unterseite f&uuml;r Leistungen, Team oder Angebote)</small></div><strong>+200 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Texterstellung</span><small class="addon-desc">(individuelle Inhalte passend zu deinem Unternehmen)</small></div><strong>+150 &ndash; 400 &euro;</strong></li>
+        </ul>
+      </article>
+      <article class="addons-card">
+        <h3>Features</h3>
+        <ul class="addons-list">
+          <li><div class="addon-copy"><span>Erweitertes Formular</span><small class="addon-desc">(z. B. mehrere Felder, Auswahloptionen, bessere Anfragen)</small></div><strong>+150 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Buchungssystem</span><small class="addon-desc">(z. B. Terminbuchung oder Reservierungen direkt &uuml;ber die Website)</small></div><strong>+500 &ndash; 1.200 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Login- / Benutzerbereich</span><small class="addon-desc">(z. B. Kundenbereiche, interne Tools oder gesch&uuml;tzte Inhalte)</small></div><strong>+800 &ndash; 2.000 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Mehrsprachigkeit</span><small class="addon-desc">(Website in mehreren Sprachen verf&uuml;gbar)</small></div><strong>+300 &ndash; 800 &euro;</strong></li>
+        </ul>
+      </article>
+      <article class="addons-card">
+        <h3>Design &amp; Branding</h3>
+        <ul class="addons-list">
+          <li><div class="addon-copy"><span>Individuelles Premium Design</span><small class="addon-desc">(aufwendigeres Design, mehr Details, hochwertigere Optik)</small></div><strong>+400 &ndash; 900 &euro;</strong></li>
+          <li><div class="addon-copy"><span>Logo &amp; Branding</span><small class="addon-desc">(Logo-Erstellung oder &Uuml;berarbeitung inkl. passendem Stil)</small></div><strong>+200 &ndash; 600 &euro;</strong></li>
+        </ul>
+      </article>
+    </div>
   </div>
 </section>
 
@@ -1812,13 +1964,11 @@ updateRequestSummary();
       title: document.title,
       nav: Array.from(document.querySelectorAll('.nav-links a')).map(text),
       navCta: text(document.querySelector('.nav-cta')),
+      heroRule: html(document.querySelector('.hero-rule-mark')),
       heroTitle: html(document.querySelector('.hero-copy h1')),
       heroLead: text(document.querySelector('.hero-copy p')),
-      heroPoints: Array.from(document.querySelectorAll('.hero-point')).map(function(point) {
-        return [text(point.querySelector('strong')), text(point.querySelector('span'))];
-      }),
+      heroPackages: Array.from(document.querySelectorAll('.hero-package-label')).map(text),
       heroButtons: Array.from(document.querySelectorAll('.hero-actions a')).map(text),
-      heroSide: [text(document.querySelector('.hero-side-label')), text(document.querySelector('.hero-side-title')), text(document.querySelector('.hero-side p'))],
       packagesHead: [text(document.querySelector('#pakete .eyebrow')), html(document.querySelector('#pakete h2')), text(document.querySelector('#pakete .section-head > p'))],
       priceCards: Array.from(document.querySelectorAll('.pricing-grid .price-card')).map(function(card) {
         const bits = getPriceBits(card.querySelector('.price'));
@@ -1939,11 +2089,11 @@ updateRequestSummary();
       title: 'Services | CROWFORGE Web Services',
       nav: ['Packages', 'Add-ons', 'Maintenance', 'Use Cases', 'Contact'],
       navCta: 'Back to main site',
+      heroRule: 'Web Design &middot; Apps &middot; Systems',
       heroTitle: 'Websites &amp; Apps <span>from one source</span>',
-      heroLead: 'I do not just build websites. I create digital solutions that look modern, load fast, guide customers and can later grow into booking systems, dashboards or web apps when needed.',
-      heroPoints: [['Positioning', 'Digital solutions for modern businesses'], ['Approach', 'No template feel, but custom presences with clear structure'], ['Advantage', 'Website to app, planned as one connected system'], ['Goal', 'More inquiries, more trust, more room to grow']],
+      heroLead: 'I create digital solutions that look modern, load fast, guide customers and can grow into booking systems, dashboards or web apps when needed.',
+      heroPackages: ['Starter', 'Business', 'Pro', 'Custom'],
       heroButtons: ['Request project', 'View packages'],
-      heroSide: ['Who it is for', 'For businesses that want a professional online presence', 'From a lean one-pager to a connected web app: every solution is planned to work today and stay cleanly extendable for tomorrow.'],
       packagesHead: ['Offers', 'Packages for different<br>project sizes', 'Each package covers a different need: from a fast online presence to an individual platform with login, database or app integration.'],
       priceCards: [
         { badge: 'Starter', tier: 'Starter', title: 'One-pager', copy: 'For small businesses, a quick online presence and a clear entry point without unnecessary overhead.', price: 'from &euro;690', sub: 'for fast visibility', features: ['1 page / landing page', 'modern, responsive design', 'contact form', 'basic SEO', 'fast loading times'], button: 'Choose this package' },
@@ -2095,16 +2245,11 @@ updateRequestSummary();
 
     document.querySelectorAll('.nav-links a').forEach(function(link, index) { setText(link, t.nav[index]); });
     setText(document.querySelector('.nav-cta'), t.navCta);
+    setHtml(document.querySelector('.hero-rule-mark'), t.heroRule);
     setHtml(document.querySelector('.hero-copy h1'), t.heroTitle);
     setText(document.querySelector('.hero-copy p'), t.heroLead);
-    document.querySelectorAll('.hero-point').forEach(function(point, index) {
-      setText(point.querySelector('strong'), t.heroPoints[index][0]);
-      setText(point.querySelector('span'), t.heroPoints[index][1]);
-    });
+    document.querySelectorAll('.hero-package-label').forEach(function(label, index) { setText(label, t.heroPackages[index]); });
     document.querySelectorAll('.hero-actions a').forEach(function(link, index) { setText(link, t.heroButtons[index]); });
-    setText(document.querySelector('.hero-side-label'), t.heroSide[0]);
-    setText(document.querySelector('.hero-side-title'), t.heroSide[1]);
-    setText(document.querySelector('.hero-side p'), t.heroSide[2]);
 
     setText(document.querySelector('#pakete .eyebrow'), t.packagesHead[0]);
     setHtml(document.querySelector('#pakete h2'), t.packagesHead[1]);

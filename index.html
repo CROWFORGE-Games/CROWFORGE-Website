@@ -96,8 +96,6 @@
 html{scroll-behavior:smooth}
 body{background:var(--black);color:var(--text);font-family:"Inter","Segoe UI",system-ui,sans-serif;font-size:1.05rem;line-height:1.85;overflow-x:hidden}
 body::after{content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.03'/%3E%3C/svg%3E");opacity:.5}
-.skip-link{position:absolute;left:1rem;top:-3rem;z-index:1000;padding:.8rem 1rem;border:1px solid var(--silver);background:rgba(8,9,11,.96);color:var(--white);text-decoration:none;border-radius:999px;transition:top .2s}
-.skip-link:focus{top:1rem}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold-bright);outline-offset:3px;box-shadow:0 0 0 4px rgba(212,170,98,.15)}
 
 /* NAV */
@@ -123,24 +121,23 @@ radial-gradient(circle at 78% 38%,rgba(117,135,182,.14) 0%,rgba(117,135,182,.05)
 radial-gradient(circle at 68% 78%,rgba(132,150,201,.13) 0%,rgba(132,150,201,.05) 16%,transparent 34%),
 linear-gradient(180deg,#010203 0%,#05070b 24%,#0c1119 62%,#070a10 100%)}
 .hero-bg::before{content:"";position:absolute;inset:0;background:
-radial-gradient(ellipse at 20% 22%,rgba(205,220,255,.09),transparent 26%),
-radial-gradient(ellipse at 32% 48%,rgba(190,208,255,.07),transparent 20%),
-radial-gradient(ellipse at 82% 44%,rgba(192,208,246,.06),transparent 22%),
-radial-gradient(ellipse at 74% 78%,rgba(187,203,245,.06),transparent 24%);
-filter:blur(30px);opacity:.55}
-.hero-bg::after{content:"";position:absolute;left:-5%;right:-5%;bottom:-2%;height:34%;background:
-linear-gradient(180deg,transparent 0%,rgba(119,139,188,.04) 46%,rgba(119,139,188,.09) 72%,rgba(7,10,16,.96) 100%),
-repeating-linear-gradient(90deg,rgba(165,185,232,.04) 0 1px,transparent 1px 72px),
-repeating-linear-gradient(180deg,rgba(165,185,232,.025) 0 1px,transparent 1px 72px);
-transform:perspective(900px) rotateX(78deg) scaleX(1.12);transform-origin:center bottom;opacity:.5}
+radial-gradient(ellipse at 18% 22%,rgba(212,226,255,.16),transparent 24%),
+radial-gradient(ellipse at 28% 48%,rgba(198,216,255,.12),transparent 18%);
+filter:blur(30px);opacity:.34;animation:stormFlashLeft 16s linear 1s infinite}
+.hero-bg::after{content:"";position:absolute;inset:0;background:
+radial-gradient(ellipse at 82% 28%,rgba(214,228,255,.15),transparent 24%),
+radial-gradient(ellipse at 72% 44%,rgba(196,212,255,.11),transparent 18%);
+filter:blur(30px);opacity:.3;animation:stormFlashRight 18s linear 5.8s infinite}
 .hero-grid{position:absolute;inset:0;background:
 radial-gradient(ellipse at center 68%,rgba(255,255,255,.03),transparent 55%),
 linear-gradient(180deg,transparent 0%,rgba(5,7,11,.12) 100%);
 mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparent)}
 
 /* Banner: trim transparent padding visually without editing the source image */
-.hero-banner-wrap{position:relative;z-index:1;width:min(48vw,1000px);max-width:1000px;margin:0 auto 1.15rem;display:flex;justify-content:center;overflow:hidden}
-.hero-banner-img{width:100%;height:auto;display:block;background:transparent;margin:-8% 0 -10%}
+.hero-banner-wrap{position:relative;z-index:1;width:min(48vw,1000px);max-width:1000px;margin:0 auto 1.15rem;display:flex;justify-content:center;overflow:hidden;filter:drop-shadow(0 34px 56px rgba(0,0,0,.34));animation:heroFadeIn 1.2s ease both}
+.hero-banner-wrap::before{content:"";position:absolute;inset:14% 10% 18%;background:radial-gradient(circle,rgba(92,118,170,.16),transparent 66%);filter:blur(42px);opacity:.8;pointer-events:none}
+.hero-banner-wrap::after{content:"";position:absolute;left:18%;right:18%;bottom:4%;height:20%;background:radial-gradient(ellipse at center,rgba(168,180,192,.14),transparent 72%);filter:blur(18px);opacity:.7;pointer-events:none}
+.hero-banner-img{position:relative;width:100%;height:auto;display:block;background:transparent;margin:-8% 0 -10%}
 
 .hero-inner{position:relative;z-index:1;max-width:860px;padding:0 1rem}
 .hero-rule{display:flex;align-items:center;justify-content:center;gap:1.2rem;margin-bottom:.9rem;animation:fadeIn .8s ease both}
@@ -340,6 +337,30 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
 
 /* ANIMATIONS */
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heroFadeIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes heroSocialIn{from{opacity:0;transform:translateX(-12px) translateY(6px)}to{opacity:1;transform:translateX(0) translateY(0)}}
+@keyframes stormFlashLeft{
+  0%{opacity:.28;filter:blur(30px) brightness(1)}
+  1.8%{opacity:.78;filter:blur(28px) brightness(1.35)}
+  2.2%{opacity:1;filter:blur(23px) brightness(2)}
+  2.7%{opacity:.46;filter:blur(30px) brightness(1.08)}
+  12%,23%,25%,52%,54%,100%{opacity:.28;filter:blur(30px) brightness(1)}
+  23.4%{opacity:.62;filter:blur(28px) brightness(1.24)}
+  23.8%{opacity:.94;filter:blur(24px) brightness(1.8)}
+  24.2%{opacity:.5;filter:blur(29px) brightness(1.08)}
+  53%{opacity:.72;filter:blur(27px) brightness(1.35)}
+  53.4%{opacity:1;filter:blur(23px) brightness(1.95)}
+  53.8%{opacity:.44;filter:blur(30px) brightness(1.06)}
+}
+@keyframes stormFlashRight{
+  0%,18%,39%,41%,67%,69%,100%{opacity:.24;filter:blur(30px) brightness(1)}
+  39.3%{opacity:.58;filter:blur(28px) brightness(1.2)}
+  39.7%{opacity:.88;filter:blur(24px) brightness(1.7)}
+  40.1%{opacity:.42;filter:blur(29px) brightness(1.06)}
+  68.1%{opacity:.66;filter:blur(27px) brightness(1.28)}
+  68.5%{opacity:.96;filter:blur(23px) brightness(1.88)}
+  68.9%{opacity:.38;filter:blur(30px) brightness(1.04)}
+}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .75s cubic-bezier(.25,.46,.45,.94),transform .75s cubic-bezier(.25,.46,.45,.94)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
@@ -392,10 +413,14 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
 
 /* â”€â”€ Social icon row â”€â”€ */
 .hero-socials{display:flex;align-items:center;justify-content:center;gap:1.2rem;margin-top:1.2rem;flex-wrap:wrap}
-.hero-social-link{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border:1px solid rgba(168,180,192,.18);background:rgba(10,16,24,.68);backdrop-filter:blur(10px);border-radius:999px;transition:all .25s;text-decoration:none;color:var(--silver-bright);box-shadow:0 12px 28px rgba(0,0,0,.28)}
+.hero-social-link{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border:1px solid rgba(168,180,192,.18);background:rgba(10,16,24,.68);backdrop-filter:blur(10px);border-radius:999px;transition:all .25s;text-decoration:none;color:var(--silver-bright);box-shadow:0 12px 28px rgba(0,0,0,.28);opacity:0;animation:heroSocialIn .6s ease forwards}
 .hero-social-link:hover{border-color:rgba(168,180,192,.45);background:rgba(18,28,40,.9);color:var(--white);transform:translateY(-2px)}
 .hero-social-link svg{width:24px;height:24px;display:block;fill:currentColor}
 .hero-social-link.steam-social svg{width:28px;height:28px}
+.hero-social-link:nth-child(1){animation-delay:.38s}
+.hero-social-link:nth-child(2){animation-delay:.5s}
+.hero-social-link:nth-child(3){animation-delay:.62s}
+.hero-social-link:nth-child(4){animation-delay:.74s}
 .steam-brand-btn{display:inline-flex;align-items:center;justify-content:center;gap:.8rem;font-family:"Raleway",sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-radius:999px;padding:.82rem 1.45rem;transition:all .25s}
 .steam-brand-btn img{height:20px;width:auto;display:block;flex:0 0 auto}
 .steam-brand-btn svg{width:20px;height:20px;display:block;flex:0 0 auto;fill:currentColor}
@@ -409,8 +434,6 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
 </style>
 </head>
 <body>
-<a href="#games" class="skip-link">Skip to content</a>
-
 <nav aria-label="Primary navigation">
   <a href="#"><img src="CROWFORGE_Games_Translucent.png" class="nav-logo-img" alt="CrowForge Games" decoding="async"></a>
   <button class="nav-mobile-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation" id="nav-toggle">
