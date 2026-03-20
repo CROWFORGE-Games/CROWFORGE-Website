@@ -8,8 +8,8 @@ COPY index.html ./
 COPY leaderboard.html ./
 COPY services.html ./
 COPY CROWFORGE_Crow.png ./
-COPY CROWFORGE_Games.png ./
 COPY CROWFORGE_Games_Translucent.png ./
+COPY CROWFORGE_Websites.png ./
 COPY tavern-legends-logo.jpg ./
 COPY werewolf-hunter-logo.jpg ./
 
