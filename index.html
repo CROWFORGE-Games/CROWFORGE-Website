@@ -121,23 +121,26 @@ radial-gradient(circle at 78% 38%,rgba(117,135,182,.14) 0%,rgba(117,135,182,.05)
 radial-gradient(circle at 68% 78%,rgba(132,150,201,.13) 0%,rgba(132,150,201,.05) 16%,transparent 34%),
 linear-gradient(180deg,#010203 0%,#05070b 24%,#0c1119 62%,#070a10 100%)}
 .hero-bg::before{content:"";position:absolute;inset:0;background:
-radial-gradient(ellipse at 18% 22%,rgba(212,226,255,.16),transparent 24%),
-radial-gradient(ellipse at 28% 48%,rgba(198,216,255,.12),transparent 18%);
-filter:blur(30px);opacity:.34;animation:stormFlashLeft 16s linear 1s infinite}
+radial-gradient(ellipse at 14% 18%,rgba(212,226,255,.15),transparent 20%),
+radial-gradient(ellipse at 24% 34%,rgba(204,220,255,.13),transparent 18%),
+radial-gradient(ellipse at 31% 52%,rgba(190,210,255,.11),transparent 16%);
+filter:blur(30px);opacity:.34;will-change:opacity,filter,transform;animation:stormFlashLeft 10.5s linear 1s infinite}
 .hero-bg::after{content:"";position:absolute;inset:0;background:
-radial-gradient(ellipse at 82% 28%,rgba(214,228,255,.15),transparent 24%),
-radial-gradient(ellipse at 72% 44%,rgba(196,212,255,.11),transparent 18%);
-filter:blur(30px);opacity:.3;animation:stormFlashRight 18s linear 5.8s infinite}
+radial-gradient(ellipse at 86% 20%,rgba(214,228,255,.14),transparent 20%),
+radial-gradient(ellipse at 76% 36%,rgba(202,218,255,.12),transparent 18%),
+radial-gradient(ellipse at 68% 54%,rgba(188,208,255,.1),transparent 16%);
+filter:blur(30px);opacity:.3;will-change:opacity,filter,transform;animation:stormFlashRight 11.5s linear 4.2s infinite}
 .hero-grid{position:absolute;inset:0;background:
 radial-gradient(ellipse at center 68%,rgba(255,255,255,.03),transparent 55%),
 linear-gradient(180deg,transparent 0%,rgba(5,7,11,.12) 100%);
 mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparent)}
 
 /* Banner: trim transparent padding visually without editing the source image */
-.hero-banner-wrap{position:relative;z-index:1;width:min(48vw,1000px);max-width:1000px;margin:0 auto 1.15rem;display:flex;justify-content:center;overflow:hidden;filter:drop-shadow(0 34px 56px rgba(0,0,0,.34));animation:heroFadeIn 1.2s ease both}
-.hero-banner-wrap::before{content:"";position:absolute;inset:14% 10% 18%;background:radial-gradient(circle,rgba(92,118,170,.16),transparent 66%);filter:blur(42px);opacity:.8;pointer-events:none}
-.hero-banner-wrap::after{content:"";position:absolute;left:18%;right:18%;bottom:4%;height:20%;background:radial-gradient(ellipse at center,rgba(168,180,192,.14),transparent 72%);filter:blur(18px);opacity:.7;pointer-events:none}
-.hero-banner-img{position:relative;width:100%;height:auto;display:block;background:transparent;margin:-8% 0 -10%}
+.hero-banner-wrap{position:relative;z-index:1;width:min(48vw,1000px);max-width:1000px;margin:0 auto 1.15rem;display:flex;justify-content:center;overflow:hidden;filter:drop-shadow(0 34px 56px rgba(0,0,0,.34));animation:heroFadeIn 1.2s ease both;will-change:filter}
+.hero-banner-wrap::before{content:"";position:absolute;inset:14% 10% 18%;background:radial-gradient(circle,rgba(92,118,170,.16),transparent 66%);filter:blur(42px);opacity:.8;pointer-events:none;animation:stormLogoGlowLeft 10.5s linear 1s infinite}
+.hero-banner-wrap::after{content:"";position:absolute;left:18%;right:18%;bottom:4%;height:20%;background:radial-gradient(ellipse at center,rgba(168,180,192,.14),transparent 72%);filter:blur(18px);opacity:.7;pointer-events:none;animation:stormLogoGlowRight 11.5s linear 4.2s infinite}
+.hero-banner-img{position:relative;width:100%;height:auto;display:block;background:transparent;margin:-8% 0 -10%;will-change:filter;animation:stormLogoPulseLeft 10.5s linear 1s infinite,stormLogoPulseRight 11.5s linear 4.2s infinite}
+.hero-raven-eye{position:absolute;left:44.74%;top:14.4%;width:.95%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(255,132,132,.98) 0%,rgba(228,40,40,.95) 36%,rgba(126,0,0,.36) 68%,transparent 100%);opacity:0;pointer-events:none;filter:blur(.12px) drop-shadow(0 0 0 rgba(255,70,70,0));transform:translate(-50%,-50%) scale(.82);animation:ravenEyeGlow 2.15s ease .72s 1 both}
 
 .hero-inner{position:relative;z-index:1;max-width:860px;padding:0 1rem}
 .hero-rule{display:flex;align-items:center;justify-content:center;gap:1.2rem;margin-bottom:.9rem;animation:fadeIn .8s ease both}
@@ -345,26 +348,79 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
 @keyframes heroFadeIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes heroSocialIn{from{opacity:0;transform:translateX(-12px) translateY(6px)}to{opacity:1;transform:translateX(0) translateY(0)}}
 @keyframes stormFlashLeft{
-  0%{opacity:.28;filter:blur(30px) brightness(1)}
-  1.8%{opacity:.78;filter:blur(28px) brightness(1.35)}
-  2.2%{opacity:1;filter:blur(23px) brightness(2)}
-  2.7%{opacity:.46;filter:blur(30px) brightness(1.08)}
-  12%,23%,25%,52%,54%,100%{opacity:.28;filter:blur(30px) brightness(1)}
-  23.4%{opacity:.62;filter:blur(28px) brightness(1.24)}
-  23.8%{opacity:.94;filter:blur(24px) brightness(1.8)}
-  24.2%{opacity:.5;filter:blur(29px) brightness(1.08)}
-  53%{opacity:.72;filter:blur(27px) brightness(1.35)}
-  53.4%{opacity:1;filter:blur(23px) brightness(1.95)}
-  53.8%{opacity:.44;filter:blur(30px) brightness(1.06)}
+  0%{opacity:.28;filter:blur(30px) brightness(1);transform:translate3d(0,0,0)}
+  2.2%{opacity:.74;filter:blur(28px) brightness(1.35);transform:translate3d(-.8%, -1.2%, 0)}
+  2.8%{opacity:1;filter:blur(23px) brightness(2);transform:translate3d(.4%, .6%, 0)}
+  3.4%{opacity:.46;filter:blur(30px) brightness(1.08);transform:translate3d(1.2%, 1.6%, 0)}
+  14%,28%,30%,47%,49%,66%,68%,100%{opacity:.28;filter:blur(30px) brightness(1);transform:translate3d(0,0,0)}
+  28.4%{opacity:.56;filter:blur(28px) brightness(1.2);transform:translate3d(-1.2%, -1%, 0)}
+  28.9%{opacity:.8;filter:blur(25px) brightness(1.5);transform:translate3d(.2%, .2%, 0)}
+  29.3%{opacity:.96;filter:blur(23px) brightness(1.85);transform:translate3d(1.3%, 1.1%, 0)}
+  29.8%{opacity:.48;filter:blur(29px) brightness(1.07);transform:translate3d(2%, 1.8%, 0)}
+  47.4%{opacity:.54;filter:blur(28px) brightness(1.18);transform:translate3d(-1%, .4%, 0)}
+  47.9%{opacity:.84;filter:blur(24px) brightness(1.6);transform:translate3d(.5%, 1.2%, 0)}
+  48.4%{opacity:.44;filter:blur(30px) brightness(1.06);transform:translate3d(1.4%, 2%, 0)}
+  66.5%{opacity:.66;filter:blur(27px) brightness(1.3);transform:translate3d(-.8%, -1.1%, 0)}
+  67%{opacity:1;filter:blur(23px) brightness(1.95);transform:translate3d(.6%, -.2%, 0)}
+  67.5%{opacity:.44;filter:blur(30px) brightness(1.06);transform:translate3d(1.6%, .8%, 0)}
 }
 @keyframes stormFlashRight{
-  0%,18%,39%,41%,67%,69%,100%{opacity:.24;filter:blur(30px) brightness(1)}
-  39.3%{opacity:.58;filter:blur(28px) brightness(1.2)}
-  39.7%{opacity:.88;filter:blur(24px) brightness(1.7)}
-  40.1%{opacity:.42;filter:blur(29px) brightness(1.06)}
-  68.1%{opacity:.66;filter:blur(27px) brightness(1.28)}
-  68.5%{opacity:.96;filter:blur(23px) brightness(1.88)}
-  68.9%{opacity:.38;filter:blur(30px) brightness(1.04)}
+  0%,20%,22%,44%,46%,70%,72%,100%{opacity:.24;filter:blur(30px) brightness(1);transform:translate3d(0,0,0)}
+  20.4%{opacity:.56;filter:blur(28px) brightness(1.2);transform:translate3d(.9%, -1.1%, 0)}
+  20.9%{opacity:.82;filter:blur(25px) brightness(1.55);transform:translate3d(.1%, -.1%, 0)}
+  21.3%{opacity:.96;filter:blur(23px) brightness(1.86);transform:translate3d(-1.2%, .9%, 0)}
+  21.8%{opacity:.42;filter:blur(29px) brightness(1.06);transform:translate3d(-2%, 1.7%, 0)}
+  44.6%{opacity:.6;filter:blur(28px) brightness(1.22);transform:translate3d(.9%, -.8%, 0)}
+  45.1%{opacity:.9;filter:blur(24px) brightness(1.78);transform:translate3d(-.2%, .2%, 0)}
+  45.6%{opacity:.4;filter:blur(29px) brightness(1.05);transform:translate3d(-1.4%, 1.4%, 0)}
+  70.4%{opacity:.64;filter:blur(27px) brightness(1.28);transform:translate3d(1%, -1%, 0)}
+  70.9%{opacity:.96;filter:blur(23px) brightness(1.88);transform:translate3d(-.6%, -.2%, 0)}
+  71.4%{opacity:.38;filter:blur(30px) brightness(1.04);transform:translate3d(-1.8%, .9%, 0)}
+}
+@keyframes stormLogoPulseLeft{
+  0%,14%,28%,30%,47%,49%,66%,68%,100%{filter:brightness(1) drop-shadow(0 0 0 rgba(214,228,255,0)) drop-shadow(0 0 0 rgba(0,0,0,0))}
+  2.2%{filter:brightness(1.04) drop-shadow(0 0 12px rgba(210,226,255,.08)) drop-shadow(26px 18px 18px rgba(0,0,0,.14))}
+  2.8%{filter:brightness(1.1) drop-shadow(0 0 24px rgba(216,232,255,.14)) drop-shadow(42px 26px 26px rgba(0,0,0,.22))}
+  3.4%{filter:brightness(1.03) drop-shadow(0 0 10px rgba(210,226,255,.06)) drop-shadow(18px 12px 16px rgba(0,0,0,.12))}
+  28.4%{filter:brightness(1.03) drop-shadow(0 0 10px rgba(210,226,255,.06)) drop-shadow(22px 14px 16px rgba(0,0,0,.12))}
+  29.3%{filter:brightness(1.08) drop-shadow(0 0 20px rgba(216,232,255,.12)) drop-shadow(38px 24px 24px rgba(0,0,0,.2))}
+  29.8%{filter:brightness(1.02) drop-shadow(0 0 8px rgba(210,226,255,.05)) drop-shadow(14px 10px 12px rgba(0,0,0,.1))}
+  47.4%{filter:brightness(1.03) drop-shadow(0 0 10px rgba(210,226,255,.06)) drop-shadow(24px 16px 16px rgba(0,0,0,.13))}
+  47.9%{filter:brightness(1.07) drop-shadow(0 0 18px rgba(216,232,255,.11)) drop-shadow(34px 22px 22px rgba(0,0,0,.18))}
+  48.4%{filter:brightness(1.02) drop-shadow(0 0 8px rgba(210,226,255,.05)) drop-shadow(14px 10px 12px rgba(0,0,0,.1))}
+  66.5%{filter:brightness(1.04) drop-shadow(0 0 12px rgba(210,226,255,.08)) drop-shadow(26px 18px 18px rgba(0,0,0,.14))}
+  67%{filter:brightness(1.1) drop-shadow(0 0 24px rgba(216,232,255,.14)) drop-shadow(44px 28px 28px rgba(0,0,0,.22))}
+  67.5%{filter:brightness(1.03) drop-shadow(0 0 10px rgba(210,226,255,.06)) drop-shadow(18px 12px 16px rgba(0,0,0,.12))}
+}
+@keyframes stormLogoPulseRight{
+  0%,20%,22%,44%,46%,70%,72%,100%{filter:brightness(1) drop-shadow(0 0 0 rgba(214,228,255,0)) drop-shadow(0 0 0 rgba(0,0,0,0))}
+  20.4%{filter:brightness(1.03) drop-shadow(0 0 10px rgba(210,226,255,.06)) drop-shadow(-24px 16px 16px rgba(0,0,0,.13))}
+  21.3%{filter:brightness(1.08) drop-shadow(0 0 20px rgba(216,232,255,.12)) drop-shadow(-40px 24px 24px rgba(0,0,0,.2))}
+  21.8%{filter:brightness(1.02) drop-shadow(0 0 8px rgba(210,226,255,.05)) drop-shadow(-14px 10px 12px rgba(0,0,0,.1))}
+  44.6%{filter:brightness(1.03) drop-shadow(0 0 10px rgba(210,226,255,.06)) drop-shadow(-22px 14px 16px rgba(0,0,0,.12))}
+  45.1%{filter:brightness(1.08) drop-shadow(0 0 20px rgba(216,232,255,.12)) drop-shadow(-38px 22px 22px rgba(0,0,0,.19))}
+  45.6%{filter:brightness(1.02) drop-shadow(0 0 8px rgba(210,226,255,.05)) drop-shadow(-14px 10px 12px rgba(0,0,0,.1))}
+  70.4%{filter:brightness(1.04) drop-shadow(0 0 12px rgba(210,226,255,.08)) drop-shadow(-26px 18px 18px rgba(0,0,0,.14))}
+  70.9%{filter:brightness(1.09) drop-shadow(0 0 22px rgba(216,232,255,.13)) drop-shadow(-42px 26px 26px rgba(0,0,0,.21))}
+  71.4%{filter:brightness(1.02) drop-shadow(0 0 8px rgba(210,226,255,.05)) drop-shadow(-16px 10px 12px rgba(0,0,0,.1))}
+}
+@keyframes stormLogoGlowLeft{
+  0%,14%,28%,30%,47%,49%,66%,68%,100%{opacity:.8;filter:blur(42px) brightness(1)}
+  2.8%,29.3%,47.9%,67%{opacity:.96;filter:blur(44px) brightness(1.18)}
+  3.4%,29.8%,48.4%,67.5%{opacity:.84;filter:blur(42px) brightness(1.03)}
+}
+@keyframes stormLogoGlowRight{
+  0%,20%,22%,44%,46%,70%,72%,100%{opacity:.7;filter:blur(18px) brightness(1)}
+  21.3%,45.1%,70.9%{opacity:.88;filter:blur(21px) brightness(1.18)}
+  21.8%,45.6%,71.4%{opacity:.74;filter:blur(18px) brightness(1.03)}
+}
+@keyframes ravenEyeGlow{
+  0%,18%,100%{opacity:0;transform:translate(-50%,-50%) scale(.82);filter:blur(.2px) drop-shadow(0 0 0 rgba(255,70,70,0))}
+  24%{opacity:.42;transform:translate(-50%,-50%) scale(1);filter:blur(.2px) drop-shadow(0 0 6px rgba(255,64,64,.18))}
+  31%{opacity:1;transform:translate(-50%,-50%) scale(1.08);filter:blur(.1px) drop-shadow(0 0 16px rgba(255,54,54,.5))}
+  40%{opacity:.72;transform:translate(-50%,-50%) scale(1.02);filter:blur(.15px) drop-shadow(0 0 10px rgba(255,54,54,.32))}
+  48%{opacity:.94;transform:translate(-50%,-50%) scale(1.06);filter:blur(.1px) drop-shadow(0 0 18px rgba(255,54,54,.56))}
+  62%{opacity:.18;transform:translate(-50%,-50%) scale(.94);filter:blur(.2px) drop-shadow(0 0 4px rgba(255,54,54,.12))}
 }
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .75s cubic-bezier(.25,.46,.45,.94),transform .75s cubic-bezier(.25,.46,.45,.94)}
 .reveal.visible{opacity:1;transform:translateY(0)}
@@ -466,6 +522,7 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
   <div class="hero-grid"></div>
   <div class="hero-banner-wrap">
     <img src="CROWFORGE_Games_Translucent.png" class="hero-banner-img" alt="CrowForge Games" fetchpriority="high" decoding="async">
+    <span class="hero-raven-eye" aria-hidden="true"></span>
   </div>
   <div class="hero-inner">
     <div class="hero-rule">
@@ -788,14 +845,61 @@ function fmtDate(unix) {
 }
 
 function cleanSteamText(s) {
-  return (s || '')
+  return getSteamTextBlocks(s).join(' ').replace(/\s{2,}/g, ' ').trim();
+}
+
+function getSteamTextBlocks(text) {
+  const cleaned = String(text || '')
+    .replace(/<br\s*\/?>/gi, '\n')
     .replace(/\{STEAM_CLAN_IMAGE\}[^\s\[<]*/g, '')
-    .replace(/\[img[^\]]*\][^\[]*\[\/img\]/gi, '')
+    .replace(/\[img[^\]]*\][\s\S]*?\[\/img\]/gi, '')
     .replace(/\[url=[^\]]*\]([^\[]*)\[\/url\]/gi, '$1')
+    .replace(/\[h\d\](.*?)\[\/h\d\]/gi, '\n$1\n')
+    .replace(/\[list\]/gi, '\n')
+    .replace(/\[\/list\]/gi, '\n')
+    .replace(/\[\*\]/g, '\n• ')
     .replace(/\[[^\]]*\]/g, '')
     .replace(/https?:\/\/\S+/g, '')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
+    .replace(/\r/g, '')
+    .replace(/\u2022/g, '•')
+    .replace(/([a-z0-9,]) ([A-Z][a-z]{2,})/g, '$1\n$2')
+    .replace(/\n{2,}/g, '\n');
+
+  const seen = new Set();
+  return cleaned
+    .split('\n')
+    .map(function(line) { return line.trim().replace(/\s{2,}/g, ' '); })
+    .filter(function(line) {
+      if (line.length < 14) return false;
+      const normalized = line.toLowerCase();
+      if (seen.has(normalized)) return false;
+      seen.add(normalized);
+      return true;
+    });
+}
+
+function summarizeSteamBlocks(blocks) {
+  const first = blocks[0] || '';
+  if (!first) return '';
+  return first.length > 190 ? first.slice(0, 187).trim() + '…' : first;
+}
+
+function bulletizeSteamBlocks(blocks, summary) {
+  const remaining = blocks.filter(function(block, index) {
+    return index > 0 && block !== summary;
+  });
+
+  if (remaining.length) {
+    return remaining
+      .map(function(block) { return block.replace(/^•\s*/, ''); })
+      .slice(0, 4);
+  }
+
+  return String(summary || '')
+    .split(/(?<=[.!?])\s+|(?<=[a-z0-9]) (?=[A-Z][a-z]{2,})/g)
+    .map(function(line) { return line.trim().replace(/^•\s*/, ''); })
+    .filter(function(line) { return line.length > 18; })
+    .slice(1, 5);
 }
 
 const STATIC_LATEST_CARDS = {
@@ -1001,23 +1105,17 @@ function buildTimelineEntry(item) {
     + '<a href="' + escapeHtml(item.url || 'https://store.steampowered.com/news/app/3160880') + '" target="_blank">' + steamText('readOnSteam') + '</a></div></div></div>';
 }
 
-function extractBulletLines(text) {
-  return cleanSteamText(text)
-    .split(/[\n\r]+|•|·| - /)
-    .map(function(line) { return line.trim(); })
-    .filter(function(line) { return line.length > 12; });
-}
-
 function toDynamicUpdate(item) {
-  const bullets = extractBulletLines(item.contents).slice(0, 4);
-  const desc = cleanSteamText(item.contents).slice(0, 220);
+  const blocks = getSteamTextBlocks(item.contents);
+  const desc = summarizeSteamBlocks(blocks);
+  const bullets = bulletizeSteamBlocks(blocks, desc);
   const versionMatch = (item.title || '').match(/v?\d+\.\d+(?:\.\d+)?/i);
   return {
     type: classifySteamUpdate(item),
     dateLabel: fmtDate(item.date),
     version: versionMatch ? versionMatch[0].toUpperCase() : '',
     title: item.title || steamText('updateFallback'),
-    desc: desc + (cleanSteamText(item.contents).length > 220 ? '…' : ''),
+    desc: desc,
     bullets: bullets,
     url: item.url || 'https://store.steampowered.com/news/app/3160880',
     image: item.image || extractSteamImageFromContents(item.contents || ''),
