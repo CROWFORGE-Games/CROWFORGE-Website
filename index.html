@@ -176,11 +176,10 @@ mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparen
 .game-card-accent{position:absolute;top:0;left:0;right:0;height:1px}
 .game-card.tavern .game-card-accent{background:linear-gradient(to right,transparent,var(--silver),transparent)}
 .game-card.werewolf .game-card-accent{background:linear-gradient(to right,transparent,var(--red-bright),transparent)}
-.game-logo-wrap{width:100%;display:flex;align-items:center;justify-content:flex-start;padding:.5rem 0}
-.game-logo-img{display:block;object-fit:contain;mix-blend-mode:lighten;filter:brightness(1.05);transition:transform .3s,filter .3s}
-.game-card.tavern .game-logo-img{height:110px;width:auto}
-.game-card.werewolf .game-logo-img{height:120px;width:auto}
-.game-card:hover .game-logo-img{transform:scale(1.03);filter:brightness(1.15)}
+.game-media-wrap{position:relative;width:100%;aspect-ratio:920/430;overflow:hidden;border:1px solid rgba(255,255,255,.06);background:#090c11;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)}
+.game-media-wrap::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,14,.02) 0%,rgba(7,10,14,.08) 42%,rgba(7,10,14,.3) 100%);pointer-events:none}
+.game-media-img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .45s ease,filter .45s ease;filter:brightness(.9) saturate(.96)}
+.game-card:hover .game-media-img{transform:scale(1.03);filter:brightness(.98) saturate(1)}
 .game-tags{display:flex;gap:.5rem;flex-wrap:wrap}
 .gtag{font-family:"Raleway",sans-serif;font-size:.65rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .75rem;border:1px solid var(--border);color:var(--text-dim)}
 .gtag.gold{border-color:rgba(245,197,75,.35);color:#f3c85d}
@@ -197,6 +196,13 @@ mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparen
 /* FEATURES */
 #features{padding:9rem 5rem;background:var(--black)}
 .features-wrap{max-width:1200px;margin:0 auto}
+.features-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem;flex-wrap:wrap}
+.feature-switch{display:flex;gap:.7rem;flex-wrap:wrap}
+.feature-switch-btn{display:inline-flex;align-items:center;gap:.75rem;font-family:"Raleway",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.65rem .95rem;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text-dim);cursor:pointer;transition:all .25s}
+.feature-switch-btn:hover{border-color:rgba(168,180,192,.35);color:var(--silver-bright);background:rgba(255,255,255,.05)}
+.feature-switch-btn.active{border-color:rgba(168,180,192,.34);background:rgba(22,28,39,.96);color:var(--white);box-shadow:0 14px 30px rgba(0,0,0,.18)}
+.feature-switch-icon{width:38px;height:38px;display:block;object-fit:cover;object-position:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+.feature-switch-label{display:inline-block}
 .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-top:4.5rem}
 .feat{background:var(--black);padding:2.6rem 2.2rem;transition:background .3s;border-top:2px solid transparent}
 .feat:hover{background:var(--black-2);border-top-color:var(--silver)}
@@ -205,8 +211,7 @@ mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparen
 .feat-text{font-size:1.02rem;color:var(--text-dim);line-height:1.8}
 
 
-/* â”€â”€ UPDATE CARDS â”€â”€ */
-#steam-updates{padding:7rem 5rem;background:var(--black-2)}
+/* UPDATE CARDS */
 .upd-wrap{max-width:1200px;margin:0 auto}
 .upd-head{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:2.5rem;border-bottom:1px solid var(--border);margin-bottom:3.5rem;flex-wrap:wrap;gap:1.5rem}
 .upd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border)}
@@ -215,7 +220,7 @@ mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparen
 .upd-card--major::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--silver),transparent)}
 
 .upd-card-top{display:flex;flex-direction:column}
-.upd-card-img-wrap{display:none}
+.upd-card-img-wrap{display:block;height:172px;overflow:hidden;border-bottom:1px solid rgba(168,180,192,.08)}
 .upd-card-img-wrap--empty{display:none}
 .upd-card-img{width:100%;height:100%;object-fit:cover;object-position:center 30%;filter:brightness(.85) saturate(.8);transition:filter .3s}
 .upd-card:hover .upd-card-img{filter:brightness(.95) saturate(.95)}
@@ -231,7 +236,7 @@ mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparen
 .upd-desc{font-size:.97rem;color:var(--text);line-height:1.8;padding:0 2rem .8rem}
 .upd-list{list-style:none;padding:0 2rem 1.2rem;display:flex;flex-direction:column;gap:.35rem;flex:1}
 .upd-list li{font-size:.93rem;color:var(--text-dim);padding-left:1.1rem;position:relative;line-height:1.65}
-.upd-list li::before{content:"Â·";position:absolute;left:.2rem;color:var(--silver);opacity:.5}
+.upd-list li::before{content:"•";position:absolute;left:.2rem;color:var(--silver);opacity:.5}
 .upd-link{font-family:"Raleway",sans-serif;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-light);text-decoration:none;padding:1.2rem 2rem 1.6rem;border-top:1px solid var(--border);display:block;transition:color .2s;margin-top:auto}
 .upd-link:hover{color:var(--silver-bright)}
 
@@ -499,8 +504,8 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
     <div class="games-grid">
       <div class="game-card tavern">
         <div class="game-card-accent"></div>
-        <div class="game-logo-wrap">
-          <img src="tavern-legends-logo.jpg" class="game-logo-img" alt="Tavern Legends" loading="lazy" decoding="async">
+        <div class="game-media-wrap">
+          <img src="Tavern920x430.png" class="game-media-img" alt="Tavern Legends key art" loading="lazy" decoding="async">
         </div>
         <div class="game-tags">
           <span class="gtag gold">Early Access</span>
@@ -521,8 +526,8 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
       </div>
       <div class="game-card werewolf">
         <div class="game-card-accent"></div>
-        <div class="game-logo-wrap">
-          <img src="werewolf-hunter-logo.jpg" class="game-logo-img" alt="Werewolf Hunter: Night of Horror" loading="lazy" decoding="async">
+        <div class="game-media-wrap">
+          <img src="Werewolf920x430.png" class="game-media-img" alt="Werewolf Hunter: Night of Horror key art" loading="lazy" decoding="async">
         </div>
         <div class="game-tags">
           <span class="gtag red">Coming Soon</span>
@@ -541,28 +546,6 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
           <a href="https://store.steampowered.com/app/4426920/Werewolf_Hunter_Night_of_Horror/" target="_blank" class="btn btn-ghost" style="font-size:.7rem;padding:.75rem 2rem;">View Page</a>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<div class="rule"></div>
-
-<section id="features">
-  <div class="features-wrap">
-    <div>
-      <p class="section-eyebrow">Tavern Legends</p>
-      <h2 class="section-title">What Awaits You</h2>
-    </div>
-    <div class="features-grid">
-      <div class="feat"><div class="feat-num">01</div><div class="feat-heading">Living Medieval Town</div><p class="feat-text">A fully realized 14th-century town with dynamic weather, a real day-night cycle, cozy village squares and your own home. The world reacts to the time of day and season.</p></div>
-      <div class="feat"><div class="feat-num">02</div><div class="feat-heading">Realistic Barkeeping</div><p class="feat-text">Tap drinks, cook meals, sweep floors and wipe tables. Fast service earns tips and loyalty. Let guests wait too long and word spreads fast.</p></div>
-      <div class="feat"><div class="feat-num">03</div><div class="feat-heading">7 Customer Classes</div><p class="feat-text">Beggars, peasants, guards, nobles, mages, princes and kings &mdash; each with unique needs, budgets and social effects. A king&rsquo;s visit can make or break your reputation.</p></div>
-      <div class="feat"><div class="feat-num">04</div><div class="feat-heading">Staff Management</div><p class="feat-text">Hire up to four workers per tavern: cooks, waiters and cleaners. Review applications, set priorities and manage wages to build a team that runs itself.</p></div>
-      <div class="feat"><div class="feat-num">05</div><div class="feat-heading">Custom Building</div><p class="feat-text">Design your layout from scratch. Place seating, bars, kitchens and storage. Decorate with candles, carpets and table settings to improve your tavern&rsquo;s prestige rating.</p></div>
-      <div class="feat"><div class="feat-num">06</div><div class="feat-heading">Recipes &amp; Brewing</div><p class="feat-text">Craft your own menu with a wide selection of ingredients and spices. Brew your own craft beer in the cellar. Quality and variety unlock increasingly prestigious clientele.</p></div>
-      <div class="feat"><div class="feat-num">07</div><div class="feat-heading">Dynamic Weather</div><p class="feat-text">Rain drives people indoors. Sunshine attracts strollers. Thunderstorms change the atmosphere entirely. The world around your tavern is alive and reacts to every condition.</p></div>
-      <div class="feat"><div class="feat-num">08</div><div class="feat-heading">NPC Interaction</div><p class="feat-text">Speak with the townspeople &mdash; the blacksmith, market traders, neighbours. Build relationships with the community that surrounds your tavern.</p></div>
-      <div class="feat"><div class="feat-num">09</div><div class="feat-heading">Twitch Integration</div><p class="feat-text">Let your stream audience participate directly in your tavern run. A first-class feature for content creators who want their community in the thick of it.</p></div>
     </div>
   </div>
 </section>
@@ -638,6 +621,37 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
         <a href="https://store.steampowered.com/news/app/3160880" target="_blank" class="upd-link">Read full patch notes &rarr;</a>
       </div>
 
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section id="features">
+  <div class="features-wrap">
+    <div class="features-head">
+      <div>
+        <p class="section-eyebrow" id="features-eyebrow">Tavern Legends</p>
+        <h2 class="section-title" id="features-title">What Awaits You</h2>
+      </div>
+      <div class="feature-switch" role="tablist" aria-label="Game feature switcher">
+        <button type="button" class="feature-switch-btn active" id="feature-toggle-tavern" data-game="tavern" aria-selected="true">
+          <img src="tavern-legends-logo.jpg" class="feature-switch-icon" alt="" loading="lazy" decoding="async">
+          <span class="feature-switch-label">Tavern Legends</span>
+        </button>
+        <button type="button" class="feature-switch-btn" id="feature-toggle-werewolf" data-game="werewolf" aria-selected="false">
+          <img src="werewolf-hunter-logo.jpg" class="feature-switch-icon" alt="" loading="lazy" decoding="async">
+          <span class="feature-switch-label">Werewolf Hunter</span>
+        </button>
+      </div>
+    </div>
+    <div class="features-grid" id="features-grid">
+      <div class="feat"><div class="feat-num">01</div><div class="feat-heading">Barkeeping</div><p class="feat-text">Serve drinks and meals by hand while managing the daily flow of your tavern.</p></div>
+      <div class="feat"><div class="feat-num">02</div><div class="feat-heading">Staff Management</div><p class="feat-text">Hire cooks, waiters and cleaners, review applicants and manage wages to keep the tavern running smoothly.</p></div>
+      <div class="feat"><div class="feat-num">03</div><div class="feat-heading">Recipes &amp; Brewing</div><p class="feat-text">Create your own menu and brew craft beer in the cellar to attract more demanding guests.</p></div>
+      <div class="feat"><div class="feat-num">04</div><div class="feat-heading">NPC Interaction</div><p class="feat-text">Talk to townspeople, build relationships and make your tavern feel connected to the world around it.</p></div>
+      <div class="feat"><div class="feat-num">05</div><div class="feat-heading">Twitch Integration</div><p class="feat-text">Let your Twitch audience influence tavern events and become part of the experience live.</p></div>
+      <div class="feat"><div class="feat-num">06</div><div class="feat-heading">Custom Building</div><p class="feat-text">Expand and shape your tavern layout with furniture, stations and decoration that fit your playstyle.</p></div>
     </div>
   </div>
 </section>
@@ -740,7 +754,8 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
 const initialLang = new URLSearchParams(window.location.search).get('lang');
 const currentState = {
   lang: initialLang === 'de' || initialLang === 'en' ? initialLang : (localStorage.getItem('siteLang') || 'en'),
-  steamItems: []
+  steamItems: [],
+  featureGame: 'tavern'
 };
 
 // Scroll reveal
@@ -782,8 +797,6 @@ function cleanSteamText(s) {
     .replace(/\s{2,}/g, ' ')
     .trim();
 }
-
-const STATIC_UPDATE_CUTOFF = Date.UTC(2026, 2, 6, 0, 0, 0) / 1000;
 
 const STATIC_LATEST_CARDS = {
   en: [
@@ -872,6 +885,61 @@ function getStaticLatestCards() {
   return STATIC_LATEST_CARDS[currentState.lang === 'de' ? 'de' : 'en'];
 }
 
+const FEATURE_CONTENT = {
+  en: {
+    tavern: {
+      eyebrow: 'Tavern Legends',
+      toggle: 'Tavern Legends',
+      items: [
+        ['Barkeeping', 'Serve drinks and meals by hand while managing the daily flow of your tavern.'],
+        ['Staff Management', 'Hire cooks, waiters and cleaners, review applicants and manage wages to keep the tavern running smoothly.'],
+        ['Recipes & Brewing', 'Create your own menu and brew craft beer in the cellar to attract more demanding guests.'],
+        ['NPC Interaction', 'Talk to townspeople, build relationships and make your tavern feel connected to the world around it.'],
+        ['Twitch Integration', 'Let your Twitch audience influence tavern events and become part of the experience live.'],
+        ['Custom Building', 'Expand and shape your tavern layout with furniture, stations and decoration that fit your playstyle.']
+      ]
+    },
+    werewolf: {
+      eyebrow: 'Werewolf Hunter: Night of Horror',
+      toggle: 'Werewolf Hunter',
+      items: [
+        ['Track the Predator', 'Track a deadly predator through a hostile wilderness and prepare each hunt carefully.'],
+        ['Hunger & Thirst', 'Manage hunger and thirst while surviving long nights in the wild.'],
+        ['DNA & Weaknesses', 'Collect DNA to uncover the werewolf\'s weakness before the next encounter.'],
+        ['Traps & Preparation', 'Set traps and prepare your equipment before confronting the beast.'],
+        ['Barricaded Shelters', 'Barricade shelters and defend yourself between hunts in unsafe territory.'],
+        ['Regenerating Beast', 'Hunt a regenerating monster that grows more dangerous with every night.']
+      ]
+    }
+  },
+  de: {
+    tavern: {
+      eyebrow: 'Tavern Legends',
+      toggle: 'Tavern Legends',
+      items: [
+        ['Barkeeping', 'Zapfe Getr&auml;nke und serviere Mahlzeiten direkt selbst, w&auml;hrend du den Alltag deiner Taverne organisierst.'],
+        ['Personalmanagement', 'Stelle K&ouml;che, Kellner und Reinigungskr&auml;fte ein, pr&uuml;fe Bewerbungen und halte den Betrieb am Laufen.'],
+        ['Rezepte &amp; Brauen', 'Stelle dein eigenes Men&uuml; zusammen und braue Craft-Bier im Keller f&uuml;r anspruchsvollere G&auml;ste.'],
+        ['NPC-Interaktion', 'Sprich mit Stadtbewohnern, baue Beziehungen auf und verbinde deine Taverne mit der Welt drumherum.'],
+        ['Twitch-Integration', 'Lass dein Twitch-Publikum Tavernen-Events beeinflussen und live Teil des Spiels werden.'],
+        ['Individueller Ausbau', 'Erweitere und gestalte das Layout deiner Taverne mit M&ouml;beln, Stationen und Dekoration nach deinem Stil.']
+      ]
+    },
+    werewolf: {
+      eyebrow: 'Werewolf Hunter: Night of Horror',
+      toggle: 'Werewolf Hunter',
+      items: [
+        ['Jagd auf das Biest', 'Verfolge einen t&ouml;dlichen R&auml;uber durch eine feindliche Wildnis und bereite jede Jagd sorgf&auml;ltig vor.'],
+        ['Hunger &amp; Durst', 'Verwalte Hunger und Durst, w&auml;hrend du lange N&auml;chte in der Wildnis &uuml;berstehst.'],
+        ['DNA &amp; Schw&auml;chen', 'Sammle DNA, um die Schw&auml;che des Werwolfs vor der n&auml;chsten Begegnung aufzudecken.'],
+        ['Fallen &amp; Vorbereitung', 'Setze Fallen und bereite deine Ausr&uuml;stung vor, bevor du dem Monster gegen&uuml;bertrittst.'],
+        ['Verbarrikadierte Zufluchten', 'Verbarrikadiere Unterschl&uuml;pfe und verteidige dich zwischen den Jagden in unsicherem Terrain.'],
+        ['Regenerierendes Monster', 'Jage ein regenerierendes Biest, das mit jeder Nacht gef&auml;hrlicher wird.']
+      ]
+    }
+  }
+};
+
 function escapeHtml(str) {
   return String(str || '')
     .replace(/&/g, '&amp;')
@@ -899,7 +967,11 @@ function buildUpdateCard(item) {
     .slice(0, 4)
     .map(function(line) { return '<li>' + escapeHtml(line) + '</li>'; })
     .join('');
+  const image = item.image
+    ? '<div class="upd-card-img-wrap"><img class="upd-card-img" src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.title || steamText('updateFallback')) + '" loading="lazy" decoding="async"></div>'
+    : '';
   return '<div class="' + cardClass + '">'
+    + image
     + '<div class="upd-card-top"><div class="upd-card-meta">'
     + '<span class="' + badgeClass + '">' + badgeText + '</span>'
     + '<span class="upd-date">' + escapeHtml(item.dateLabel) + '</span>'
@@ -948,8 +1020,14 @@ function toDynamicUpdate(item) {
     desc: desc + (cleanSteamText(item.contents).length > 220 ? '…' : ''),
     bullets: bullets,
     url: item.url || 'https://store.steampowered.com/news/app/3160880',
+    image: item.image || extractSteamImageFromContents(item.contents || ''),
     date: item.date || 0
   };
+}
+
+function extractSteamImageFromContents(contents) {
+  const match = String(contents || '').match(/\{STEAM_CLAN_IMAGE\}\/([^\s"'<>]+)/i);
+  return match ? 'https://clan.fastly.steamstatic.com/images/' + match[1] : '';
 }
 
 function renderLatestCards(dynamicItems) {
@@ -1010,43 +1088,24 @@ function renderSteamFeed(items) {
 }
 
 function handleSteamNewsResponse(data) {
-  currentState.steamItems = (data.appnews && data.appnews.newsitems) ? data.appnews.newsitems : [];
-  const dynamicItems = currentState.steamItems
-    .filter(function(item) { return item.date > STATIC_UPDATE_CUTOFF; })
-    .map(toDynamicUpdate);
+  currentState.steamItems = (data.appnews && data.appnews.newsitems) ? data.appnews.newsitems.slice().sort(function(a, b) { return (b.date || 0) - (a.date || 0); }) : [];
+  const dynamicItems = currentState.steamItems.map(toDynamicUpdate);
   renderLatestCards(dynamicItems);
   prependNewTimelineItems(dynamicItems);
-  renderLatestCards(currentState.steamItems
-    .filter(function(item) { return item.date > STATIC_UPDATE_CUTOFF; })
-    .map(toDynamicUpdate));
   renderSteamFeed(currentState.steamItems);
   openLegalFromHash();
 }
 
 (function fetchSteamNews() {
-  const APPID = 3160880;
-  const PROXY = 'https://api.allorigins.win/get?url=';
-  const STEAM = 'https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=' + APPID + '&count=8&maxlength=280&format=json';
-
-  fetch(PROXY + encodeURIComponent(STEAM))
+  fetch('/api/steam-news?appid=3160880&count=8')
     .then(function(r) {
-      if (!r.ok) throw new Error('Steam proxy failed');
+      if (!r.ok) throw new Error('Steam API failed');
       return r.json();
     })
-    .then(function(outer) {
-      handleSteamNewsResponse(JSON.parse(outer.contents));
-    })
+    .then(handleSteamNewsResponse)
     .catch(function() {
-      fetch(STEAM)
-        .then(function(r) {
-          if (!r.ok) throw new Error('Steam direct failed');
-          return r.json();
-        })
-        .then(handleSteamNewsResponse)
-        .catch(function() {
-          renderLatestCards([]);
-          renderSteamFeed([]);
-        });
+      renderLatestCards([]);
+      renderSteamFeed([]);
     });
 })();
 
@@ -1406,21 +1465,15 @@ function setLang(lang) {
   setHtml('.hero-rule-mark', t.heroRule);
   setHtml('.hero-tagline', t.tagline);
 
-  setAllHtml('.section-eyebrow', [
-    t.gamesEyebrow,
-    t.featuresEyebrow,
-    t.updatesEyebrow,
-    t.chronicleEyebrow,
-    t.studioEyebrow
-  ]);
-
-  setAllHtml('.section-title', [
-    t.gamesTitle,
-    t.featuresTitle,
-    t.updatesTitle,
-    t.chronicleTitle,
-    t.studioTitle
-  ]);
+  setHtml('#games .section-eyebrow', t.gamesEyebrow);
+  setHtml('#games .section-title', t.gamesTitle);
+  setHtml('#steam-updates .section-eyebrow', t.updatesEyebrow);
+  setHtml('#steam-updates .section-title', t.updatesTitle);
+  setHtml('#features-title', t.featuresTitle);
+  setHtml('#updates .section-eyebrow', t.chronicleEyebrow);
+  setHtml('#updates .section-title', t.chronicleTitle);
+  setHtml('#studio .section-eyebrow', t.studioEyebrow);
+  setHtml('#studio .section-title', t.studioTitle);
 
   setHtml('#games .games-header-text p', t.gamesDesc);
 
@@ -1452,17 +1505,7 @@ function setLang(lang) {
   if (studioPs[1]) studioPs[1].innerHTML = t.studioP2;
   if (studioPs[2]) studioPs[2].innerHTML = t.studioP3;
 
-  const features = [
-    [t.feat1h, t.feat1t],[t.feat2h, t.feat2t],[t.feat3h, t.feat3t],
-    [t.feat4h, t.feat4t],[t.feat5h, t.feat5t],[t.feat6h, t.feat6t],
-    [t.feat7h, t.feat7t],[t.feat8h, t.feat8t],[t.feat9h, t.feat9t]
-  ];
-  document.querySelectorAll('.feat').forEach(function(feat, i) {
-    const heading = feat.querySelector('.feat-heading');
-    const text = feat.querySelector('.feat-text');
-    if (heading && features[i]) heading.innerHTML = features[i][0];
-    if (text && features[i]) text.innerHTML = features[i][1];
-  });
+  renderFeatureCards();
 
   const footerLabels = document.querySelectorAll('.footer-col-label');
   if (footerLabels[0]) footerLabels[0].innerHTML = t.footerGames;
@@ -1481,8 +1524,42 @@ function setLang(lang) {
   openLegalFromHash();
 }
 
+function renderFeatureCards() {
+  const lang = currentState.lang === 'de' ? 'de' : 'en';
+  const game = currentState.featureGame === 'werewolf' ? 'werewolf' : 'tavern';
+  const dataset = FEATURE_CONTENT[lang][game];
+  const grid = document.getElementById('features-grid');
+  if (!dataset || !grid) return;
+
+  const eyebrow = document.getElementById('features-eyebrow');
+  if (eyebrow) eyebrow.innerHTML = dataset.eyebrow;
+
+  document.querySelectorAll('.feature-switch-btn').forEach(function(btn) {
+    const isActive = btn.dataset.game === game;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    const label = btn.querySelector('.feature-switch-label');
+    if (label) {
+      label.textContent = btn.dataset.game === 'tavern'
+        ? FEATURE_CONTENT[lang].tavern.toggle
+        : FEATURE_CONTENT[lang].werewolf.toggle;
+    }
+  });
+
+  grid.innerHTML = dataset.items.map(function(item, index) {
+    const num = String(index + 1).padStart(2, '0');
+    return '<div class="feat"><div class="feat-num">' + num + '</div><div class="feat-heading">' + item[0] + '</div><p class="feat-text">' + item[1] + '</p></div>';
+  }).join('');
+}
+
 setLang(currentState.lang);
 window.setLang = setLang;
+document.querySelectorAll('.feature-switch-btn').forEach(function(button) {
+  button.addEventListener('click', function() {
+    currentState.featureGame = button.dataset.game === 'werewolf' ? 'werewolf' : 'tavern';
+    renderFeatureCards();
+  });
+});
 document.getElementById('nav-toggle')?.addEventListener('click', function() {
   const nav = document.getElementById('primary-nav');
   if (!nav) return;

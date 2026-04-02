@@ -8,6 +8,8 @@ const ROOT = __dirname;
 const COOLDOWN_SECONDS = 45;
 const MIN_ELAPSED_MS = 3500;
 const rateLimitStore = new Map();
+const steamNewsCache = new Map();
+const STEAM_NEWS_CACHE_MS = 10 * 60 * 1000;
 
 const MIME_TYPES = {
   ".html": "text/html; charset=UTF-8",
@@ -54,6 +56,97 @@ function cleanRateLimitStore(nowSeconds) {
       rateLimitStore.delete(ip);
     }
   }
+}
+
+function getCachedSteamNews(cacheKey) {
+  const cached = steamNewsCache.get(cacheKey);
+  if (!cached) return null;
+  if (Date.now() - cached.createdAt > STEAM_NEWS_CACHE_MS) {
+    steamNewsCache.delete(cacheKey);
+    return null;
+  }
+  return cached.payload;
+}
+
+function setCachedSteamNews(cacheKey, payload) {
+  steamNewsCache.set(cacheKey, {
+    createdAt: Date.now(),
+    payload
+  });
+}
+
+function extractSteamImageFromContents(contents) {
+  const match = String(contents || "").match(/\{STEAM_CLAN_IMAGE\}\/([^\s"'<>]+)/i);
+  return match ? `https://clan.fastly.steamstatic.com/images/${match[1]}` : "";
+}
+
+function extractMetaImage(html) {
+  const source = String(html || "");
+  const patterns = [
+    /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
+    /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i,
+    /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,
+    /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i
+  ];
+  for (const pattern of patterns) {
+    const match = source.match(pattern);
+    if (match && match[1]) return match[1];
+  }
+  return "";
+}
+
+async function resolveSteamNewsImage(item) {
+  const fromContents = extractSteamImageFromContents(item.contents);
+  if (fromContents) return fromContents;
+  if (!item.url) return "";
+  try {
+    const response = await fetch(item.url, {
+      headers: {
+        "User-Agent": "CROWFORGE Website/1.0"
+      }
+    });
+    if (!response.ok) return "";
+    const html = await response.text();
+    return extractMetaImage(html);
+  } catch {
+    return "";
+  }
+}
+
+async function fetchSteamNews(appId, count) {
+  const cacheKey = `${appId}:${count}`;
+  const cached = getCachedSteamNews(cacheKey);
+  if (cached) return cached;
+
+  const apiUrl = `https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=${encodeURIComponent(appId)}&count=${encodeURIComponent(count)}&maxlength=500&format=json`;
+  const response = await fetch(apiUrl, {
+    headers: {
+      "User-Agent": "CROWFORGE Website/1.0"
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch Steam news.");
+  }
+
+  const data = await response.json();
+  const items = (data.appnews && Array.isArray(data.appnews.newsitems)) ? data.appnews.newsitems : [];
+  const enrichedItems = await Promise.all(items.map(async (item, index) => {
+    const image = index < 4 ? await resolveSteamNewsImage(item) : extractSteamImageFromContents(item.contents);
+    return {
+      ...item,
+      image
+    };
+  }));
+
+  const payload = {
+    appnews: {
+      ...(data.appnews || {}),
+      newsitems: enrichedItems
+    }
+  };
+  setCachedSteamNews(cacheKey, payload);
+  return payload;
 }
 
 async function readJsonBody(req) {
@@ -235,6 +328,22 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 405, { message: "Method not allowed." });
     }
     return handleServicesRequest(req, res);
+  }
+
+  if (pathname === "/api/steam-news") {
+    if (req.method !== "GET") {
+      return sendJson(res, 405, { message: "Method not allowed." });
+    }
+    try {
+      const appId = String(requestUrl.searchParams.get("appid") || "3160880").trim();
+      const count = Math.max(1, Math.min(12, Number(requestUrl.searchParams.get("count") || 8) || 8));
+      const payload = await fetchSteamNews(appId, count);
+      return sendJson(res, 200, payload);
+    } catch (error) {
+      return sendJson(res, 502, {
+        message: error instanceof Error ? error.message : "Steam news unavailable."
+      });
+    }
   }
 
   if (req.method !== "GET" && req.method !== "HEAD") {
