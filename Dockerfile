@@ -12,6 +12,8 @@ COPY CROWFORGE_Games_Translucent.png ./
 COPY CROWFORGE_Websites.png ./
 COPY tavern-legends-logo.jpg ./
 COPY werewolf-hunter-logo.jpg ./
+COPY Tavern920x430.png ./
+COPY Werewolf920x430.png ./
 
 ENV NODE_ENV=production
 ENV PORT=8080
