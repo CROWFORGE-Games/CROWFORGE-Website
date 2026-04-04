@@ -221,21 +221,20 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 <script>
 (function() {
   var SHEET_ID = '1qh8yL1pgwBEGJ10cJZvfYOJhZKdeCrc5f9pkJ31nYy4';
-  var PROXY    = 'https://api.allorigins.win/get?url=';
-  var CSV_URL  = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/export?format=csv&gid=0';
 
   function fmt(n) {
     return n.toLocaleString('en-US');
   }
 
   function parseCSV(text) {
-    var lines = text.trim().split('\n');
+    var lines = text.replace(/^\uFEFF/, '').trim().split(/\r?\n/);
     var players = [];
     for (var i = 1; i < lines.length; i++) {  // skip header row
       var cols = lines[i].split(',');
       var name  = (cols[0] || '').trim().replace(/^"|"$/g,'');
       var beers = parseInt((cols[1] || '0').trim().replace(/^"|"$/g,''), 10);
-      if (name && !isNaN(beers) && beers > 0) {
+      var normalizedName = name.toLowerCase();
+      if (name && normalizedName !== 'steamname' && normalizedName !== 'steam name' && !isNaN(beers) && beers > 0) {
         players.push({name: name, beers: beers});
       }
     }
@@ -315,26 +314,15 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
     el.textContent = msg;
   }
 
-  // Fetch via allorigins proxy (handles CORS)
-  fetch(PROXY + encodeURIComponent(CSV_URL))
+  fetch('/api/leaderboard?sheetId=' + encodeURIComponent(SHEET_ID))
     .then(function(r) { if (!r.ok) throw new Error('Network error'); return r.json(); })
-    .then(function(outer) {
-      var players = parseCSV(outer.contents);
+    .then(function(payload) {
+      var players = Array.isArray(payload.players) ? payload.players : [];
       if (!players.length) throw new Error('No data found');
       render(players);
     })
-    .catch(function(err) {
-      // Fallback: try direct fetch
-      fetch(CSV_URL)
-        .then(function(r) { return r.text(); })
-        .then(function(text) {
-          var players = parseCSV(text);
-          if (!players.length) throw new Error('No data');
-          render(players);
-        })
-        .catch(function() {
-          showError('Could not load leaderboard. Please try again later.');
-        });
+    .catch(function() {
+      showError('Could not load leaderboard. Please try again later.');
     });
 })();
 </script>

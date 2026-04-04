@@ -9,7 +9,9 @@ const COOLDOWN_SECONDS = 45;
 const MIN_ELAPSED_MS = 3500;
 const rateLimitStore = new Map();
 const steamNewsCache = new Map();
+const leaderboardCache = new Map();
 const STEAM_NEWS_CACHE_MS = 10 * 60 * 1000;
+const LEADERBOARD_CACHE_MS = 5 * 60 * 1000;
 
 const MIME_TYPES = {
   ".html": "text/html; charset=UTF-8",
@@ -70,6 +72,23 @@ function getCachedSteamNews(cacheKey) {
 
 function setCachedSteamNews(cacheKey, payload) {
   steamNewsCache.set(cacheKey, {
+    createdAt: Date.now(),
+    payload
+  });
+}
+
+function getCachedLeaderboard(cacheKey) {
+  const cached = leaderboardCache.get(cacheKey);
+  if (!cached) return null;
+  if (Date.now() - cached.createdAt > LEADERBOARD_CACHE_MS) {
+    leaderboardCache.delete(cacheKey);
+    return null;
+  }
+  return cached.payload;
+}
+
+function setCachedLeaderboard(cacheKey, payload) {
+  leaderboardCache.set(cacheKey, {
     createdAt: Date.now(),
     payload
   });
@@ -146,6 +165,51 @@ async function fetchSteamNews(appId, count) {
     }
   };
   setCachedSteamNews(cacheKey, payload);
+  return payload;
+}
+
+function parseLeaderboardCsv(text) {
+  const lines = String(text || "")
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/)
+    .filter(Boolean);
+
+  const players = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(",");
+    const name = String(cols[0] || "").trim().replace(/^"|"$/g, "");
+    const beers = Number.parseInt(String(cols[1] || "0").trim().replace(/^"|"$/g, ""), 10);
+    const normalizedName = name.toLowerCase();
+    if (!name || normalizedName === "steamname" || normalizedName === "steam name") continue;
+    if (!Number.isFinite(beers) || beers <= 0) continue;
+    players.push({ name, beers });
+  }
+
+  players.sort((a, b) => b.beers - a.beers);
+  return players;
+}
+
+async function fetchLeaderboard(sheetId) {
+  const cacheKey = String(sheetId || "default");
+  const cached = getCachedLeaderboard(cacheKey);
+  if (cached) return cached;
+
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${encodeURIComponent(sheetId)}/export?format=csv&gid=0`;
+  const response = await fetch(csvUrl, {
+    headers: {
+      "User-Agent": "CROWFORGE Website/1.0"
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch leaderboard.");
+  }
+
+  const text = await response.text();
+  const payload = {
+    players: parseLeaderboardCsv(text)
+  };
+  setCachedLeaderboard(cacheKey, payload);
   return payload;
 }
 
@@ -342,6 +406,21 @@ const server = http.createServer(async (req, res) => {
     } catch (error) {
       return sendJson(res, 502, {
         message: error instanceof Error ? error.message : "Steam news unavailable."
+      });
+    }
+  }
+
+  if (pathname === "/api/leaderboard") {
+    if (req.method !== "GET") {
+      return sendJson(res, 405, { message: "Method not allowed." });
+    }
+    try {
+      const sheetId = String(requestUrl.searchParams.get("sheetId") || "1qh8yL1pgwBEGJ10cJZvfYOJhZKdeCrc5f9pkJ31nYy4").trim();
+      const payload = await fetchLeaderboard(sheetId);
+      return sendJson(res, 200, payload);
+    } catch (error) {
+      return sendJson(res, 502, {
+        message: error instanceof Error ? error.message : "Leaderboard unavailable."
       });
     }
   }

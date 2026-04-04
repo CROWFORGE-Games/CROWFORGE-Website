@@ -17,8 +17,6 @@
 <meta name="twitter:image" content="https://www.crowforge-games.com/CROWFORGE_Games_Translucent.png">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://www.crowforge-games.com/">
-<link rel="alternate" hreflang="en" href="https://www.crowforge-games.com/?lang=en">
-<link rel="alternate" hreflang="de" href="https://www.crowforge-games.com/?lang=de">
 <link rel="alternate" hreflang="x-default" href="https://www.crowforge-games.com/">
 <link rel="preload" as="image" href="CROWFORGE_Games_Translucent.png" fetchpriority="high">
 <script type="application/ld+json">
@@ -113,13 +111,25 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .nav-right{display:flex;align-items:center}
 
 /* HERO */
-#hero{display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden;padding:0 2rem 3.6rem;padding-top:70px}
-.hero-bg{position:absolute;inset:0;background:
+#hero{--bg-shift-x:0px;--bg-shift-y:0px;--banner-shift-x:0px;--banner-shift-y:0px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden;padding:0 2rem 7.5rem;padding-top:70px}
+#hero::after{content:"";position:absolute;left:-34%;right:-34%;bottom:-10%;height:36%;z-index:0;pointer-events:none;background:
+radial-gradient(ellipse at 4% 92%,rgba(8,9,11,.92) 0%,rgba(8,9,11,.72) 10%,rgba(8,9,11,0) 28%),
+radial-gradient(ellipse at 14% 68%,rgba(8,9,11,.94) 0%,rgba(8,9,11,.74) 11%,rgba(8,9,11,0) 30%),
+radial-gradient(ellipse at 24% 88%,rgba(8,9,11,.88) 0%,rgba(8,9,11,.66) 10%,rgba(8,9,11,0) 27%),
+radial-gradient(ellipse at 37% 58%,rgba(8,9,11,.96) 0%,rgba(8,9,11,.76) 12%,rgba(8,9,11,0) 31%),
+radial-gradient(ellipse at 49% 95%,rgba(8,9,11,.9) 0%,rgba(8,9,11,.68) 10%,rgba(8,9,11,0) 28%),
+radial-gradient(ellipse at 61% 64%,rgba(8,9,11,.96) 0%,rgba(8,9,11,.76) 12%,rgba(8,9,11,0) 31%),
+radial-gradient(ellipse at 72% 90%,rgba(8,9,11,.9) 0%,rgba(8,9,11,.68) 10%,rgba(8,9,11,0) 28%),
+radial-gradient(ellipse at 83% 60%,rgba(8,9,11,.95) 0%,rgba(8,9,11,.74) 11%,rgba(8,9,11,0) 30%),
+radial-gradient(ellipse at 94% 86%,rgba(8,9,11,.9) 0%,rgba(8,9,11,.68) 10%,rgba(8,9,11,0) 28%),
+linear-gradient(180deg,rgba(8,9,11,0) 0%,rgba(8,9,11,.03) 14%,rgba(8,9,11,.12) 28%,rgba(8,9,11,.34) 48%,rgba(8,9,11,.66) 74%,var(--black) 100%);
+filter:blur(18px);opacity:1;animation:fogDrift 7.8s ease-in-out infinite}
+.hero-bg{position:absolute;inset:-20px;background:
 radial-gradient(circle at 14% 18%,rgba(123,146,202,.22) 0%,rgba(123,146,202,.09) 16%,transparent 34%),
 radial-gradient(circle at 28% 42%,rgba(101,122,175,.16) 0%,rgba(101,122,175,.06) 12%,transparent 28%),
 radial-gradient(circle at 78% 38%,rgba(117,135,182,.14) 0%,rgba(117,135,182,.05) 13%,transparent 30%),
 radial-gradient(circle at 68% 78%,rgba(132,150,201,.13) 0%,rgba(132,150,201,.05) 16%,transparent 34%),
-linear-gradient(180deg,#010203 0%,#05070b 24%,#0c1119 62%,#070a10 100%)}
+linear-gradient(180deg,#010203 0%,#05070b 24%,#0c1119 62%,#070a10 100%);transform:translate3d(var(--bg-shift-x),var(--bg-shift-y),0);transition:transform .45s cubic-bezier(.22,.61,.36,1);will-change:transform}
 .hero-bg::before{content:"";position:absolute;inset:0;background:
 radial-gradient(ellipse at 14% 18%,rgba(212,226,255,.15),transparent 20%),
 radial-gradient(ellipse at 24% 34%,rgba(204,220,255,.13),transparent 18%),
@@ -130,17 +140,16 @@ radial-gradient(ellipse at 86% 20%,rgba(214,228,255,.14),transparent 20%),
 radial-gradient(ellipse at 76% 36%,rgba(202,218,255,.12),transparent 18%),
 radial-gradient(ellipse at 68% 54%,rgba(188,208,255,.1),transparent 16%);
 filter:blur(30px);opacity:.3;will-change:opacity,filter,transform;animation:stormFlashRight 11.5s linear 4.2s infinite}
-.hero-grid{position:absolute;inset:0;background:
+.hero-grid{position:absolute;inset:-14px;background:
 radial-gradient(ellipse at center 68%,rgba(255,255,255,.03),transparent 55%),
 linear-gradient(180deg,transparent 0%,rgba(5,7,11,.12) 100%);
-mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparent)}
+mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparent);transform:translate3d(calc(var(--bg-shift-x) * .65),calc(var(--bg-shift-y) * .65),0);transition:transform .45s cubic-bezier(.22,.61,.36,1);will-change:transform}
 
 /* Banner: trim transparent padding visually without editing the source image */
 .hero-banner-wrap{position:relative;z-index:1;width:min(48vw,1000px);max-width:1000px;margin:0 auto 1.15rem;display:flex;justify-content:center;overflow:hidden;filter:drop-shadow(0 34px 56px rgba(0,0,0,.34));animation:heroFadeIn 1.2s ease both;will-change:filter}
 .hero-banner-wrap::before{content:"";position:absolute;inset:14% 10% 18%;background:radial-gradient(circle,rgba(92,118,170,.16),transparent 66%);filter:blur(42px);opacity:.8;pointer-events:none;animation:stormLogoGlowLeft 10.5s linear 1s infinite}
 .hero-banner-wrap::after{content:"";position:absolute;left:18%;right:18%;bottom:4%;height:20%;background:radial-gradient(ellipse at center,rgba(168,180,192,.14),transparent 72%);filter:blur(18px);opacity:.7;pointer-events:none;animation:stormLogoGlowRight 11.5s linear 4.2s infinite}
-.hero-banner-img{position:relative;width:100%;height:auto;display:block;background:transparent;margin:-8% 0 -10%;will-change:filter;animation:stormLogoPulseLeft 10.5s linear 1s infinite,stormLogoPulseRight 11.5s linear 4.2s infinite}
-.hero-raven-eye{position:absolute;left:44.74%;top:14.4%;width:.95%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(255,132,132,.98) 0%,rgba(228,40,40,.95) 36%,rgba(126,0,0,.36) 68%,transparent 100%);opacity:0;pointer-events:none;filter:blur(.12px) drop-shadow(0 0 0 rgba(255,70,70,0));transform:translate(-50%,-50%) scale(.82);animation:ravenEyeGlow 2.15s ease .72s 1 both}
+.hero-banner-img{position:relative;width:100%;height:auto;display:block;background:transparent;margin:-8% 0 -10%;transform:translate3d(var(--banner-shift-x),var(--banner-shift-y),0) scale(1.016);transition:transform .45s cubic-bezier(.22,.61,.36,1);will-change:filter,transform;animation:stormLogoPulseLeft 10.5s linear 1s infinite,stormLogoPulseRight 11.5s linear 4.2s infinite}
 
 .hero-inner{position:relative;z-index:1;max-width:860px;padding:0 1rem}
 .hero-rule{display:flex;align-items:center;justify-content:center;gap:1.2rem;margin-bottom:.9rem;animation:fadeIn .8s ease both}
@@ -347,6 +356,13 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes heroFadeIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes heroSocialIn{from{opacity:0;transform:translateX(-12px) translateY(6px)}to{opacity:1;transform:translateX(0) translateY(0)}}
+@keyframes fogDrift{
+  0%{transform:translate3d(-8%,1.2%,0) scaleX(1.02) scaleY(1)}
+  18%{transform:translate3d(-2.5%,-2.8%,0) scaleX(1.14) scaleY(1.12)}
+  42%{transform:translate3d(4.5%,1.8%,0) scaleX(1.08) scaleY(.9)}
+  67%{transform:translate3d(9%,-1.6%,0) scaleX(1.18) scaleY(1.16)}
+  100%{transform:translate3d(-7%,1%,0) scaleX(1.02) scaleY(1)}
+}
 @keyframes stormFlashLeft{
   0%{opacity:.28;filter:blur(30px) brightness(1);transform:translate3d(0,0,0)}
   2.2%{opacity:.74;filter:blur(28px) brightness(1.35);transform:translate3d(-.8%, -1.2%, 0)}
@@ -413,14 +429,6 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
   0%,20%,22%,44%,46%,70%,72%,100%{opacity:.7;filter:blur(18px) brightness(1)}
   21.3%,45.1%,70.9%{opacity:.88;filter:blur(21px) brightness(1.18)}
   21.8%,45.6%,71.4%{opacity:.74;filter:blur(18px) brightness(1.03)}
-}
-@keyframes ravenEyeGlow{
-  0%,18%,100%{opacity:0;transform:translate(-50%,-50%) scale(.82);filter:blur(.2px) drop-shadow(0 0 0 rgba(255,70,70,0))}
-  24%{opacity:.42;transform:translate(-50%,-50%) scale(1);filter:blur(.2px) drop-shadow(0 0 6px rgba(255,64,64,.18))}
-  31%{opacity:1;transform:translate(-50%,-50%) scale(1.08);filter:blur(.1px) drop-shadow(0 0 16px rgba(255,54,54,.5))}
-  40%{opacity:.72;transform:translate(-50%,-50%) scale(1.02);filter:blur(.15px) drop-shadow(0 0 10px rgba(255,54,54,.32))}
-  48%{opacity:.94;transform:translate(-50%,-50%) scale(1.06);filter:blur(.1px) drop-shadow(0 0 18px rgba(255,54,54,.56))}
-  62%{opacity:.18;transform:translate(-50%,-50%) scale(.94);filter:blur(.2px) drop-shadow(0 0 4px rgba(255,54,54,.12))}
 }
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .75s cubic-bezier(.25,.46,.45,.94),transform .75s cubic-bezier(.25,.46,.45,.94)}
 .reveal.visible{opacity:1;transform:translateY(0)}
@@ -522,7 +530,6 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
   <div class="hero-grid"></div>
   <div class="hero-banner-wrap">
     <img src="CROWFORGE_Games_Translucent.png" class="hero-banner-img" alt="CrowForge Games" fetchpriority="high" decoding="async">
-    <span class="hero-raven-eye" aria-hidden="true"></span>
   </div>
   <div class="hero-inner">
     <div class="hero-rule">
@@ -808,9 +815,19 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script>
-const initialLang = new URLSearchParams(window.location.search).get('lang');
+const urlParams = new URLSearchParams(window.location.search);
+const initialLang = urlParams.get('lang');
+const storedLang = localStorage.getItem('siteLang');
+const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+const detectedLang = browserLang.startsWith('de') ? 'de' : 'en';
+if (initialLang === 'de' || initialLang === 'en') {
+  const cleanUrl = window.location.pathname + window.location.hash;
+  history.replaceState(null, '', cleanUrl);
+}
 const currentState = {
-  lang: initialLang === 'de' || initialLang === 'en' ? initialLang : (localStorage.getItem('siteLang') || 'en'),
+  lang: initialLang === 'de' || initialLang === 'en'
+    ? initialLang
+    : (storedLang === 'de' || storedLang === 'en' ? storedLang : detectedLang),
   steamItems: [],
   featureGame: 'tavern'
 };
@@ -1549,9 +1566,6 @@ function setAllHtml(selector, values) {
 function setLang(lang) {
   currentState.lang = lang;
   localStorage.setItem('siteLang', lang);
-  const url = new URL(window.location.href);
-  url.searchParams.set('lang', lang);
-  history.replaceState(null, '', url.toString());
   document.documentElement.lang = lang;
   document.getElementById('btn-en')?.classList.toggle('active', lang === 'en');
   document.getElementById('btn-de')?.classList.toggle('active', lang === 'de');
@@ -1658,6 +1672,26 @@ document.querySelectorAll('.feature-switch-btn').forEach(function(button) {
     renderFeatureCards();
   });
 });
+if (window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const hero = document.getElementById('hero');
+  if (hero) {
+    hero.addEventListener('pointermove', function(event) {
+      const rect = hero.getBoundingClientRect();
+      const normalizedX = (event.clientX - rect.left) / rect.width - 0.5;
+      const normalizedY = (event.clientY - rect.top) / rect.height - 0.5;
+      hero.style.setProperty('--bg-shift-x', (normalizedX * 38).toFixed(2) + 'px');
+      hero.style.setProperty('--bg-shift-y', (normalizedY * 28).toFixed(2) + 'px');
+      hero.style.setProperty('--banner-shift-x', (normalizedX * 8).toFixed(2) + 'px');
+      hero.style.setProperty('--banner-shift-y', (normalizedY * 6).toFixed(2) + 'px');
+    });
+    hero.addEventListener('pointerleave', function() {
+      hero.style.setProperty('--bg-shift-x', '0px');
+      hero.style.setProperty('--bg-shift-y', '0px');
+      hero.style.setProperty('--banner-shift-x', '0px');
+      hero.style.setProperty('--banner-shift-y', '0px');
+    });
+  }
+}
 document.getElementById('nav-toggle')?.addEventListener('click', function() {
   const nav = document.getElementById('primary-nav');
   if (!nav) return;

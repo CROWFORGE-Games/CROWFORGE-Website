@@ -189,20 +189,39 @@ nav{
 .lang-btn.active{color:var(--silver-bright);border-color:rgba(168,180,192,.3)}
 
 .hero{
+  --bg-shift-x:0px;
+  --bg-shift-y:0px;
+  --banner-shift-x:0px;
+  --banner-shift-y:0px;
   position:relative;
   overflow:hidden;
-  padding:0 4rem 4.8rem;
+  padding:0 4rem 5.8rem;
   padding-top:70px;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  left:4rem;
+  right:4rem;
+  bottom:0;
+  height:1px;
+  z-index:1;
+  pointer-events:none;
+  background:linear-gradient(to right,transparent,rgba(168,180,192,.24),rgba(212,170,98,.16),rgba(168,180,192,.24),transparent);
+  box-shadow:0 14px 42px rgba(8,12,18,.42);
 }
 .hero-bg{
   position:absolute;
-  inset:0;
+  inset:-20px;
   background:
     radial-gradient(circle at 14% 18%,rgba(123,146,202,.22) 0%,rgba(123,146,202,.09) 16%,transparent 34%),
     radial-gradient(circle at 28% 42%,rgba(101,122,175,.16) 0%,rgba(101,122,175,.06) 12%,transparent 28%),
     radial-gradient(circle at 78% 38%,rgba(117,135,182,.14) 0%,rgba(117,135,182,.05) 13%,transparent 30%),
     radial-gradient(circle at 68% 78%,rgba(132,150,201,.13) 0%,rgba(132,150,201,.05) 16%,transparent 34%),
     linear-gradient(180deg,#010203 0%,#05070b 24%,#0c1119 62%,#070a10 100%);
+  transform:translate3d(var(--bg-shift-x),var(--bg-shift-y),0);
+  transition:transform .45s cubic-bezier(.22,.61,.36,1);
+  will-change:transform;
 }
 .hero-bg::before{
   content:"";
@@ -232,11 +251,14 @@ nav{
 }
 .hero-grid{
   position:absolute;
-  inset:0;
+  inset:-14px;
   background:
     radial-gradient(ellipse at center 68%,rgba(255,255,255,.03),transparent 55%),
     linear-gradient(180deg,transparent 0%,rgba(5,7,11,.12) 100%);
   mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparent);
+  transform:translate3d(calc(var(--bg-shift-x) * .65),calc(var(--bg-shift-y) * .65),0);
+  transition:transform .45s cubic-bezier(.22,.61,.36,1);
+  will-change:transform;
 }
 .hero-shell{
   position:relative;
@@ -256,6 +278,8 @@ nav{
   margin-bottom:1.1rem;
 }
 .hero-banner-wrap{
+  --banner-shift-x:0px;
+  --banner-shift-y:0px;
   position:relative;
   z-index:1;
   width:min(48vw,1000px);
@@ -298,6 +322,8 @@ nav{
   display:block;
   background:transparent;
   margin:-8% 0 -10%;
+  transform:translate3d(var(--banner-shift-x),var(--banner-shift-y),0) scale(1.016);
+  transition:transform .45s cubic-bezier(.22,.61,.36,1);
   will-change:filter;
   animation:stormLogoPulseLeft 10.5s linear 1s infinite,stormLogoPulseRight 11.5s linear 4.2s infinite;
 }
@@ -443,6 +469,9 @@ nav{
 .section{
   padding:0 4rem 5rem;
 }
+.section:first-of-type{padding-top:1.2rem}
+.section:first-of-type .section-head{padding-top:3rem}
+.eyebrow:empty{display:none}
 .wrap{max-width:1240px;margin:0 auto}
 .section-head{
   display:flex;
@@ -1421,7 +1450,7 @@ footer{
   <div class="wrap">
     <div class="section-head">
       <div>
-        <p class="eyebrow">Angebote</p>
+        <p class="eyebrow"></p>
         <h2>Pakete f&uuml;r unterschiedliche<br>Projektgr&ouml;&szlig;en</h2>
       </div>
       <p>Jedes Paket deckt einen anderen Bedarf ab: vom schnellen Auftritt bis zur individuellen Plattform mit Login, Datenbank oder App-Anbindung.</p>
@@ -2030,7 +2059,10 @@ updateRequestSummary();
   const summaryMaintenance2 = document.getElementById('summary-maintenance');
   const summaryAddons2 = document.getElementById('summary-addons');
   const requestSubmit2 = document.getElementById('request-submit');
-  let currentLang2 = localStorage.getItem('siteLang') || 'de';
+  const storedLang2 = localStorage.getItem('siteLang');
+  const browserLang2 = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+  const detectedLang2 = browserLang2.startsWith('de') ? 'de' : 'en';
+  let currentLang2 = storedLang2 === 'de' || storedLang2 === 'en' ? storedLang2 : detectedLang2;
 
   function text(node) {
     return node ? node.textContent.trim() : '';
@@ -2195,7 +2227,7 @@ updateRequestSummary();
       heroLead: 'I create digital solutions that look modern, load fast, guide customers and can grow into booking systems, dashboards or web apps when needed.',
       heroPackages: ['Starter', 'Business', 'Pro', 'Custom'],
       heroButtons: ['Request project', 'View packages'],
-      packagesHead: ['Offers', 'Packages for different<br>project sizes', 'Each package covers a different need: from a fast online presence to an individual platform with login, database or app integration.'],
+      packagesHead: ['', 'Packages for different<br>project sizes', 'Each package covers a different need: from a fast online presence to an individual platform with login, database or app integration.'],
       priceCards: [
         { badge: 'Starter', tier: 'Starter', title: 'One-pager', copy: 'For small businesses, a quick online presence and a clear entry point without unnecessary overhead.', price: 'from &euro;690', sub: 'for fast visibility', features: ['1 page / landing page', 'modern, responsive design', 'contact form', 'basic SEO', 'fast loading times'], button: 'Choose this package' },
         { badge: 'Recommended', tier: 'Business Website', title: '3 to 5 pages', copy: 'For companies that want to look professional and win new customers through their website.', price: 'from &euro;1,290', sub: 'ideal for lead generation', features: ['Home, services, about, contact and more', 'custom design without a template feel', 'mobile optimized', 'clear structure and contact form', 'easy to expand'], button: 'Choose this package' },
@@ -2556,6 +2588,26 @@ updateRequestSummary();
       toggle.setAttribute('aria-expanded', 'false');
     });
   });
+  if (window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const hero = document.querySelector('.hero');
+    if (hero) {
+      hero.addEventListener('pointermove', function(event) {
+        const rect = hero.getBoundingClientRect();
+        const normalizedX = (event.clientX - rect.left) / rect.width - 0.5;
+        const normalizedY = (event.clientY - rect.top) / rect.height - 0.5;
+        hero.style.setProperty('--bg-shift-x', (normalizedX * 38).toFixed(2) + 'px');
+        hero.style.setProperty('--bg-shift-y', (normalizedY * 28).toFixed(2) + 'px');
+        hero.style.setProperty('--banner-shift-x', (normalizedX * 8).toFixed(2) + 'px');
+        hero.style.setProperty('--banner-shift-y', (normalizedY * 6).toFixed(2) + 'px');
+      });
+      hero.addEventListener('pointerleave', function() {
+        hero.style.setProperty('--bg-shift-x', '0px');
+        hero.style.setProperty('--bg-shift-y', '0px');
+        hero.style.setProperty('--banner-shift-x', '0px');
+        hero.style.setProperty('--banner-shift-y', '0px');
+      });
+    }
+  }
   applyServiceLang(currentLang2);
 })();
 </script>
