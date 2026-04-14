@@ -10,8 +10,11 @@ const MIN_ELAPSED_MS = 3500;
 const rateLimitStore = new Map();
 const steamNewsCache = new Map();
 const leaderboardCache = new Map();
+const twitchCategoryStatsCache = new Map();
+let twitchTokenCache = null;
 const STEAM_NEWS_CACHE_MS = 10 * 60 * 1000;
 const LEADERBOARD_CACHE_MS = 5 * 60 * 1000;
+const TWITCH_CATEGORY_STATS_CACHE_MS = 60 * 1000;
 
 const MIME_TYPES = {
   ".html": "text/html; charset=UTF-8",
@@ -89,6 +92,23 @@ function getCachedLeaderboard(cacheKey) {
 
 function setCachedLeaderboard(cacheKey, payload) {
   leaderboardCache.set(cacheKey, {
+    createdAt: Date.now(),
+    payload
+  });
+}
+
+function getCachedTwitchCategoryStats(cacheKey) {
+  const cached = twitchCategoryStatsCache.get(cacheKey);
+  if (!cached) return null;
+  if (Date.now() - cached.createdAt > TWITCH_CATEGORY_STATS_CACHE_MS) {
+    twitchCategoryStatsCache.delete(cacheKey);
+    return null;
+  }
+  return cached.payload;
+}
+
+function setCachedTwitchCategoryStats(cacheKey, payload) {
+  twitchCategoryStatsCache.set(cacheKey, {
     createdAt: Date.now(),
     payload
   });
@@ -210,6 +230,144 @@ async function fetchLeaderboard(sheetId) {
     players: parseLeaderboardCsv(text)
   };
   setCachedLeaderboard(cacheKey, payload);
+  return payload;
+}
+
+async function fetchTwitchAppAccessToken(forceRefresh = false) {
+  const clientId = String(process.env.TWITCH_CLIENT_ID || "").trim();
+  const clientSecret = String(process.env.TWITCH_CLIENT_SECRET || "").trim();
+
+  if (!clientId || !clientSecret) {
+    throw new Error("TWITCH_CLIENT_ID oder TWITCH_CLIENT_SECRET ist serverseitig nicht gesetzt.");
+  }
+
+  if (
+    !forceRefresh &&
+    twitchTokenCache &&
+    twitchTokenCache.accessToken &&
+    twitchTokenCache.expiresAt > Date.now() + 60 * 1000
+  ) {
+    return twitchTokenCache;
+  }
+
+  const body = new URLSearchParams({
+    client_id: clientId,
+    client_secret: clientSecret,
+    grant_type: "client_credentials"
+  });
+
+  const response = await fetch("https://id.twitch.tv/oauth2/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: body.toString()
+  });
+
+  if (!response.ok) {
+    throw new Error("Twitch App Access Token konnte nicht geladen werden.");
+  }
+
+  const data = await response.json();
+  const expiresInMs = Math.max(0, Number(data.expires_in || 0) * 1000);
+  twitchTokenCache = {
+    accessToken: String(data.access_token || ""),
+    clientId,
+    expiresAt: Date.now() + expiresInMs
+  };
+
+  if (!twitchTokenCache.accessToken) {
+    throw new Error("Twitch Access Token fehlt in der Antwort.");
+  }
+
+  return twitchTokenCache;
+}
+
+async function twitchHelixGet(endpoint, params, forceRefresh = false) {
+  const { accessToken, clientId } = await fetchTwitchAppAccessToken(forceRefresh);
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(params || {})) {
+    if (value === undefined || value === null || value === "") continue;
+    query.append(key, String(value));
+  }
+
+  const response = await fetch(`https://api.twitch.tv/helix/${endpoint}?${query.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Client-Id": clientId
+    }
+  });
+
+  if (response.status === 401 && !forceRefresh) {
+    twitchTokenCache = null;
+    return twitchHelixGet(endpoint, params, true);
+  }
+
+  if (!response.ok) {
+    throw new Error(`Twitch Helix Request fehlgeschlagen (${response.status}).`);
+  }
+
+  return response.json();
+}
+
+async function fetchTwitchCategoryStats(categoryName) {
+  const normalizedCategory = String(categoryName || "").trim();
+  if (!normalizedCategory) {
+    return {
+      category: "",
+      viewers: 0,
+      live_channels: 0
+    };
+  }
+
+  const cacheKey = normalizedCategory.toLowerCase();
+  const cached = getCachedTwitchCategoryStats(cacheKey);
+  if (cached) return cached;
+
+  const gamesPayload = await twitchHelixGet("games", { name: normalizedCategory });
+  const game = Array.isArray(gamesPayload.data)
+    ? gamesPayload.data.find((entry) => String(entry.name || "").toLowerCase() === normalizedCategory.toLowerCase()) || gamesPayload.data[0]
+    : null;
+
+  if (!game || !game.id) {
+    const payload = {
+      category: normalizedCategory,
+      viewers: 0,
+      live_channels: 0
+    };
+    setCachedTwitchCategoryStats(cacheKey, payload);
+    return payload;
+  }
+
+  let viewers = 0;
+  let liveChannels = 0;
+  let cursor = "";
+
+  do {
+    const streamsPayload = await twitchHelixGet("streams", {
+      game_id: game.id,
+      first: 100,
+      after: cursor || undefined
+    });
+
+    const streams = Array.isArray(streamsPayload.data) ? streamsPayload.data : [];
+    for (const stream of streams) {
+      viewers += Number(stream.viewer_count || 0);
+      liveChannels += 1;
+    }
+
+    cursor = streamsPayload.pagination && streamsPayload.pagination.cursor
+      ? String(streamsPayload.pagination.cursor)
+      : "";
+  } while (cursor);
+
+  const payload = {
+    category: String(game.name || normalizedCategory),
+    viewers,
+    live_channels: liveChannels
+  };
+
+  setCachedTwitchCategoryStats(cacheKey, payload);
   return payload;
 }
 
@@ -421,6 +579,32 @@ const server = http.createServer(async (req, res) => {
     } catch (error) {
       return sendJson(res, 502, {
         message: error instanceof Error ? error.message : "Leaderboard unavailable."
+      });
+    }
+  }
+
+  if (pathname === "/api/twitch-category-stats") {
+    if (req.method !== "GET") {
+      return sendJson(res, 405, { message: "Method not allowed." });
+    }
+    try {
+      const categoryName = String(requestUrl.searchParams.get("name") || "").trim();
+      if (!categoryName) {
+        return sendJson(res, 200, {
+          category: "",
+          viewers: 0,
+          live_channels: 0
+        });
+      }
+
+      const payload = await fetchTwitchCategoryStats(categoryName);
+      return sendJson(res, 200, payload);
+    } catch (error) {
+      return sendJson(res, 502, {
+        message: error instanceof Error ? error.message : "Twitch category stats unavailable.",
+        category: String(requestUrl.searchParams.get("name") || "").trim(),
+        viewers: 0,
+        live_channels: 0
       });
     }
   }
