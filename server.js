@@ -509,6 +509,9 @@ async function handleServicesRequest(req, res) {
 
 function serveFile(req, res, pathname) {
   let filePath = pathname === "/" ? "/index.html" : pathname;
+  if (pathname === "/donation" || pathname === "/donation/") {
+    filePath = "/donation.html";
+  }
   filePath = decodeURIComponent(filePath);
   const absolutePath = path.normalize(path.join(ROOT, filePath));
 

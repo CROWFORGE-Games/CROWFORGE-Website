@@ -5,6 +5,7 @@ WORKDIR /app
 COPY package.json ./
 COPY server.js ./
 COPY index.html ./
+COPY donation.html ./
 COPY leaderboard.html ./
 COPY services.html ./
 COPY CROWFORGE_Crow.png ./
