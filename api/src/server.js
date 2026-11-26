@@ -7,6 +7,7 @@ const { OAuth2Client } = require("google-auth-library");
 const config = require("./config");
 const store = require("./store");
 const steam = require("./steam");
+const periods = require("./periods");
 
 const MAX_BODY_BYTES = 32 * 1024;
 const GCLOUD_CLI_AUDIENCE = "32555940559.apps.googleusercontent.com"; // `gcloud auth print-identity-token`
@@ -207,12 +208,53 @@ async function postSync(req, res) {
   send(res, 200, report);
 }
 
+function lookupCounter(gameId, counterId) {
+  const game = config.games[gameId];
+  const counter = game && game.counters && game.counters[counterId];
+  if (!counter) throw new store.ApiError(404, "Unknown game or counter.");
+  return counter;
+}
+
+async function postCounterAdd(req, res, gameId, counterId) {
+  requireGameKey(req, gameId);
+  const counter = lookupCounter(gameId, counterId);
+  const identity = steamIdentity(req, gameId);
+  if (!identity) throw new store.ApiError(401, "Steam sign-in required.");
+  const body = await readJson(req);
+  const amount = Number(body.amount);
+  if (!Number.isInteger(amount) || amount < 1 || amount > 1000000) {
+    throw new store.ApiError(422, "amount must be an integer between 1 and 1000000.");
+  }
+  const slotId = text(body.slotId, 64, "slotId");
+  if (slotId && !/^[A-Za-z0-9_-]+$/.test(slotId)) throw new store.ApiError(422, "slotId may only contain letters, digits, _ and -.");
+  const version = text(body.version, 32, "version");
+  if (rateLimited(`counter:${gameId}:${counterId}:${identity.steamId}`, 30, 60 * 1000)) {
+    throw new store.ApiError(429, "Too many counter updates.");
+  }
+  const name = identity.name || "Player";
+  const result = await store.addToCounter(gameId, counterId, counter, { steamId: identity.steamId, name, amount, slotId, version });
+  send(res, 200, result);
+}
+
+async function getCounterLeaderboard(req, res, url, gameId, counterId) {
+  lookupCounter(gameId, counterId);
+  const period = url.searchParams.get("period") || "all";
+  if (!periods.PERIODS.includes(period)) throw new store.ApiError(422, "period must be all, day, week or month.");
+  const offset = url.searchParams.get("offset") === "-1" && period !== "all" ? -1 : 0;
+  const limit = Math.max(1, Math.min(100, Number.parseInt(url.searchParams.get("limit") || "10", 10) || 10));
+  const steamId = text(url.searchParams.get("steamId"), 20, "steamId");
+  const payload = await store.getCounterLeaderboard(gameId, counterId, { period, offset, limit, steamId: /^\d+$/.test(steamId) ? steamId : "" });
+  send(res, 200, payload, { "Access-Control-Allow-Origin": "*" });
+}
+
 // --- routing -----------------------------------------------------------------------------------
 
 const LEADERBOARD = /^\/v1\/games\/([a-z0-9-]+)\/leaderboards\/([a-z0-9-]+)$/;
 const SCORES = /^\/v1\/games\/([a-z0-9-]+)\/leaderboards\/([a-z0-9-]+)\/scores$/;
 const TICKETS = /^\/v1\/games\/([a-z0-9-]+)\/tickets$/;
 const COMMANDS = /^\/v1\/games\/([a-z0-9-]+)\/commands$/;
+const COUNTER_ADD = /^\/v1\/games\/([a-z0-9-]+)\/counters\/([a-z0-9-]+)\/add$/;
+const COUNTER_BOARD = /^\/v1\/games\/([a-z0-9-]+)\/counters\/([a-z0-9-]+)\/leaderboard$/;
 const STEAM_AUTH = /^\/v1\/games\/([a-z0-9-]+)\/auth\/steam$/;
 
 async function route(req, res) {
@@ -220,7 +262,7 @@ async function route(req, res) {
   const path = url.pathname;
   let m;
 
-  if (req.method === "OPTIONS" && LEADERBOARD.test(path)) {
+  if (req.method === "OPTIONS" && (LEADERBOARD.test(path) || COUNTER_BOARD.test(path))) {
     res.writeHead(204, { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET" });
     return res.end();
   }
@@ -229,6 +271,8 @@ async function route(req, res) {
   if (req.method === "POST" && (m = SCORES.exec(path))) return postScore(req, res, m[1], m[2]);
   if (req.method === "POST" && (m = TICKETS.exec(path))) return postTicket(req, res, m[1]);
   if (req.method === "GET" && (m = COMMANDS.exec(path))) return getCommands(req, res, url, m[1]);
+  if (req.method === "POST" && (m = COUNTER_ADD.exec(path))) return postCounterAdd(req, res, m[1], m[2]);
+  if (req.method === "GET" && (m = COUNTER_BOARD.exec(path))) return getCounterLeaderboard(req, res, url, m[1], m[2]);
   if (req.method === "POST" && (m = STEAM_AUTH.exec(path))) return postSteamAuth(req, res, m[1]);
   if (req.method === "POST" && path === "/internal/sync") return postSync(req, res);
   return send(res, 404, { error: "Not found." });

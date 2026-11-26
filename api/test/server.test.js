@@ -19,6 +19,8 @@ store.createTicket = async (g, t) => { calls.push(["ticket", g, t]); return { id
 store.getCommands = async (g, o) => { calls.push(["commands", g, o]); return { commands: [{ id: "c1", action: "GiveGold", param: "50", createdAt: null }], serverTime: "t" }; };
 const config = require("../src/config");
 config.games["tavern-legends"].scoreRequiresSteam = false; // most tests post by name
+store.addToCounter = async (g, c, counter, a) => { calls.push(["counter", g, c, a]); return { accepted: Math.min(a.amount, 60), flagged: a.amount > 60, total: 5, periods: { day: 5, week: 5, month: 5 } }; };
+store.getCounterLeaderboard = async (g, c, o) => { calls.push(["counterBoard", g, c, o]); return { counterId: c, period: o.period, key: "w", entries: [], me: null }; };
 const { server } = require("../src/server");
 
 let base;
@@ -157,4 +159,35 @@ test("scores without Steam token are refused when the game requires Steam", asyn
   } finally {
     config.games["tavern-legends"].scoreRequiresSteam = false;
   }
+});
+
+test("counters: add needs game key and Steam token, board is public", async () => {
+  const addPath = "/v1/games/tavern-legends/counters/beer-tapped/add";
+  let res = await post(addPath, { amount: 3 });
+  assert.strictEqual(res.status, 401);
+  res = await post("/v1/games/tavern-legends/counters/nope/add", { amount: 3 });
+  assert.strictEqual(res.status, 404);
+
+  const auth = await (await post("/v1/games/tavern-legends/auth/steam", { ticket: "ab".repeat(20) })).json();
+  const add = (body) => fetch(base + addPath, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Game-Key": "test-key", Authorization: "Bearer " + auth.token },
+    body: JSON.stringify(body)
+  });
+  assert.strictEqual((await add({ amount: 0 })).status, 422);
+  assert.strictEqual((await add({ amount: 2, slotId: "bad slot!" })).status, 422);
+  res = await add({ amount: 100, slotId: "Slot_1", version: "1.2.0", name: "Ignored" });
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(await res.json(), { accepted: 60, flagged: true, total: 5, periods: { day: 5, week: 5, month: 5 } });
+  const call = calls.at(-1);
+  assert.deepStrictEqual(call.slice(0, 3), ["counter", "tavern-legends", "beer-tapped"]);
+  assert.deepStrictEqual(call[3], { steamId: "76561190000000001", name: "SteamMathi", amount: 100, slotId: "Slot_1", version: "1.2.0" });
+
+  res = await fetch(base + "/v1/games/tavern-legends/counters/beer-tapped/leaderboard?period=week&offset=-1&limit=5&steamId=76561190000000001");
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(calls.at(-1)[3], { period: "week", offset: -1, limit: 5, steamId: "76561190000000001" });
+  res = await fetch(base + "/v1/games/tavern-legends/counters/beer-tapped/leaderboard?period=year");
+  assert.strictEqual(res.status, 422);
+  res = await fetch(base + "/v1/games/tavern-legends/counters/beer-tapped/leaderboard?period=all&offset=-1");
+  assert.deepStrictEqual(calls.at(-1)[3], { period: "all", offset: 0, limit: 10, steamId: "" });
 });

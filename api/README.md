@@ -11,6 +11,8 @@ Game backend for CROWFORGE games on Cloud Run + Firestore. Separate Cloud Run se
 | Method | Path | Auth | Body / query | Response |
 | --- | --- | --- | --- | --- |
 | GET | `/v1/games/{gameId}/leaderboards/{boardId}` | none | `?limit=10&name=<player>&steamId=<id>` | `{entries:[{rank,name,score,version,updatedAt,verified}], me:{rank,name,score}\|null}` |
+| POST | `/v1/games/{gameId}/counters/{counterId}/add` | `X-Game-Key` + `Authorization: Bearer <token>` (required) | `{amount, slotId?, version?}` | `{accepted, flagged, total, periods:{day,week,month}}` (accepted is capped by `maxPerMinute` since the last add; the rest is recorded in `counterFlags`) |
+| GET | `/v1/games/{gameId}/counters/{counterId}/leaderboard` | none | `?period=all\|day\|week\|month&offset=0\|-1&limit=10&steamId=` | `{counterId, period, key, startsAt, endsAt, entries:[{rank,name,value}], me}` (periods in Vienna time, week Monday to Monday) |
 | POST | `/v1/games/{gameId}/auth/steam` | `X-Game-Key` | `{ticket, name?}` (hex from `GetAuthTicketForWebApi("crowforge-api")`) | `{token, expiresIn, steamId, name}` (token valid 1 h) |
 | POST | `/v1/games/{gameId}/leaderboards/{boardId}/scores` | `X-Game-Key`, optional `Authorization: Bearer <token>` | `{name, score, version}` | `{best, improved, rank}` (with token: stored under the SteamID, Steam name wins) |
 | POST | `/v1/games/{gameId}/tickets` | `X-Game-Key` | `{reporter, title, description, build, totalDays, taverns:[{type,name,level,workers}]}` | `{id, duplicate}` |
@@ -37,6 +39,8 @@ possible for old builds; only entries with `verified: true` are tied to a real S
 ```
 games/{gameId}/leaderboards/{boardId}/entries/{playerKey}   name, score, version, verified, source, updatedAt
 games/{gameId}/tickets/{ticketId}                            sheet_* (from sheet) or api_* (from game)
+games/{gameId}/counters/{counterId}/periods/{all|dYYYY-MM-DD|wYYYY-WW|mYYYY-MM}/entries/steam:{id}   value, name, slots{slotId: n}
+games/{gameId}/counterFlags/{auto}                           adds above the plausibility limit
 games/{gameId}/commands/{commandId}                          written by the dashboard: target (lowercase player name), action, param, createdAt, expiresAt
 games/{gameId}/sync/{name}                                   row hashes of the last sheet sync
 ```

@@ -2,6 +2,7 @@
 
 const { Firestore, FieldValue, Timestamp } = require("@google-cloud/firestore");
 const { sha1, namePlayerKey } = require("./sheet");
+const periods = require("./periods");
 
 const db = new Firestore({ ignoreUndefinedProperties: true });
 
@@ -169,7 +170,93 @@ async function getCommands(gameId, { player }) {
   return { commands, serverTime: new Date().toISOString() };
 }
 
+// --- Counters (e.g. beers tapped), summed per period ---------------------------------------------
+// games/{g}/counters/{c}/periods/{periodKey}/entries/steam:{id}  {name, steamId, value, slots{}, updatedAt}
+// games/{g}/counters/{c}/players/steam:{id}                      {lastAt}  (for the plausibility limit)
+// games/{g}/counterFlags/{auto}                                  adds above the limit (shown in the dashboard)
+
+const counterRef = (gameId, counterId) => gameRef(gameId).collection("counters").doc(counterId);
+const counterEntriesRef = (gameId, counterId, key) => counterRef(gameId, counterId).collection("periods").doc(key).collection("entries");
+const counterFlagsRef = (gameId) => gameRef(gameId).collection("counterFlags");
+
+const MAX_ALLOWANCE_MINUTES = 24 * 60;
+const FIRST_ADD_MINUTES = 60;
+
+/** How much may be added after `minutes` since the last add (first add: one hour's worth). */
+function counterAllowance(maxPerMinute, lastAtMs, nowMs) {
+  const minutes = lastAtMs ? Math.min(MAX_ALLOWANCE_MINUTES, Math.max(1, (nowMs - lastAtMs) / 60000)) : FIRST_ADD_MINUTES;
+  return Math.floor(maxPerMinute * minutes);
+}
+
+async function addToCounter(gameId, counterId, counter, { steamId, name, amount, slotId, version }, nowMs = Date.now()) {
+  const player = steamPlayerKey(steamId);
+  const keys = periods.currentKeys(nowMs);
+  const playerRef = counterRef(gameId, counterId).collection("players").doc(player);
+  const entryRefs = keys.map((key) => counterEntriesRef(gameId, counterId, key).doc(player));
+
+  const result = await db.runTransaction(async (tx) => {
+    const [state, ...entries] = await Promise.all([tx.get(playerRef), ...entryRefs.map((ref) => tx.get(ref))]);
+    const lastAt = state.exists && state.data().lastAt ? state.data().lastAt.toMillis() : 0;
+    const accepted = Math.min(amount, counterAllowance(counter.maxPerMinute, lastAt, nowMs));
+    const now = Timestamp.fromMillis(nowMs);
+    tx.set(playerRef, { lastAt: now, name, steamId }, { merge: true });
+    const totals = {};
+    entryRefs.forEach((ref, i) => {
+      const previous = entries[i].exists ? Number(entries[i].data().value) || 0 : 0;
+      totals[periods.PERIODS[i]] = previous + accepted;
+      if (accepted <= 0) return;
+      const data = { name, nameLower: name.toLowerCase(), steamId, value: FieldValue.increment(accepted), version: version || null, updatedAt: now };
+      if (slotId) data.slots = { [slotId]: FieldValue.increment(accepted) };
+      tx.set(ref, data, { merge: true });
+    });
+    return { accepted, totals };
+  });
+
+  const flagged = result.accepted < amount;
+  if (flagged) {
+    await counterFlagsRef(gameId).add({
+      counterId, steamId, name, requested: amount, accepted: result.accepted, slotId: slotId || null,
+      version: version || null, createdAt: FieldValue.serverTimestamp()
+    });
+  }
+  return {
+    accepted: result.accepted,
+    flagged,
+    total: result.totals.all,
+    periods: { day: result.totals.day, week: result.totals.week, month: result.totals.month }
+  };
+}
+
+const counterTopCache = new Map();
+const COUNTER_CACHE_MS = 15 * 1000;
+
+async function getCounterLeaderboard(gameId, counterId, { period, offset, limit, steamId }) {
+  const info = periods.periodInfo(period, offset);
+  const ref = counterEntriesRef(gameId, counterId, info.key);
+  const cacheKey = `${gameId}/${counterId}/${info.key}/${limit}`;
+  let cached = counterTopCache.get(cacheKey);
+  if (!cached || Date.now() - cached.at > COUNTER_CACHE_MS) {
+    const snap = await ref.orderBy("value", "desc").limit(limit).get();
+    const entries = snap.docs.map((doc, i) => ({ rank: i + 1, name: doc.data().name, value: Number(doc.data().value) || 0 }));
+    cached = { at: Date.now(), entries };
+    counterTopCache.set(cacheKey, cached);
+  }
+  let me = null;
+  if (steamId) {
+    const doc = await ref.doc(steamPlayerKey(steamId)).get();
+    if (doc.exists) {
+      const value = Number(doc.data().value) || 0;
+      const above = await ref.where("value", ">", value).count().get();
+      me = { rank: above.data().count + 1, name: doc.data().name, value };
+    }
+  }
+  return { counterId, ...info, entries: cached.entries, me };
+}
+
 module.exports = {
+  addToCounter,
+  getCounterLeaderboard,
+  counterAllowance,
   db,
   Timestamp,
   FieldValue,
