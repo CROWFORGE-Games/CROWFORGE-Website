@@ -12,17 +12,23 @@ steps:
     dir: api
     entrypoint: gcloud
     args: ["run", "deploy", "crowforge-api", "--source", ".", "--region", "europe-west3", "--project", "$PROJECT_ID", "--quiet"]
-  - id: check
+  # cloud-sdk:stable has neither curl nor python3: gcloud only writes the service URL to /workspace,
+  # node does the actual request. $$ = literal $ for the shell (Cloud Build substitutes single $).
+  - id: service-url
     name: gcr.io/google.com/cloudsdktool/cloud-sdk:stable
     entrypoint: bash
     args:
       - -ec
+      - gcloud run services describe crowforge-api --region europe-west3 --project $PROJECT_ID --format='value(status.url)' > /workspace/service-url
+  - id: check
+    name: node:22-alpine
+    entrypoint: sh
+    args:
+      - -ec
       - |
-        # $$ = literal $ for the shell (Cloud Build substitutes single $). /healthz is swallowed by
-        # Cloud Run's frontend, so check a real public read instead.
-        url=$$(gcloud run services describe crowforge-api --region europe-west3 --project $PROJECT_ID --format='value(status.url)')
-        # cloud-sdk has no curl; python3 is there.
-        python3 -c "import sys,urllib.request; urllib.request.urlopen(sys.argv[1], timeout=20).read()" "$$url/v1/games/tavern-legends/leaderboards/beer-tapped?limit=1"
+        # /healthz is swallowed by Cloud Run's frontend, so check a real public read instead.
+        url=$$(cat /workspace/service-url)
+        node -e "fetch(process.argv[1], { signal: AbortSignal.timeout(20000) }).then((r) => { console.log('check', r.status); if (!r.ok) process.exit(1); }, (e) => { console.error(e.message); process.exit(1); })" "$$url/v1/games/tavern-legends/leaderboards/beer-tapped?limit=1"
 options:
   logging: CLOUD_LOGGING_ONLY
 timeout: 1200s
