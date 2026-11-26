@@ -18,8 +18,10 @@ steps:
     args:
       - -ec
       - |
-        url=$(gcloud run services describe crowforge-api --region europe-west3 --project $PROJECT_ID --format='value(status.url)')
-        curl -fsS "$url/healthz"
+        # $$ = literal $ for the shell (Cloud Build substitutes single $). /healthz is swallowed by
+        # Cloud Run's frontend, so check a real public read instead.
+        url=$$(gcloud run services describe crowforge-api --region europe-west3 --project $PROJECT_ID --format='value(status.url)')
+        curl -fsS "$$url/v1/games/tavern-legends/leaderboards/beer-tapped?limit=1" > /dev/null
 options:
   logging: CLOUD_LOGGING_ONLY
 timeout: 1200s
