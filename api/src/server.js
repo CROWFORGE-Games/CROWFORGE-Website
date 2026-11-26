@@ -143,6 +143,9 @@ async function postScore(req, res, gameId, boardId) {
   requireGameKey(req, gameId);
   const board = lookupBoard(gameId, boardId);
   const identity = steamIdentity(req, gameId);
+  if (!identity && config.games[gameId].scoreRequiresSteam) {
+    throw new store.ApiError(401, "Steam sign-in required to submit scores.");
+  }
   const body = await readJson(req);
   // Signed in: the Steam name wins over what the client sends.
   const name = (identity && identity.name) || text(body.name, 64, "name", { required: true });

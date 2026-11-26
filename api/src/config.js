@@ -8,6 +8,8 @@ const games = {
     keyEnv: "GAME_KEY",
     // Steam App ID for sign-in (ticket check). Set TL_STEAM_APP_ID in Cloud Run.
     steamAppId: process.env.TL_STEAM_APP_ID || "",
+    // New builds sign in with Steam; old builds still go through the sheet sync.
+    scoreRequiresSteam: true,
     // Sheet that the already shipped builds write to via Apps Script. Read-only for this service.
     sheetId: process.env.TL_SHEET_ID || "1qh8yL1pgwBEGJ10cJZvfYOJhZKdeCrc5f9pkJ31nYy4",
     ticketsRange: "tickets!A2:J",
