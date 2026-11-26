@@ -28,7 +28,8 @@ async function changedSince(stateName, gameId, records, idOf) {
     newHashes[id] = hash;
     if (oldHashes[id] !== hash) changed.push(record);
   }
-  return { changed, newHashes };
+  const removed = Object.keys(oldHashes).filter((id) => !(id in newHashes));
+  return { changed, newHashes, removed };
 }
 
 async function saveState(gameId, stateName, hashes, rows) {
@@ -78,9 +79,13 @@ async function syncLeaderboard(gameId, boardId, values) {
 
 async function syncTickets(gameId, values) {
   const records = parseTicketRows(values);
-  const { changed, newHashes } = await changedSince("tickets", gameId, records, (r) => r.id);
+  const { changed, newHashes, removed } = await changedSince("tickets", gameId, records, (r) => r.id);
   const col = ticketsRef(gameId);
   const writer = db.bulkWriter();
+  // Rows deleted in the sheet (e.g. via the dashboard) are kept in Firestore but marked.
+  for (const id of removed) {
+    writer.set(col.doc(id), { removedFromSheet: true, removedAt: FieldValue.serverTimestamp() }, { merge: true });
+  }
   for (const record of changed) {
     const { id, ...data } = record;
     const date = parseSheetDate(record.createdAtRaw);
@@ -89,6 +94,7 @@ async function syncTickets(gameId, values) {
       {
         ...data,
         source: "sheet",
+        removedFromSheet: false,
         createdAt: date ? Timestamp.fromDate(date) : null,
         syncedAt: FieldValue.serverTimestamp()
       },
@@ -97,7 +103,7 @@ async function syncTickets(gameId, values) {
   }
   await writer.close();
   await saveState(gameId, "tickets", newHashes, records.length);
-  return { rows: records.length, changed: changed.length, written: changed.length };
+  return { rows: records.length, changed: changed.length, written: changed.length, removed: removed.length };
 }
 
 async function syncAll() {
