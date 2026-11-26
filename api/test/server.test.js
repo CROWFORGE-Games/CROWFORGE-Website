@@ -17,6 +17,8 @@ store.getLeaderboard = async (g, b, opts) => { calls.push(["get", g, b, opts]); 
 store.submitScore = async (g, b, board, s) => { calls.push(["score", g, b, s]); return { best: s.score, improved: true, rank: 1 }; };
 store.createTicket = async (g, t) => { calls.push(["ticket", g, t]); return { id: "api_x", duplicate: false }; };
 store.getCommands = async (g, o) => { calls.push(["commands", g, o]); return { commands: [{ id: "c1", action: "GiveGold", param: "50", createdAt: null }], serverTime: "t" }; };
+const config = require("../src/config");
+config.games["tavern-legends"].scoreRequiresSteam = false; // most tests post by name
 const { server } = require("../src/server");
 
 let base;
@@ -144,4 +146,15 @@ test("steam auth issues a token that signs score submits", async () => {
 test("leaderboard passes a numeric steamId through", async () => {
   await fetch(base + "/v1/games/tavern-legends/leaderboards/beer-tapped?steamId=76561190000000001");
   assert.deepStrictEqual(calls.at(-1)[3], { limit: 10, name: "", steamId: "76561190000000001" });
+});
+
+test("scores without Steam token are refused when the game requires Steam", async () => {
+  config.games["tavern-legends"].scoreRequiresSteam = true;
+  try {
+    const res = await post("/v1/games/tavern-legends/leaderboards/beer-tapped/scores", { name: "NoSteam", score: 5 });
+    assert.strictEqual(res.status, 401);
+    assert.match((await res.json()).error, /Steam sign-in required/);
+  } finally {
+    config.games["tavern-legends"].scoreRequiresSteam = false;
+  }
 });

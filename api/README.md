@@ -26,7 +26,7 @@ Current ids: `gameId = tavern-legends` (board `beer-tapped`), `werewolf-hunter` 
 max 2 submits per player per minute. Bug reports: 5 per IP per 10 minutes, identical reports stored once.
 
 **Steam sign-in:** needs `STEAM_WEB_API_KEY` (publisher key, secret `steam-web-api-key`) and the game's `steamAppId`
-(`TL_STEAM_APP_ID`). Without the key the auth route answers 503 and scores work as before (by name).
+(`TL_STEAM_APP_ID`). Without the key the auth route answers 503. Games with `scoreRequiresSteam` (Tavern Legends) refuse score submits without a Steam token (401); old builds keep writing to the sheet, which the sync imports.
 Tokens are HMAC-signed with a key derived from the Steam key, so rotating the Steam key logs everyone out.
 
 **Security caveat:** `X-Game-Key` ships inside the game build and can be extracted. Unsigned score submits stay
