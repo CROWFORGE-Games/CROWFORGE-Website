@@ -1,0 +1,203 @@
+"use strict";
+
+const http = require("http");
+const crypto = require("crypto");
+const { URL } = require("url");
+const { OAuth2Client } = require("google-auth-library");
+const config = require("./config");
+const store = require("./store");
+
+const MAX_BODY_BYTES = 32 * 1024;
+const GCLOUD_CLI_AUDIENCE = "32555940559.apps.googleusercontent.com"; // `gcloud auth print-identity-token`
+const oidc = new OAuth2Client();
+
+// --- helpers -----------------------------------------------------------------------------------
+
+function send(res, status, payload, extraHeaders = {}) {
+  res.writeHead(status, {
+    "Content-Type": "application/json; charset=UTF-8",
+    "Cache-Control": "no-store",
+    ...extraHeaders
+  });
+  res.end(JSON.stringify(payload));
+}
+
+function clientIp(req) {
+  const forwarded = req.headers["x-forwarded-for"];
+  return forwarded ? String(forwarded).split(",")[0].trim() : req.socket.remoteAddress || "unknown";
+}
+
+// Simple fixed-window rate limiter, per instance. Good enough with a small max-instances setting.
+const buckets = new Map();
+function rateLimited(key, limit, windowMs) {
+  const now = Date.now();
+  const bucket = buckets.get(key);
+  if (!bucket || now - bucket.start > windowMs) {
+    buckets.set(key, { start: now, count: 1 });
+    return false;
+  }
+  bucket.count++;
+  return bucket.count > limit;
+}
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, bucket] of buckets) if (now - bucket.start > 15 * 60 * 1000) buckets.delete(key);
+}, 60 * 1000).unref();
+
+async function readJson(req) {
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > MAX_BODY_BYTES) throw new store.ApiError(413, "Payload too large.");
+    chunks.push(chunk);
+  }
+  try {
+    const raw = Buffer.concat(chunks).toString("utf8");
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    throw new store.ApiError(400, "Invalid JSON.");
+  }
+}
+
+function requireGameKey(req) {
+  if (!config.gameKey) throw new store.ApiError(503, "Writes are disabled (GAME_KEY not configured).");
+  const given = Buffer.from(String(req.headers["x-game-key"] || ""));
+  const expected = Buffer.from(config.gameKey);
+  if (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) {
+    throw new store.ApiError(401, "Invalid game key.");
+  }
+}
+
+async function requireSyncCaller(req) {
+  const header = String(req.headers.authorization || "");
+  const token = header.startsWith("Bearer ") ? header.slice(7) : "";
+  if (!token) throw new store.ApiError(401, "Missing token.");
+  const audience = [`https://${req.headers.host}`, `https://${req.headers.host}/internal/sync`, GCLOUD_CLI_AUDIENCE];
+  let payload;
+  try {
+    payload = (await oidc.verifyIdToken({ idToken: token, audience })).getPayload();
+  } catch {
+    throw new store.ApiError(401, "Invalid token.");
+  }
+  const email = String(payload.email || "").toLowerCase();
+  if (!payload.email_verified || !config.syncAllowedEmails.includes(email)) {
+    throw new store.ApiError(403, "Not allowed.");
+  }
+}
+
+function text(value, max, field, { required = false } = {}) {
+  const s = String(value ?? "").trim();
+  if (required && !s) throw new store.ApiError(422, `${field} is required.`);
+  if (s.length > max) throw new store.ApiError(422, `${field} is too long (max ${max}).`);
+  return s;
+}
+
+function lookupBoard(gameId, boardId) {
+  const game = config.games[gameId];
+  const board = game && game.leaderboards && game.leaderboards[boardId];
+  if (!board) throw new store.ApiError(404, "Unknown game or leaderboard.");
+  return board;
+}
+
+// --- handlers ----------------------------------------------------------------------------------
+
+async function getLeaderboard(req, res, url, gameId, boardId) {
+  lookupBoard(gameId, boardId);
+  const limit = Math.max(1, Math.min(100, Number.parseInt(url.searchParams.get("limit") || "10", 10) || 10));
+  const name = text(url.searchParams.get("name"), 64, "name");
+  const payload = await store.getLeaderboard(gameId, boardId, { limit, name });
+  send(res, 200, payload, { "Access-Control-Allow-Origin": "*" });
+}
+
+async function postScore(req, res, gameId, boardId) {
+  requireGameKey(req);
+  const board = lookupBoard(gameId, boardId);
+  const body = await readJson(req);
+  const name = text(body.name, 64, "name", { required: true });
+  const score = Number(body.score);
+  if (!Number.isInteger(score) || score < 0 || score > board.maxScore) {
+    throw new store.ApiError(422, "score must be an integer between 0 and " + board.maxScore + ".");
+  }
+  const version = text(body.version, 32, "version");
+  if (rateLimited(`score:${gameId}:${boardId}:${name.toLowerCase()}`, 2, 60 * 1000)) {
+    throw new store.ApiError(429, "Too many score submissions.");
+  }
+  const result = await store.submitScore(gameId, boardId, board, { name, score, version });
+  send(res, 200, result);
+}
+
+async function postTicket(req, res, gameId) {
+  requireGameKey(req);
+  if (!config.games[gameId]) throw new store.ApiError(404, "Unknown game.");
+  if (rateLimited(`ticket:${clientIp(req)}`, 5, 10 * 60 * 1000)) {
+    throw new store.ApiError(429, "Too many bug reports. Please wait a few minutes.");
+  }
+  const body = await readJson(req);
+  const taverns = Array.isArray(body.taverns) ? body.taverns.slice(0, 20) : [];
+  const totalDays = Number.parseInt(body.totalDays, 10);
+  const ticket = {
+    reporter: text(body.reporter, 64, "reporter"),
+    title: text(body.title, 200, "title", { required: true }),
+    description: text(body.description, 5000, "description"),
+    build: text(body.build, 32, "build"),
+    totalDays: Number.isFinite(totalDays) ? totalDays : null,
+    taverns: taverns.map((t) => ({
+      type: text(t && t.type, 32, "taverns.type"),
+      name: text(t && t.name, 64, "taverns.name"),
+      level: Number.isFinite(Number(t && t.level)) ? Number(t.level) : null,
+      workers: Number.isFinite(Number(t && t.workers)) ? Number(t.workers) : null
+    }))
+  };
+  const result = await store.createTicket(gameId, ticket);
+  send(res, result.duplicate ? 200 : 201, result);
+}
+
+async function postSync(req, res) {
+  await requireSyncCaller(req);
+  const { syncAll } = require("./sync");
+  const report = await syncAll();
+  console.log(JSON.stringify({ message: "sync done", report }));
+  send(res, 200, report);
+}
+
+// --- routing -----------------------------------------------------------------------------------
+
+const LEADERBOARD = /^\/v1\/games\/([a-z0-9-]+)\/leaderboards\/([a-z0-9-]+)$/;
+const SCORES = /^\/v1\/games\/([a-z0-9-]+)\/leaderboards\/([a-z0-9-]+)\/scores$/;
+const TICKETS = /^\/v1\/games\/([a-z0-9-]+)\/tickets$/;
+
+async function route(req, res) {
+  const url = new URL(req.url, "http://localhost");
+  const path = url.pathname;
+  let m;
+
+  if (req.method === "OPTIONS" && LEADERBOARD.test(path)) {
+    res.writeHead(204, { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET" });
+    return res.end();
+  }
+  if (path === "/healthz") return send(res, 200, { ok: true });
+  if (req.method === "GET" && (m = LEADERBOARD.exec(path))) return getLeaderboard(req, res, url, m[1], m[2]);
+  if (req.method === "POST" && (m = SCORES.exec(path))) return postScore(req, res, m[1], m[2]);
+  if (req.method === "POST" && (m = TICKETS.exec(path))) return postTicket(req, res, m[1]);
+  if (req.method === "POST" && path === "/internal/sync") return postSync(req, res);
+  return send(res, 404, { error: "Not found." });
+}
+
+const server = http.createServer((req, res) => {
+  if (!["GET", "POST", "OPTIONS"].includes(req.method)) return send(res, 405, { error: "Method not allowed." });
+  if (req.method === "GET" && rateLimited(`ip:${clientIp(req)}`, 120, 60 * 1000)) {
+    return send(res, 429, { error: "Too many requests." });
+  }
+  route(req, res).catch((error) => {
+    if (error instanceof store.ApiError) return send(res, error.status, { error: error.message });
+    console.error(error);
+    send(res, 500, { error: "Internal error." });
+  });
+});
+
+if (require.main === module) {
+  server.listen(config.port, "0.0.0.0", () => console.log(`crowforge-api listening on ${config.port}`));
+}
+
+module.exports = { server };
