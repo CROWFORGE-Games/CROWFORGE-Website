@@ -129,7 +129,7 @@ async function activeCommands(gameId) {
     .filter((c) => !c.deleted)
     .map((c) => ({
       id: c.id,
-      target: String(c.target || "*").toLowerCase(),
+      target: String(c.target || "").toLowerCase(),
       action: String(c.action || ""),
       param: String(c.param ?? ""),
       createdAt: c.createdAt && c.createdAt.toDate ? c.createdAt.toDate().toISOString() : null
@@ -142,7 +142,7 @@ async function activeCommands(gameId) {
 async function getCommands(gameId, { player }) {
   const name = String(player || "").trim().toLowerCase();
   const commands = (await activeCommands(gameId))
-    .filter((c) => c.action && (c.target === "*" || (name && c.target === name)))
+    .filter((c) => c.action && name && c.target === name)
     .map(({ id, action, param, createdAt }) => ({ id, action, param, createdAt }));
   return { commands, serverTime: new Date().toISOString() };
 }
