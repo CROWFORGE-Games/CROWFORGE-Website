@@ -3,6 +3,7 @@ const test = require("node:test");
 const assert = require("node:assert");
 
 process.env.GAME_KEY = "test-key";
+process.env.GAME_KEY_WEREWOLF_HUNTER = "wh-key";
 const store = require("../src/store");
 const calls = [];
 store.getLeaderboard = async (g, b, opts) => { calls.push(["get", g, b, opts]); return { entries: [], me: null }; };
@@ -69,4 +70,26 @@ test("invalid json is 400, sync without token is 401", async () => {
   assert.strictEqual(res.status, 400);
   res = await fetch(base + "/internal/sync", { method: "POST" });
   assert.strictEqual(res.status, 401);
+});
+
+test("each game has its own key", async () => {
+  let res = await post("/v1/games/werewolf-hunter/tickets", { title: "Bug" }, "test-key");
+  assert.strictEqual(res.status, 401, "Tavern Legends key must not write Werewolf Hunter tickets");
+  res = await post("/v1/games/tavern-legends/tickets", { title: "Bug" }, "wh-key");
+  assert.strictEqual(res.status, 401, "Werewolf Hunter key must not write Tavern Legends tickets");
+  res = await post("/v1/games/unknown-game/tickets", { title: "Bug" });
+  assert.strictEqual(res.status, 404);
+});
+
+test("werewolf hunter ticket keeps map, session and recent events", async () => {
+  const res = await post("/v1/games/werewolf-hunter/tickets", {
+    reporter: "Wolf", title: "Stuck", description: "in wall", build: "0.9.1", map: "Village",
+    sessionId: "s-1", recentEvents: [...Array(60).keys()].map((i) => "event " + i)
+  }, "wh-key");
+  assert.strictEqual(res.status, 201);
+  const [, gameId, t] = calls.at(-1);
+  assert.strictEqual(gameId, "werewolf-hunter");
+  assert.strictEqual(t.map, "Village");
+  assert.strictEqual(t.recentEvents.length, 50);
+  assert.strictEqual(t.recentEvents[0], "event 10");
 });

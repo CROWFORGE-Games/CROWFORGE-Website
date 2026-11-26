@@ -60,10 +60,12 @@ async function readJson(req) {
   }
 }
 
-function requireGameKey(req) {
-  if (!config.gameKey) throw new store.ApiError(503, "Writes are disabled (GAME_KEY not configured).");
+function requireGameKey(req, gameId) {
+  if (!config.games[gameId]) throw new store.ApiError(404, "Unknown game.");
+  const key = config.gameKeyFor(gameId);
+  if (!key) throw new store.ApiError(503, "Writes are disabled for this game (no game key configured).");
   const given = Buffer.from(String(req.headers["x-game-key"] || ""));
-  const expected = Buffer.from(config.gameKey);
+  const expected = Buffer.from(key);
   if (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) {
     throw new store.ApiError(401, "Invalid game key.");
   }
@@ -111,7 +113,7 @@ async function getLeaderboard(req, res, url, gameId, boardId) {
 }
 
 async function postScore(req, res, gameId, boardId) {
-  requireGameKey(req);
+  requireGameKey(req, gameId);
   const board = lookupBoard(gameId, boardId);
   const body = await readJson(req);
   const name = text(body.name, 64, "name", { required: true });
@@ -128,14 +130,14 @@ async function postScore(req, res, gameId, boardId) {
 }
 
 async function postTicket(req, res, gameId) {
-  requireGameKey(req);
-  if (!config.games[gameId]) throw new store.ApiError(404, "Unknown game.");
-  if (rateLimited(`ticket:${clientIp(req)}`, 5, 10 * 60 * 1000)) {
+  requireGameKey(req, gameId);
+  if (rateLimited(`ticket:${gameId}:${clientIp(req)}`, 5, 10 * 60 * 1000)) {
     throw new store.ApiError(429, "Too many bug reports. Please wait a few minutes.");
   }
   const body = await readJson(req);
   const taverns = Array.isArray(body.taverns) ? body.taverns.slice(0, 20) : [];
   const totalDays = Number.parseInt(body.totalDays, 10);
+  const recentEvents = Array.isArray(body.recentEvents) ? body.recentEvents.slice(-50) : [];
   const ticket = {
     reporter: text(body.reporter, 64, "reporter"),
     title: text(body.title, 200, "title", { required: true }),
@@ -147,7 +149,11 @@ async function postTicket(req, res, gameId) {
       name: text(t && t.name, 64, "taverns.name"),
       level: Number.isFinite(Number(t && t.level)) ? Number(t.level) : null,
       workers: Number.isFinite(Number(t && t.workers)) ? Number(t.workers) : null
-    }))
+    })),
+    // Generic context for games without taverns (e.g. Werewolf Hunter). Untrusted player data.
+    map: text(body.map, 64, "map"),
+    sessionId: text(body.sessionId, 64, "sessionId"),
+    recentEvents: recentEvents.map((line) => String(line ?? "").trim().slice(0, 300)).filter(Boolean)
   };
   const result = await store.createTicket(gameId, ticket);
   send(res, result.duplicate ? 200 : 201, result);
