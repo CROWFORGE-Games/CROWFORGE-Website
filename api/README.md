@@ -16,7 +16,9 @@ Game backend for CROWFORGE games on Cloud Run + Firestore. Separate Cloud Run se
 | POST | `/internal/sync` | Google ID token (allow-listed e-mail) | – | sync report |
 | GET | `/healthz` | none | – | `{ok:true}` |
 
-Current ids: `gameId = tavern-legends`, `boardId = beer-tapped`.
+Current ids: `gameId = tavern-legends` (board `beer-tapped`), `werewolf-hunter` (tickets only).
+
+**Keys:** one `X-Game-Key` per game (`keyEnv` in `src/config.js`): Tavern Legends `GAME_KEY`, Werewolf Hunter `GAME_KEY_WEREWOLF_HUNTER`. A key only writes to its own game. Tickets also accept `map`, `sessionId` and `recentEvents` (max 50 lines) for games without taverns.
 
 **Limits:** score must be an integer `0..maxScore`, may rise by at most `maxIncreasePerSubmit` per submit,
 max 2 submits per player per minute. Bug reports: 5 per IP per 10 minutes, identical reports stored once.
@@ -49,7 +51,7 @@ gcloud projects add-iam-policy-binding crowforge-platform \
 gcloud run deploy crowforge-api --source . --region europe-west3 \
   --service-account crowforge-api@crowforge-platform.iam.gserviceaccount.com \
   --allow-unauthenticated --max-instances 2 --memory 256Mi \
-  --set-secrets GAME_KEY=crowforge-game-key:latest \
+  --set-secrets GAME_KEY=crowforge-game-key:latest,GAME_KEY_WEREWOLF_HUNTER=crowforge-game-key-werewolf-hunter:latest \
   --set-env-vars "^;^SYNC_ALLOWED_EMAILS=crowforge-api@crowforge-platform.iam.gserviceaccount.com,$(gcloud config get-value account)"
 ```
 
