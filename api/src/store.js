@@ -63,8 +63,11 @@ async function getLeaderboard(gameId, boardId, { limit, name, steamId }) {
     if (doc.exists) best = doc.data();
   }
   if (name) {
-    const snap = await entriesRef(gameId, boardId).where("nameLower", "==", name.toLowerCase()).get();
-    for (const doc of snap.docs) {
+    const [byId, snap] = await Promise.all([
+      entriesRef(gameId, boardId).doc(namePlayerKey(name)).get(),
+      entriesRef(gameId, boardId).where("nameLower", "==", name.toLowerCase()).get()
+    ]);
+    for (const doc of [byId, ...snap.docs].filter((d) => d.exists)) {
       const d = doc.data();
       if (!best || d.score > best.score) best = d;
     }
