@@ -63,6 +63,8 @@ async function submitScore(gameId, boardId, board, { name, score, version }) {
     const doc = await tx.get(ref);
     const previous = doc.exists ? doc.data().score : null;
     if (previous !== null && score <= previous) {
+      // updatedAt = last time the player sent a score (dashboard "played today").
+      tx.update(ref, { updatedAt: FieldValue.serverTimestamp() });
       return { best: previous, improved: false };
     }
     if (previous !== null && board.maxIncreasePerSubmit && score - previous > board.maxIncreasePerSubmit) {
