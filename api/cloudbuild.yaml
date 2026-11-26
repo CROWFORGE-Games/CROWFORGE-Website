@@ -3,7 +3,7 @@
 # service are kept (no --set-env-vars / --set-secrets here).
 steps:
   - id: tests
-    name: node:20-alpine
+    name: node:22-alpine
     dir: api
     entrypoint: sh
     args: ["-ec", "npm ci && npm test"]
@@ -21,7 +21,8 @@ steps:
         # $$ = literal $ for the shell (Cloud Build substitutes single $). /healthz is swallowed by
         # Cloud Run's frontend, so check a real public read instead.
         url=$$(gcloud run services describe crowforge-api --region europe-west3 --project $PROJECT_ID --format='value(status.url)')
-        curl -fsS "$$url/v1/games/tavern-legends/leaderboards/beer-tapped?limit=1" > /dev/null
+        # cloud-sdk has no curl; python3 is there.
+        python3 -c "import sys,urllib.request; urllib.request.urlopen(sys.argv[1], timeout=20).read()" "$$url/v1/games/tavern-legends/leaderboards/beer-tapped?limit=1"
 options:
   logging: CLOUD_LOGGING_ONLY
 timeout: 1200s
