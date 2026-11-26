@@ -53,6 +53,13 @@ gcloud run deploy crowforge-api --source . --region europe-west3 \
   --set-env-vars "^;^SYNC_ALLOWED_EMAILS=crowforge-api@crowforge-platform.iam.gserviceaccount.com,$(gcloud config get-value account)"
 ```
 
+If the org policy *Domain restricted sharing* blocks `allUsers` ("Setting IAM policy failed"), make the
+service public without touching the org policy:
+
+```
+gcloud run services update crowforge-api --region europe-west3 --no-invoker-iam-check
+```
+
 The sheet must be shared (Viewer) with `crowforge-api@crowforge-platform.iam.gserviceaccount.com`.
 
 ## Tests
