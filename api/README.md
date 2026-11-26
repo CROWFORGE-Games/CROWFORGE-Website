@@ -67,3 +67,16 @@ The sheet must be shared (Viewer) with `crowforge-api@crowforge-platform.iam.gse
 ```
 npm install && npm test
 ```
+
+## Sheet sync schedule
+
+Cloud Shell user tokens have a different audience, so trigger the sync through Cloud Scheduler (uses the service account's OIDC token):
+
+```
+URL=$(gcloud run services describe crowforge-api --region europe-west3 --format='value(status.url)')
+gcloud scheduler jobs create http crowforge-sheet-sync --location europe-west3 --schedule "0 * * * *" \
+  --time-zone "Europe/Vienna" --uri "$URL/internal/sync" --http-method POST \
+  --oidc-service-account-email crowforge-api@crowforge-platform.iam.gserviceaccount.com --oidc-token-audience "$URL"
+gcloud scheduler jobs run crowforge-sheet-sync --location europe-west3   # run now
+gcloud run services logs read crowforge-api --region europe-west3 --limit 5
+```
