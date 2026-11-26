@@ -51,6 +51,11 @@ async function syncLeaderboard(gameId, boardId, values) {
       const existing = docs[j].exists ? docs[j].data() : null;
       // Never lower a score: the new game version may already have sent a higher one.
       if (existing && existing.score > record.score) {
+        // Still record that the player played (dashboard "played today" uses updatedAt).
+        const playedAt = parseSheetDate(record.dateRaw);
+        if (playedAt && (!existing.updatedAt || existing.updatedAt.toMillis() < playedAt.getTime())) {
+          writer.set(col.doc(record.key), { updatedAt: Timestamp.fromDate(playedAt) }, { merge: true });
+        }
         keptHigher++;
         return;
       }
@@ -86,8 +91,22 @@ async function syncTickets(gameId, values) {
   for (const id of removed) {
     writer.set(col.doc(id), { removedFromSheet: true, removedAt: FieldValue.serverTimestamp() }, { merge: true });
   }
+  // Once the dashboard has changed a ticket (status, priority, delete), Firestore owns those fields:
+  // the sheet's status/priority columns are no longer maintained and must not overwrite them.
+  const managed = new Set();
+  for (let i = 0; i < changed.length; i += 300) {
+    const chunk = changed.slice(i, i + 300);
+    const docs = await db.getAll(...chunk.map((r) => col.doc(r.id)));
+    docs.forEach((doc) => {
+      if (doc.exists && doc.data().managedBy === "dashboard") managed.add(doc.id);
+    });
+  }
   for (const record of changed) {
     const { id, ...data } = record;
+    if (managed.has(id)) {
+      delete data.status;
+      delete data.priority;
+    }
     const date = parseSheetDate(record.createdAtRaw);
     writer.set(
       col.doc(id),
@@ -121,4 +140,4 @@ async function syncAll() {
   return report;
 }
 
-module.exports = { syncAll };
+module.exports = { syncAll, syncTickets, syncLeaderboard };
