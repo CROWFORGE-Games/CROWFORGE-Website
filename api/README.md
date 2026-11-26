@@ -10,8 +10,9 @@ Game backend for CROWFORGE games on Cloud Run + Firestore. Separate Cloud Run se
 
 | Method | Path | Auth | Body / query | Response |
 | --- | --- | --- | --- | --- |
-| GET | `/v1/games/{gameId}/leaderboards/{boardId}` | none | `?limit=10&name=<player>` | `{entries:[{rank,name,score,version,updatedAt}], me:{rank,name,score}\|null}` |
-| POST | `/v1/games/{gameId}/leaderboards/{boardId}/scores` | `X-Game-Key` | `{name, score, version}` | `{best, improved, rank}` |
+| GET | `/v1/games/{gameId}/leaderboards/{boardId}` | none | `?limit=10&name=<player>&steamId=<id>` | `{entries:[{rank,name,score,version,updatedAt,verified}], me:{rank,name,score}\|null}` |
+| POST | `/v1/games/{gameId}/auth/steam` | `X-Game-Key` | `{ticket, name?}` (hex from `GetAuthTicketForWebApi("crowforge-api")`) | `{token, expiresIn, steamId, name}` (token valid 1 h) |
+| POST | `/v1/games/{gameId}/leaderboards/{boardId}/scores` | `X-Game-Key`, optional `Authorization: Bearer <token>` | `{name, score, version}` | `{best, improved, rank}` (with token: stored under the SteamID, Steam name wins) |
 | POST | `/v1/games/{gameId}/tickets` | `X-Game-Key` | `{reporter, title, description, build, totalDays, taverns:[{type,name,level,workers}]}` | `{id, duplicate}` |
 | GET | `/v1/games/{gameId}/commands?player=` | `X-Game-Key` | – | `{commands:[{id,action,param,createdAt}], serverTime}` (active commands for that player; the game runs each id once) |
 | POST | `/internal/sync` | Google ID token (allow-listed e-mail) | – | sync report |
@@ -24,8 +25,12 @@ Current ids: `gameId = tavern-legends` (board `beer-tapped`), `werewolf-hunter` 
 **Limits:** score must be an integer `0..maxScore`, may rise by at most `maxIncreasePerSubmit` per submit,
 max 2 submits per player per minute. Bug reports: 5 per IP per 10 minutes, identical reports stored once.
 
-**Security caveat:** `X-Game-Key` ships inside the game build and can be extracted. Until Steam ticket auth is
-added, anyone with the key can post scores and tickets. The limits above only reduce the damage.
+**Steam sign-in:** needs `STEAM_WEB_API_KEY` (publisher key, secret `steam-web-api-key`) and the game's `steamAppId`
+(`TL_STEAM_APP_ID`). Without the key the auth route answers 503 and scores work as before (by name).
+Tokens are HMAC-signed with a key derived from the Steam key, so rotating the Steam key logs everyone out.
+
+**Security caveat:** `X-Game-Key` ships inside the game build and can be extracted. Unsigned score submits stay
+possible for old builds; only entries with `verified: true` are tied to a real Steam account.
 
 ## Firestore layout
 

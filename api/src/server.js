@@ -6,6 +6,7 @@ const { URL } = require("url");
 const { OAuth2Client } = require("google-auth-library");
 const config = require("./config");
 const store = require("./store");
+const steam = require("./steam");
 
 const MAX_BODY_BYTES = 32 * 1024;
 const GCLOUD_CLI_AUDIENCE = "32555940559.apps.googleusercontent.com"; // `gcloud auth print-identity-token`
@@ -104,28 +105,57 @@ function lookupBoard(gameId, boardId) {
 
 // --- handlers ----------------------------------------------------------------------------------
 
+/** Steam identity from "Authorization: Bearer <token>", or null. A present but invalid token is an error. */
+function steamIdentity(req, gameId) {
+  const header = String(req.headers.authorization || "");
+  if (!header.startsWith("Bearer ")) return null;
+  const identity = steam.verifyToken(header.slice(7), gameId);
+  if (!identity) throw new store.ApiError(401, "Invalid or expired Steam token. Sign in again.");
+  return identity;
+}
+
+async function postSteamAuth(req, res, gameId) {
+  requireGameKey(req, gameId);
+  if (rateLimited(`auth:${gameId}:${clientIp(req)}`, 10, 60 * 1000)) {
+    throw new store.ApiError(429, "Too many sign-in attempts.");
+  }
+  const body = await readJson(req);
+  try {
+    const { steamId, name } = await steam.authenticateTicket({ appId: config.games[gameId].steamAppId, ticket: body.ticket });
+    const displayName = name || text(body.name, 64, "name");
+    send(res, 200, { ...steam.issueToken({ gameId, steamId, name: displayName }), steamId, name: displayName });
+  } catch (error) {
+    if (error instanceof steam.SteamError) throw new store.ApiError(error.status, error.message);
+    throw error;
+  }
+}
+
 async function getLeaderboard(req, res, url, gameId, boardId) {
   lookupBoard(gameId, boardId);
   const limit = Math.max(1, Math.min(100, Number.parseInt(url.searchParams.get("limit") || "10", 10) || 10));
   const name = text(url.searchParams.get("name"), 64, "name");
-  const payload = await store.getLeaderboard(gameId, boardId, { limit, name });
+  const steamId = text(url.searchParams.get("steamId"), 20, "steamId");
+  const payload = await store.getLeaderboard(gameId, boardId, /^\d+$/.test(steamId) ? { limit, name, steamId } : { limit, name });
   send(res, 200, payload, { "Access-Control-Allow-Origin": "*" });
 }
 
 async function postScore(req, res, gameId, boardId) {
   requireGameKey(req, gameId);
   const board = lookupBoard(gameId, boardId);
+  const identity = steamIdentity(req, gameId);
   const body = await readJson(req);
-  const name = text(body.name, 64, "name", { required: true });
+  // Signed in: the Steam name wins over what the client sends.
+  const name = (identity && identity.name) || text(body.name, 64, "name", { required: true });
   const score = Number(body.score);
   if (!Number.isInteger(score) || score < 0 || score > board.maxScore) {
     throw new store.ApiError(422, "score must be an integer between 0 and " + board.maxScore + ".");
   }
   const version = text(body.version, 32, "version");
-  if (rateLimited(`score:${gameId}:${boardId}:${name.toLowerCase()}`, 2, 60 * 1000)) {
+  const who = identity ? `steam:${identity.steamId}` : name.toLowerCase();
+  if (rateLimited(`score:${gameId}:${boardId}:${who}`, 2, 60 * 1000)) {
     throw new store.ApiError(429, "Too many score submissions.");
   }
-  const result = await store.submitScore(gameId, boardId, board, { name, score, version });
+  const result = await store.submitScore(gameId, boardId, board, { name, score, version, steamId: identity ? identity.steamId : undefined });
   send(res, 200, result);
 }
 
@@ -180,6 +210,7 @@ const LEADERBOARD = /^\/v1\/games\/([a-z0-9-]+)\/leaderboards\/([a-z0-9-]+)$/;
 const SCORES = /^\/v1\/games\/([a-z0-9-]+)\/leaderboards\/([a-z0-9-]+)\/scores$/;
 const TICKETS = /^\/v1\/games\/([a-z0-9-]+)\/tickets$/;
 const COMMANDS = /^\/v1\/games\/([a-z0-9-]+)\/commands$/;
+const STEAM_AUTH = /^\/v1\/games\/([a-z0-9-]+)\/auth\/steam$/;
 
 async function route(req, res) {
   const url = new URL(req.url, "http://localhost");
@@ -195,6 +226,7 @@ async function route(req, res) {
   if (req.method === "POST" && (m = SCORES.exec(path))) return postScore(req, res, m[1], m[2]);
   if (req.method === "POST" && (m = TICKETS.exec(path))) return postTicket(req, res, m[1]);
   if (req.method === "GET" && (m = COMMANDS.exec(path))) return getCommands(req, res, url, m[1]);
+  if (req.method === "POST" && (m = STEAM_AUTH.exec(path))) return postSteamAuth(req, res, m[1]);
   if (req.method === "POST" && path === "/internal/sync") return postSync(req, res);
   return send(res, 404, { error: "Not found." });
 }
