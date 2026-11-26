@@ -41,7 +41,7 @@ gcloud run deploy crowforge-api --source . --region europe-west3 \
   --service-account crowforge-api@crowforge-platform.iam.gserviceaccount.com \
   --allow-unauthenticated --max-instances 2 --memory 256Mi \
   --set-secrets GAME_KEY=crowforge-game-key:latest \
-  --set-env-vars "SYNC_ALLOWED_EMAILS=crowforge-api@crowforge-platform.iam.gserviceaccount.com,$(gcloud config get-value account)"
+  --set-env-vars "^;^SYNC_ALLOWED_EMAILS=crowforge-api@crowforge-platform.iam.gserviceaccount.com,$(gcloud config get-value account)"
 ```
 
 The sheet must be shared (Viewer) with `crowforge-api@crowforge-platform.iam.gserviceaccount.com`.
