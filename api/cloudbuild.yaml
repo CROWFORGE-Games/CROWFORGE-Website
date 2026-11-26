@@ -1,0 +1,25 @@
+# Release of crowforge-api (Cloud Run, europe-west3). Run by a Cloud Build trigger on pushes to main
+# that touch api/**. Tests first; if they fail nothing is deployed. Env vars and secrets of the
+# service are kept (no --set-env-vars / --set-secrets here).
+steps:
+  - id: tests
+    name: node:20-alpine
+    dir: api
+    entrypoint: sh
+    args: ["-ec", "npm ci && npm test"]
+  - id: deploy
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:stable
+    dir: api
+    entrypoint: gcloud
+    args: ["run", "deploy", "crowforge-api", "--source", ".", "--region", "europe-west3", "--project", "$PROJECT_ID", "--quiet"]
+  - id: check
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:stable
+    entrypoint: bash
+    args:
+      - -ec
+      - |
+        url=$(gcloud run services describe crowforge-api --region europe-west3 --project $PROJECT_ID --format='value(status.url)')
+        curl -fsS "$url/healthz"
+options:
+  logging: CLOUD_LOGGING_ONLY
+timeout: 1200s
