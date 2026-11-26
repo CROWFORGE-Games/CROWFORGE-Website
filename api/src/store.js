@@ -9,6 +9,7 @@ const gameRef = (gameId) => db.collection("games").doc(gameId);
 const entriesRef = (gameId, boardId) => gameRef(gameId).collection("leaderboards").doc(boardId).collection("entries");
 const ticketsRef = (gameId) => gameRef(gameId).collection("tickets");
 const syncStateRef = (gameId, name) => gameRef(gameId).collection("sync").doc(name);
+const commandsRef = (gameId) => gameRef(gameId).collection("commands");
 
 class ApiError extends Error {
   constructor(status, message) {
@@ -112,6 +113,40 @@ async function createTicket(gameId, ticket) {
   }
 }
 
+// --- Remote commands ---------------------------------------------------------------------------
+// Written by the dashboard (games/{gameId}/commands), read by the game. A command stays active until
+// expiresAt; the game remembers which ids it already ran, so every command runs once per session.
+
+const commandsCache = new Map();
+const COMMANDS_CACHE_MS = 3 * 1000;
+
+async function activeCommands(gameId) {
+  const cached = commandsCache.get(gameId);
+  if (cached && Date.now() - cached.at < COMMANDS_CACHE_MS) return cached.commands;
+  const snap = await commandsRef(gameId).where("expiresAt", ">", Timestamp.now()).get();
+  const commands = snap.docs
+    .map((doc) => ({ id: doc.id, ...doc.data() }))
+    .filter((c) => !c.deleted)
+    .map((c) => ({
+      id: c.id,
+      target: String(c.target || "*").toLowerCase(),
+      action: String(c.action || ""),
+      param: String(c.param ?? ""),
+      createdAt: c.createdAt && c.createdAt.toDate ? c.createdAt.toDate().toISOString() : null
+    }))
+    .sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
+  commandsCache.set(gameId, { at: Date.now(), commands });
+  return commands;
+}
+
+async function getCommands(gameId, { player }) {
+  const name = String(player || "").trim().toLowerCase();
+  const commands = (await activeCommands(gameId))
+    .filter((c) => c.action && (c.target === "*" || (name && c.target === name)))
+    .map(({ id, action, param, createdAt }) => ({ id, action, param, createdAt }));
+  return { commands, serverTime: new Date().toISOString() };
+}
+
 module.exports = {
   db,
   Timestamp,
@@ -122,5 +157,7 @@ module.exports = {
   syncStateRef,
   getLeaderboard,
   submitScore,
-  createTicket
+  createTicket,
+  commandsRef,
+  getCommands
 };

@@ -159,6 +159,13 @@ async function postTicket(req, res, gameId) {
   send(res, result.duplicate ? 200 : 201, result);
 }
 
+async function getCommands(req, res, url, gameId) {
+  requireGameKey(req, gameId);
+  if (!config.games[gameId].commands) throw new store.ApiError(404, "No remote commands for this game.");
+  const player = text(url.searchParams.get("player"), 64, "player");
+  send(res, 200, await store.getCommands(gameId, { player }));
+}
+
 async function postSync(req, res) {
   await requireSyncCaller(req);
   const { syncAll } = require("./sync");
@@ -172,6 +179,7 @@ async function postSync(req, res) {
 const LEADERBOARD = /^\/v1\/games\/([a-z0-9-]+)\/leaderboards\/([a-z0-9-]+)$/;
 const SCORES = /^\/v1\/games\/([a-z0-9-]+)\/leaderboards\/([a-z0-9-]+)\/scores$/;
 const TICKETS = /^\/v1\/games\/([a-z0-9-]+)\/tickets$/;
+const COMMANDS = /^\/v1\/games\/([a-z0-9-]+)\/commands$/;
 
 async function route(req, res) {
   const url = new URL(req.url, "http://localhost");
@@ -186,6 +194,7 @@ async function route(req, res) {
   if (req.method === "GET" && (m = LEADERBOARD.exec(path))) return getLeaderboard(req, res, url, m[1], m[2]);
   if (req.method === "POST" && (m = SCORES.exec(path))) return postScore(req, res, m[1], m[2]);
   if (req.method === "POST" && (m = TICKETS.exec(path))) return postTicket(req, res, m[1]);
+  if (req.method === "GET" && (m = COMMANDS.exec(path))) return getCommands(req, res, url, m[1]);
   if (req.method === "POST" && path === "/internal/sync") return postSync(req, res);
   return send(res, 404, { error: "Not found." });
 }

@@ -9,6 +9,8 @@ const games = {
     // Sheet that the already shipped builds write to via Apps Script. Read-only for this service.
     sheetId: process.env.TL_SHEET_ID || "1qh8yL1pgwBEGJ10cJZvfYOJhZKdeCrc5f9pkJ31nYy4",
     ticketsRange: "tickets!A2:J",
+    // Remote commands (dashboard -> game). Replaces row 2 of the "Commands" sheet for new builds.
+    commands: { actions: ["SendMessage", "GiveGold", "Puke", "Reservation"] },
     leaderboards: {
       "beer-tapped": {
         sheetRange: "BeerTapped!A2:D",
