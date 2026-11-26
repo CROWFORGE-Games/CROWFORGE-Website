@@ -9,6 +9,7 @@ const calls = [];
 store.getLeaderboard = async (g, b, opts) => { calls.push(["get", g, b, opts]); return { entries: [], me: null }; };
 store.submitScore = async (g, b, board, s) => { calls.push(["score", g, b, s]); return { best: s.score, improved: true, rank: 1 }; };
 store.createTicket = async (g, t) => { calls.push(["ticket", g, t]); return { id: "api_x", duplicate: false }; };
+store.getCommands = async (g, o) => { calls.push(["commands", g, o]); return { commands: [{ id: "c1", action: "GiveGold", param: "50", createdAt: null }], serverTime: "t" }; };
 const { server } = require("../src/server");
 
 let base;
@@ -92,4 +93,15 @@ test("werewolf hunter ticket keeps map, session and recent events", async () => 
   assert.strictEqual(t.map, "Village");
   assert.strictEqual(t.recentEvents.length, 50);
   assert.strictEqual(t.recentEvents[0], "event 10");
+});
+
+test("commands need the game key and a game with commands", async () => {
+  let res = await fetch(base + "/v1/games/tavern-legends/commands?player=Bob");
+  assert.strictEqual(res.status, 401);
+  res = await fetch(base + "/v1/games/werewolf-hunter/commands", { headers: { "X-Game-Key": "wh-key" } });
+  assert.strictEqual(res.status, 404);
+  res = await fetch(base + "/v1/games/tavern-legends/commands?player=Bob", { headers: { "X-Game-Key": "test-key" } });
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(calls.at(-1), ["commands", "tavern-legends", { player: "Bob" }]);
+  assert.strictEqual((await res.json()).commands[0].action, "GiveGold");
 });

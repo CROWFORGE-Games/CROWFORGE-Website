@@ -13,6 +13,7 @@ Game backend for CROWFORGE games on Cloud Run + Firestore. Separate Cloud Run se
 | GET | `/v1/games/{gameId}/leaderboards/{boardId}` | none | `?limit=10&name=<player>` | `{entries:[{rank,name,score,version,updatedAt}], me:{rank,name,score}\|null}` |
 | POST | `/v1/games/{gameId}/leaderboards/{boardId}/scores` | `X-Game-Key` | `{name, score, version}` | `{best, improved, rank}` |
 | POST | `/v1/games/{gameId}/tickets` | `X-Game-Key` | `{reporter, title, description, build, totalDays, taverns:[{type,name,level,workers}]}` | `{id, duplicate}` |
+| GET | `/v1/games/{gameId}/commands?player=` | `X-Game-Key` | – | `{commands:[{id,action,param,createdAt}], serverTime}` (active commands for that player or `*`; the game runs each id once) |
 | POST | `/internal/sync` | Google ID token (allow-listed e-mail) | – | sync report |
 | GET | `/healthz` | none | – | `{ok:true}` |
 
@@ -31,6 +32,7 @@ added, anyone with the key can post scores and tickets. The limits above only re
 ```
 games/{gameId}/leaderboards/{boardId}/entries/{playerKey}   name, score, version, verified, source, updatedAt
 games/{gameId}/tickets/{ticketId}                            sheet_* (from sheet) or api_* (from game)
+games/{gameId}/commands/{commandId}                          written by the dashboard: target (lowercase name or *), action, param, createdAt, expiresAt
 games/{gameId}/sync/{name}                                   row hashes of the last sheet sync
 ```
 
