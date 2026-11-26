@@ -36,6 +36,15 @@ games/{gameId}/sync/{name}                                   row hashes of the l
 
 ## Deploy (Cloud Shell)
 
+One-time: newer projects build `--source` deploys with the Compute default service account, which needs build rights:
+
+```
+PROJECT_NUMBER=$(gcloud projects describe crowforge-platform --format='value(projectNumber)')
+gcloud projects add-iam-policy-binding crowforge-platform \
+  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+  --role=roles/cloudbuild.builds.builder --condition=None
+```
+
 ```
 gcloud run deploy crowforge-api --source . --region europe-west3 \
   --service-account crowforge-api@crowforge-platform.iam.gserviceaccount.com \
