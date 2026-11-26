@@ -4,6 +4,13 @@ const assert = require("node:assert");
 
 process.env.GAME_KEY = "test-key";
 process.env.GAME_KEY_WEREWOLF_HUNTER = "wh-key";
+process.env.STEAM_WEB_API_KEY = "steam-test-key";
+process.env.TL_STEAM_APP_ID = "123";
+const steam = require("../src/steam");
+steam.authenticateTicket = async ({ appId, ticket }) => {
+  if (ticket !== "ab".repeat(20)) throw new steam.SteamError(401, "Steam ticket rejected.");
+  return { steamId: "76561190000000001", name: "SteamMathi", appId };
+};
 const store = require("../src/store");
 const calls = [];
 store.getLeaderboard = async (g, b, opts) => { calls.push(["get", g, b, opts]); return { entries: [], me: null }; };
@@ -104,4 +111,37 @@ test("commands need the game key and a game with commands", async () => {
   assert.strictEqual(res.status, 200);
   assert.deepStrictEqual(calls.at(-1), ["commands", "tavern-legends", { player: "Bob" }]);
   assert.strictEqual((await res.json()).commands[0].action, "GiveGold");
+});
+
+test("steam auth issues a token that signs score submits", async () => {
+  let res = await post("/v1/games/tavern-legends/auth/steam", { ticket: "ab".repeat(20) }, "wrong");
+  assert.strictEqual(res.status, 401);
+  res = await post("/v1/games/tavern-legends/auth/steam", { ticket: "cd".repeat(20) });
+  assert.strictEqual(res.status, 401);
+  res = await post("/v1/games/tavern-legends/auth/steam", { ticket: "ab".repeat(20) });
+  assert.strictEqual(res.status, 200);
+  const auth = await res.json();
+  assert.strictEqual(auth.steamId, "76561190000000001");
+  assert.strictEqual(auth.name, "SteamMathi");
+  assert.ok(auth.token.startsWith("v1."));
+
+  const scorePath = "/v1/games/tavern-legends/leaderboards/beer-tapped/scores";
+  const send = (token) => fetch(base + scorePath, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Game-Key": "test-key", Authorization: "Bearer " + token },
+    body: JSON.stringify({ name: "Fake", score: 7 })
+  });
+  res = await send(auth.token);
+  assert.strictEqual(res.status, 200);
+  const call = calls.at(-1);
+  assert.strictEqual(call[0], "score");
+  assert.strictEqual(call[3].steamId, "76561190000000001");
+  assert.strictEqual(call[3].name, "SteamMathi");
+  res = await send("v1.bad.token");
+  assert.strictEqual(res.status, 401);
+});
+
+test("leaderboard passes a numeric steamId through", async () => {
+  await fetch(base + "/v1/games/tavern-legends/leaderboards/beer-tapped?steamId=76561190000000001");
+  assert.deepStrictEqual(calls.at(-1)[3], { limit: 10, name: "", steamId: "76561190000000001" });
 });

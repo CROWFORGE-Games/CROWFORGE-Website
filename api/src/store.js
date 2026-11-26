@@ -28,38 +28,59 @@ async function rankOf(gameId, boardId, score) {
   return snap.data().count + 1;
 }
 
-async function getLeaderboard(gameId, boardId, { limit, name }) {
+async function getLeaderboard(gameId, boardId, { limit, name, steamId }) {
   const cacheKey = `${gameId}/${boardId}/${limit}`;
   let cached = topCache.get(cacheKey);
   if (!cached || Date.now() - cached.at > TOP_CACHE_MS) {
-    const snap = await entriesRef(gameId, boardId).orderBy("score", "desc").limit(limit).get();
-    const entries = snap.docs.map((doc, i) => {
+    // A player can have a Steam entry (new builds) and a name entry (old builds via sheet):
+    // read a few more and keep only the best entry per name.
+    const snap = await entriesRef(gameId, boardId).orderBy("score", "desc").limit(Math.min(300, limit * 3)).get();
+    const seen = new Set();
+    const entries = [];
+    for (const doc of snap.docs) {
       const d = doc.data();
-      return {
-        rank: i + 1,
+      const key = String(d.nameLower || d.name || doc.id).toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      entries.push({
+        rank: entries.length + 1,
         name: d.name,
         score: d.score,
         version: d.version || null,
+        verified: Boolean(d.steamId),
         updatedAt: d.updatedAt ? d.updatedAt.toDate().toISOString() : null
-      };
-    });
+      });
+      if (entries.length >= limit) break;
+    }
     cached = { at: Date.now(), entries };
     topCache.set(cacheKey, cached);
   }
 
   let me = null;
+  let best = null;
+  if (steamId) {
+    const doc = await entriesRef(gameId, boardId).doc(steamPlayerKey(steamId)).get();
+    if (doc.exists) best = doc.data();
+  }
   if (name) {
-    const doc = await entriesRef(gameId, boardId).doc(namePlayerKey(name)).get();
-    if (doc.exists) {
+    const [byId, snap] = await Promise.all([
+      entriesRef(gameId, boardId).doc(namePlayerKey(name)).get(),
+      entriesRef(gameId, boardId).where("nameLower", "==", name.toLowerCase()).get()
+    ]);
+    for (const doc of [byId, ...snap.docs].filter((d) => d.exists)) {
       const d = doc.data();
-      me = { rank: await rankOf(gameId, boardId, d.score), name: d.name, score: d.score };
+      if (!best || d.score > best.score) best = d;
     }
   }
+  if (best) me = { rank: await rankOf(gameId, boardId, best.score), name: best.name, score: best.score };
   return { entries: cached.entries, me };
 }
 
-async function submitScore(gameId, boardId, board, { name, score, version }) {
-  const ref = entriesRef(gameId, boardId).doc(namePlayerKey(name));
+const steamPlayerKey = (steamId) => "steam:" + String(steamId);
+
+/** steamId set = signed in with Steam (verified), otherwise keyed by name like the old builds. */
+async function submitScore(gameId, boardId, board, { name, score, version, steamId }) {
+  const ref = entriesRef(gameId, boardId).doc(steamId ? steamPlayerKey(steamId) : namePlayerKey(name));
   const result = await db.runTransaction(async (tx) => {
     const doc = await tx.get(ref);
     const previous = doc.exists ? doc.data().score : null;
@@ -78,7 +99,8 @@ async function submitScore(gameId, boardId, board, { name, score, version }) {
         nameLower: name.toLowerCase(),
         score,
         version: version || null,
-        verified: false,
+        steamId: steamId || null,
+        verified: Boolean(steamId),
         source: "api",
         updatedAt: FieldValue.serverTimestamp()
       },
