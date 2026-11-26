@@ -15,6 +15,11 @@ const games = {
     ticketsRange: "tickets!A2:J",
     // Remote commands (dashboard -> game). Replaces row 2 of the "Commands" sheet for new builds.
     commands: { actions: ["SendMessage", "GiveGold", "Puke", "Reservation"] },
+    // Counters summed per day/week/month/all time (Vienna time). Steam sign-in required to add.
+    // maxPerMinute: plausibility limit; more is cut off and recorded in counterFlags.
+    counters: {
+      "beer-tapped": { maxPerMinute: 60 }
+    },
     leaderboards: {
       "beer-tapped": {
         sheetRange: "BeerTapped!A2:D",
