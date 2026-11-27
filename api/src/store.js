@@ -227,6 +227,24 @@ async function addToCounter(gameId, counterId, counter, { steamId, name, amount,
   };
 }
 
+// Open counters: games/{g}/counters/{c} {createdAt} marks a counter as existing; at most maxCounters per game.
+const knownCounters = new Set();
+
+async function registerCounter(gameId, counterId, maxCounters) {
+  const cacheKey = `${gameId}/${counterId}`;
+  if (knownCounters.has(cacheKey)) return;
+  const ref = counterRef(gameId, counterId);
+  const doc = await ref.get();
+  if (!doc.exists) {
+    const count = await gameRef(gameId).collection("counters").count().get();
+    if (count.data().count >= maxCounters) {
+      throw new ApiError(422, `Too many counters for this game (max ${maxCounters}).`);
+    }
+    await ref.set({ createdAt: FieldValue.serverTimestamp(), source: "game" }, { merge: true });
+  }
+  knownCounters.add(cacheKey);
+}
+
 const counterTopCache = new Map();
 const COUNTER_CACHE_MS = 15 * 1000;
 
@@ -255,6 +273,7 @@ async function getCounterLeaderboard(gameId, counterId, { period, offset, limit,
 
 module.exports = {
   addToCounter,
+  registerCounter,
   getCounterLeaderboard,
   counterAllowance,
   db,

@@ -20,6 +20,7 @@ store.getCommands = async (g, o) => { calls.push(["commands", g, o]); return { c
 const config = require("../src/config");
 config.games["tavern-legends"].scoreRequiresSteam = false; // most tests post by name
 store.addToCounter = async (g, c, counter, a) => { calls.push(["counter", g, c, a]); return { accepted: Math.min(a.amount, 60), flagged: a.amount > 60, total: 5, periods: { day: 5, week: 5, month: 5 } }; };
+store.registerCounter = async (g, c, max) => { calls.push(["register", g, c, max]); };
 store.getCounterLeaderboard = async (g, c, o) => { calls.push(["counterBoard", g, c, o]); return { counterId: c, period: o.period, key: "w", entries: [], me: null }; };
 const { server } = require("../src/server");
 
@@ -165,7 +166,7 @@ test("counters: add needs game key and Steam token, board is public", async () =
   const addPath = "/v1/games/tavern-legends/counters/beer-tapped/add";
   let res = await post(addPath, { amount: 3 });
   assert.strictEqual(res.status, 401);
-  res = await post("/v1/games/tavern-legends/counters/nope/add", { amount: 3 });
+  res = await post("/v1/games/tavern-legends/counters/Bad_Id/add", { amount: 3 });
   assert.strictEqual(res.status, 404);
 
   const auth = await (await post("/v1/games/tavern-legends/auth/steam", { ticket: "ab".repeat(20) })).json();
@@ -190,4 +191,18 @@ test("counters: add needs game key and Steam token, board is public", async () =
   assert.strictEqual(res.status, 422);
   res = await fetch(base + "/v1/games/tavern-legends/counters/beer-tapped/leaderboard?period=all&offset=-1");
   assert.deepStrictEqual(calls.at(-1)[3], { period: "all", offset: 0, limit: 10, steamId: "" });
+});
+
+test("open counters are registered on first add", async () => {
+  const auth = await (await post("/v1/games/tavern-legends/auth/steam", { ticket: "ab".repeat(20) })).json();
+  const res = await fetch(base + "/v1/games/tavern-legends/counters/guests-served/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Game-Key": "test-key", Authorization: "Bearer " + auth.token },
+    body: JSON.stringify({ amount: 2 })
+  });
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(calls.at(-2), ["register", "tavern-legends", "guests-served", 20]);
+  assert.strictEqual(calls.at(-1)[3].amount, 2);
+  const board = await fetch(base + "/v1/games/tavern-legends/counters/guests-served/leaderboard?period=week");
+  assert.strictEqual(board.status, 200);
 });

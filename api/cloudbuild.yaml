@@ -11,7 +11,7 @@ steps:
     name: gcr.io/google.com/cloudsdktool/cloud-sdk:stable
     dir: api
     entrypoint: gcloud
-    args: ["run", "deploy", "crowforge-api", "--source", ".", "--region", "europe-west3", "--project", "$PROJECT_ID", "--update-secrets", "STEAM_WEB_API_KEY=steam-web-api-key:latest", "--update-env-vars", "TL_STEAM_APP_ID=3160880", "--quiet"]
+    args: ["run", "deploy", "crowforge-api", "--source", ".", "--region", "europe-west3", "--project", "$PROJECT_ID", "--update-secrets", "STEAM_WEB_API_KEY=steam-web-api-key:latest", "--update-env-vars", "TL_STEAM_APP_ID=3160880,WH_STEAM_APP_ID=4426920", "--quiet"]
   # cloud-sdk:stable has neither curl nor python3: gcloud only writes the service URL to /workspace,
   # node does the actual request. $$ = literal $ for the shell (Cloud Build substitutes single $).
   - id: service-url
