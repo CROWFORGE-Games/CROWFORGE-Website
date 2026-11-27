@@ -20,7 +20,8 @@ store.getCommands = async (g, o) => { calls.push(["commands", g, o]); return { c
 const config = require("../src/config");
 config.games["tavern-legends"].scoreRequiresSteam = false; // most tests post by name
 store.addToCounter = async (g, c, counter, a) => { calls.push(["counter", g, c, a]); return { accepted: Math.min(a.amount, 60), flagged: a.amount > 60, total: 5, periods: { day: 5, week: 5, month: 5 } }; };
-store.registerCounter = async (g, c, max) => { calls.push(["register", g, c, max]); };
+store.registerCounter = async (g, c) => { calls.push(["register", g, c]); };
+store.setCounterValue = async (g, c, a) => { calls.push(["set", g, c, a]); return { value: a.value, previous: 4 }; };
 store.getCounterLeaderboard = async (g, c, o) => { calls.push(["counterBoard", g, c, o]); return { counterId: c, period: o.period, key: "w", entries: [], me: null }; };
 const { server } = require("../src/server");
 
@@ -201,8 +202,24 @@ test("open counters are registered on first add", async () => {
     body: JSON.stringify({ amount: 2 })
   });
   assert.strictEqual(res.status, 200);
-  assert.deepStrictEqual(calls.at(-2), ["register", "tavern-legends", "guests-served", 20]);
+  assert.deepStrictEqual(calls.at(-2), ["register", "tavern-legends", "guests-served"]);
   assert.strictEqual(calls.at(-1)[3].amount, 2);
   const board = await fetch(base + "/v1/games/tavern-legends/counters/guests-served/leaderboard?period=week");
   assert.strictEqual(board.status, 200);
+});
+
+test("counter set stores the given value", async () => {
+  const auth = await (await post("/v1/games/werewolf-hunter/auth/steam", { ticket: "ab".repeat(20) }, "wh-key")).json();
+  const set = (body, token = auth.token) => fetch(base + "/v1/games/werewolf-hunter/counters/killedwerewolves/set", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Game-Key": "wh-key", Authorization: "Bearer " + token },
+    body: JSON.stringify(body)
+  });
+  assert.strictEqual((await set({ value: -1 })).status, 422);
+  assert.strictEqual((await set({ value: 1.5 })).status, 422);
+  const res = await set({ value: 5 });
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(await res.json(), { value: 5, previous: 4 });
+  assert.deepStrictEqual(calls.at(-1)[3], { steamId: "76561190000000001", name: "SteamMathi", value: 5, slotId: "", version: "" });
+  assert.deepStrictEqual(calls.at(-2), ["register", "werewolf-hunter", "killedwerewolves"]);
 });

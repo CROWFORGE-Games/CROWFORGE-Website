@@ -237,9 +237,28 @@ async function postCounterAdd(req, res, gameId, counterId) {
   }
   const name = identity.name || "Player";
   if (!counter.configured) {
-    await store.registerCounter(gameId, counterId, config.games[gameId].openCounters.maxCounters);
+    await store.registerCounter(gameId, counterId);
   }
   const result = await store.addToCounter(gameId, counterId, counter, { steamId: identity.steamId, name, amount, slotId, version });
+  send(res, 200, result);
+}
+
+async function postCounterSet(req, res, gameId, counterId) {
+  requireGameKey(req, gameId);
+  const counter = lookupCounter(gameId, counterId);
+  const identity = steamIdentity(req, gameId);
+  if (!identity) throw new store.ApiError(401, "Steam sign-in required.");
+  const body = await readJson(req);
+  const value = Number(body.value);
+  if (!Number.isSafeInteger(value) || value < 0) throw new store.ApiError(422, "value must be an integer >= 0.");
+  const slotId = text(body.slotId, 64, "slotId");
+  if (slotId && !/^[A-Za-z0-9_-]+$/.test(slotId)) throw new store.ApiError(422, "slotId may only contain letters, digits, _ and -.");
+  const version = text(body.version, 32, "version");
+  if (rateLimited(`counter:${gameId}:${counterId}:${identity.steamId}`, 30, 60 * 1000)) {
+    throw new store.ApiError(429, "Too many counter updates.");
+  }
+  if (!counter.configured) await store.registerCounter(gameId, counterId);
+  const result = await store.setCounterValue(gameId, counterId, { steamId: identity.steamId, name: identity.name || "Player", value, slotId, version });
   send(res, 200, result);
 }
 
@@ -261,6 +280,7 @@ const SCORES = /^\/v1\/games\/([a-z0-9-]+)\/leaderboards\/([a-z0-9-]+)\/scores$/
 const TICKETS = /^\/v1\/games\/([a-z0-9-]+)\/tickets$/;
 const COMMANDS = /^\/v1\/games\/([a-z0-9-]+)\/commands$/;
 const COUNTER_ADD = /^\/v1\/games\/([a-z0-9-]+)\/counters\/([a-z0-9-]+)\/add$/;
+const COUNTER_SET = /^\/v1\/games\/([a-z0-9-]+)\/counters\/([a-z0-9-]+)\/set$/;
 const COUNTER_BOARD = /^\/v1\/games\/([a-z0-9-]+)\/counters\/([a-z0-9-]+)\/leaderboard$/;
 const STEAM_AUTH = /^\/v1\/games\/([a-z0-9-]+)\/auth\/steam$/;
 
@@ -279,6 +299,7 @@ async function route(req, res) {
   if (req.method === "POST" && (m = TICKETS.exec(path))) return postTicket(req, res, m[1]);
   if (req.method === "GET" && (m = COMMANDS.exec(path))) return getCommands(req, res, url, m[1]);
   if (req.method === "POST" && (m = COUNTER_ADD.exec(path))) return postCounterAdd(req, res, m[1], m[2]);
+  if (req.method === "POST" && (m = COUNTER_SET.exec(path))) return postCounterSet(req, res, m[1], m[2]);
   if (req.method === "GET" && (m = COUNTER_BOARD.exec(path))) return getCounterLeaderboard(req, res, url, m[1], m[2]);
   if (req.method === "POST" && (m = STEAM_AUTH.exec(path))) return postSteamAuth(req, res, m[1]);
   if (req.method === "POST" && path === "/internal/sync") return postSync(req, res);

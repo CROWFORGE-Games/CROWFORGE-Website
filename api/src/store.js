@@ -227,22 +227,44 @@ async function addToCounter(gameId, counterId, counter, { steamId, name, amount,
   };
 }
 
-// Open counters: games/{g}/counters/{c} {createdAt} marks a counter as existing; at most maxCounters per game.
+// Open counters: games/{g}/counters/{c} {createdAt} marks a counter as existing (listed in the dashboard).
 const knownCounters = new Set();
 
-async function registerCounter(gameId, counterId, maxCounters) {
+async function registerCounter(gameId, counterId) {
   const cacheKey = `${gameId}/${counterId}`;
   if (knownCounters.has(cacheKey)) return;
   const ref = counterRef(gameId, counterId);
   const doc = await ref.get();
   if (!doc.exists) {
-    const count = await gameRef(gameId).collection("counters").count().get();
-    if (count.data().count >= maxCounters) {
-      throw new ApiError(422, `Too many counters for this game (max ${maxCounters}).`);
-    }
     await ref.set({ createdAt: FieldValue.serverTimestamp(), source: "game" }, { merge: true });
   }
   knownCounters.add(cacheKey);
+}
+
+/**
+ * Sets the all-time value. Day/week/month grow by the increase over the previous value (never shrink),
+ * so period rankings keep working when the game sets values instead of adding.
+ */
+async function setCounterValue(gameId, counterId, { steamId, name, value, slotId, version }, nowMs = Date.now()) {
+  const player = steamPlayerKey(steamId);
+  const keys = periods.currentKeys(nowMs);
+  const entryRefs = keys.map((key) => counterEntriesRef(gameId, counterId, key).doc(player));
+  const playerRef = counterRef(gameId, counterId).collection("players").doc(player);
+  return db.runTransaction(async (tx) => {
+    const allDoc = await tx.get(entryRefs[0]);
+    const previous = allDoc.exists ? Number(allDoc.data().value) || 0 : 0;
+    const increase = Math.max(0, value - previous);
+    const now = Timestamp.fromMillis(nowMs);
+    const base = { name, nameLower: name.toLowerCase(), steamId, version: version || null, updatedAt: now };
+    const allData = { ...base, value };
+    if (slotId) allData.slots = { [slotId]: value };
+    tx.set(entryRefs[0], allData, { merge: true });
+    if (increase > 0) {
+      entryRefs.slice(1).forEach((ref) => tx.set(ref, { ...base, value: FieldValue.increment(increase) }, { merge: true }));
+    }
+    tx.set(playerRef, { lastAt: now, name, steamId }, { merge: true });
+    return { value, previous };
+  });
 }
 
 const counterTopCache = new Map();
@@ -274,6 +296,7 @@ async function getCounterLeaderboard(gameId, counterId, { period, offset, limit,
 module.exports = {
   addToCounter,
   registerCounter,
+  setCounterValue,
   getCounterLeaderboard,
   counterAllowance,
   db,
