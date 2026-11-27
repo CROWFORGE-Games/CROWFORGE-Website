@@ -241,30 +241,27 @@ async function registerCounter(gameId, counterId) {
   knownCounters.add(cacheKey);
 }
 
-/**
- * Sets the all-time value. Day/week/month grow by the increase over the previous value (never shrink),
- * so period rankings keep working when the game sets values instead of adding.
- */
+/** Sets the player's value (any integer >= 0, may go down). Plain value, no periods. */
 async function setCounterValue(gameId, counterId, { steamId, name, value, slotId, version }, nowMs = Date.now()) {
-  const player = steamPlayerKey(steamId);
-  const keys = periods.currentKeys(nowMs);
-  const entryRefs = keys.map((key) => counterEntriesRef(gameId, counterId, key).doc(player));
-  const playerRef = counterRef(gameId, counterId).collection("players").doc(player);
+  const ref = counterEntriesRef(gameId, counterId, "all").doc(steamPlayerKey(steamId));
   return db.runTransaction(async (tx) => {
-    const allDoc = await tx.get(entryRefs[0]);
-    const previous = allDoc.exists ? Number(allDoc.data().value) || 0 : 0;
-    const increase = Math.max(0, value - previous);
-    const now = Timestamp.fromMillis(nowMs);
-    const base = { name, nameLower: name.toLowerCase(), steamId, version: version || null, updatedAt: now };
-    const allData = { ...base, value };
-    if (slotId) allData.slots = { [slotId]: value };
-    tx.set(entryRefs[0], allData, { merge: true });
-    if (increase > 0) {
-      entryRefs.slice(1).forEach((ref) => tx.set(ref, { ...base, value: FieldValue.increment(increase) }, { merge: true }));
-    }
-    tx.set(playerRef, { lastAt: now, name, steamId }, { merge: true });
+    const doc = await tx.get(ref);
+    const previous = doc.exists ? Number(doc.data().value) || 0 : 0;
+    const data = { name, nameLower: name.toLowerCase(), steamId, value, version: version || null, updatedAt: Timestamp.fromMillis(nowMs) };
+    if (slotId) data.slots = { [slotId]: value };
+    tx.set(ref, data, { merge: true });
     return { value, previous };
   });
+}
+
+/** The player's own value and rank (value 0, rank null when nothing was stored yet). */
+async function getCounterValue(gameId, counterId, steamId) {
+  const ref = counterEntriesRef(gameId, counterId, "all");
+  const doc = await ref.doc(steamPlayerKey(steamId)).get();
+  if (!doc.exists) return { counterId, value: 0, rank: null, exists: false };
+  const value = Number(doc.data().value) || 0;
+  const above = await ref.where("value", ">", value).count().get();
+  return { counterId, value, rank: above.data().count + 1, exists: true };
 }
 
 const counterTopCache = new Map();
@@ -297,6 +294,7 @@ module.exports = {
   addToCounter,
   registerCounter,
   setCounterValue,
+  getCounterValue,
   getCounterLeaderboard,
   counterAllowance,
   db,
