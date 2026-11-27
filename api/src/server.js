@@ -208,11 +208,15 @@ async function postSync(req, res) {
   send(res, 200, report);
 }
 
+/** Configured counter, or the game's default for open counters (created on first add). */
 function lookupCounter(gameId, counterId) {
   const game = config.games[gameId];
   const counter = game && game.counters && game.counters[counterId];
-  if (!counter) throw new store.ApiError(404, "Unknown game or counter.");
-  return counter;
+  if (counter) return { ...counter, configured: true };
+  if (game && game.openCounters && /^[a-z0-9][a-z0-9-]{0,39}$/.test(counterId)) {
+    return { maxPerMinute: game.openCounters.maxPerMinute, configured: false };
+  }
+  throw new store.ApiError(404, "Unknown game or counter.");
 }
 
 async function postCounterAdd(req, res, gameId, counterId) {
@@ -232,6 +236,9 @@ async function postCounterAdd(req, res, gameId, counterId) {
     throw new store.ApiError(429, "Too many counter updates.");
   }
   const name = identity.name || "Player";
+  if (!counter.configured) {
+    await store.registerCounter(gameId, counterId, config.games[gameId].openCounters.maxCounters);
+  }
   const result = await store.addToCounter(gameId, counterId, counter, { steamId: identity.steamId, name, amount, slotId, version });
   send(res, 200, result);
 }

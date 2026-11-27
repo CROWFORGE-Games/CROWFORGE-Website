@@ -20,6 +20,8 @@ const games = {
     counters: {
       "beer-tapped": { maxPerMinute: 60 }
     },
+    // Unknown counter ids are created on first add (up to maxCounters per game) with these limits.
+    openCounters: { maxCounters: 20, maxPerMinute: 60 },
     leaderboards: {
       "beer-tapped": {
         sheetRange: "BeerTapped!A2:D",
@@ -31,6 +33,9 @@ const games = {
   },
   "werewolf-hunter": {
     keyEnv: "GAME_KEY_WEREWOLF_HUNTER",
+    steamAppId: process.env.WH_STEAM_APP_ID || "",
+    counters: {},
+    openCounters: { maxCounters: 20, maxPerMinute: 60 },
     leaderboards: {}
   }
 };
