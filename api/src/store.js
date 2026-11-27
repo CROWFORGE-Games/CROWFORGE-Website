@@ -1,6 +1,6 @@
 "use strict";
 
-const { Firestore, FieldValue, Timestamp } = require("@google-cloud/firestore");
+const { Firestore, FieldValue, Timestamp, AggregateField } = require("@google-cloud/firestore");
 const { sha1, namePlayerKey } = require("./sheet");
 const periods = require("./periods");
 
@@ -116,6 +116,37 @@ async function getLeaderboard(gameId, boardId, { limit, name, steamId }) {
   }
   if (best) me = { rank: await rankOf(gameId, boardId, best.score, bestKey), name: best.name, score: best.score };
   return { entries: cached.entries, me };
+}
+
+// Totals for public pages (website): all entries with a score, minus hidden players. A player with both
+// a Steam and a name entry is counted twice; close enough for a headline number.
+const statsCache = new Map();
+const STATS_CACHE_MS = 5 * 60 * 1000;
+
+async function getLeaderboardStats(gameId, boardId) {
+  const cacheKey = `${gameId}/${boardId}`;
+  const cached = statsCache.get(cacheKey);
+  if (cached && Date.now() - cached.at < STATS_CACHE_MS) return cached.stats;
+  const ref = entriesRef(gameId, boardId);
+  const [agg, hidden] = await Promise.all([
+    ref.where("score", ">", 0).aggregate({ players: AggregateField.count(), total: AggregateField.sum("score") }).get(),
+    hiddenPlayers(gameId)
+  ]);
+  let players = Number(agg.data().players) || 0;
+  let total = Number(agg.data().total) || 0;
+  if (hidden.size) {
+    const docs = await db.getAll(...[...hidden].map((key) => ref.doc(key)));
+    for (const doc of docs) {
+      const score = doc.exists ? Number(doc.data().score) || 0 : 0;
+      if (score > 0) {
+        players -= 1;
+        total -= score;
+      }
+    }
+  }
+  const stats = { players: Math.max(0, players), total: Math.max(0, total) };
+  statsCache.set(cacheKey, { at: Date.now(), stats });
+  return stats;
 }
 
 const steamPlayerKey = (steamId) => "steam:" + String(steamId);
@@ -339,6 +370,7 @@ async function getCounterLeaderboard(gameId, counterId, { period, offset, limit,
 }
 
 module.exports = {
+  getLeaderboardStats,
   addToCounter,
   registerCounter,
   setCounterValue,
