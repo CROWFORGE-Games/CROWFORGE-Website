@@ -234,6 +234,7 @@ mask-image:radial-gradient(ellipse 78% 62% at 50% 58%,rgba(0,0,0,.95),transparen
 /* UPDATE CARDS */
 .upd-wrap{max-width:1200px;margin:0 auto}
 .upd-head{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:2.5rem;border-bottom:1px solid var(--border);margin-bottom:3.5rem;flex-wrap:wrap;gap:1.5rem}
+.upd-head-actions{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
 .upd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border)}
 .upd-card{background:var(--black-3);padding:0;display:flex;flex-direction:column;position:relative;transition:background .25s}
 .upd-card:hover{background:var(--black-4)}
@@ -453,6 +454,7 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
   #games,#features,#steam-updates,#updates,#studio{padding:5rem 1.5rem}
   .upd-grid{grid-template-columns:1fr}
   .upd-head{flex-direction:column;align-items:flex-start}
+  .upd-head-actions{flex-direction:column;align-items:flex-start;gap:1rem;width:100%}
   .games-grid{grid-template-columns:1fr}
   .features-grid{grid-template-columns:1fr 1fr}
   footer{grid-template-columns:1fr 1fr;gap:2.5rem;padding:3.5rem 1.5rem}
@@ -632,10 +634,22 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:5rem;d
   <div class="upd-wrap">
     <div class="upd-head">
       <div>
-        <p class="section-eyebrow">Tavern Legends</p>
+        <p class="section-eyebrow" id="steam-updates-eyebrow">Tavern Legends</p>
         <h2 class="section-title">Latest Updates</h2>
       </div>
-      <a href="https://store.steampowered.com/news/app/3160880" target="_blank" class="btn btn-ghost" style="font-size:.7rem;padding:.7rem 1.8rem;white-space:nowrap;">All updates on Steam &rarr;</a>
+      <div class="upd-head-actions">
+        <div class="feature-switch" role="tablist" aria-label="Game updates switcher">
+          <button type="button" class="feature-switch-btn active" data-steam-game="tavern" aria-selected="true">
+            <img src="tavern-legends-logo.jpg" class="feature-switch-icon" alt="" loading="lazy" decoding="async">
+            <span class="feature-switch-label">Tavern Legends</span>
+          </button>
+          <button type="button" class="feature-switch-btn" data-steam-game="werewolf" aria-selected="false">
+            <img src="werewolf-hunter-logo.jpg" class="feature-switch-icon" alt="" loading="lazy" decoding="async">
+            <span class="feature-switch-label">Werewolf Hunter</span>
+          </button>
+        </div>
+        <a id="steam-updates-all-link" href="https://store.steampowered.com/news/app/3160880" target="_blank" class="btn btn-ghost" style="font-size:.7rem;padding:.7rem 1.8rem;white-space:nowrap;">All updates on Steam &rarr;</a>
+      </div>
     </div>
 
     <!-- UPDATE CARDS -->
@@ -842,8 +856,29 @@ const currentState = {
     ? initialLang
     : (storedLang === 'de' || storedLang === 'en' ? storedLang : detectedLang),
   steamItems: [],
+  steamItemsByGame: { tavern: [], werewolf: [] },
+  steamGame: 'tavern',
   featureGame: 'tavern'
 };
+
+const STEAM_GAMES = {
+  tavern: {
+    appid: '3160880',
+    label: 'Tavern Legends',
+    newsUrl: 'https://store.steampowered.com/news/app/3160880',
+    storeUrl: 'https://store.steampowered.com/app/3160880/Tavern_Legends/'
+  },
+  werewolf: {
+    appid: '4426920',
+    label: 'Werewolf Hunter',
+    newsUrl: 'https://store.steampowered.com/news/app/4426920',
+    storeUrl: 'https://store.steampowered.com/app/4426920/Werewolf_Hunter_Night_of_Horror/'
+  }
+};
+
+function currentSteamGame() {
+  return STEAM_GAMES[currentState.steamGame === 'werewolf' ? 'werewolf' : 'tavern'];
+}
 
 // Scroll reveal
 const obs = new IntersectionObserver((entries) => {
@@ -1015,8 +1050,41 @@ const STATIC_LATEST_CARDS = {
   ]
 };
 
+const STATIC_LATEST_CARDS_WEREWOLF = {
+  en: [
+    {
+      type: 'major',
+      dateLabel: 'Coming 2026',
+      version: '',
+      title: 'Werewolf Hunter: Night of Horror',
+      desc: 'No Steam update news yet &mdash; the hunt has not yet begun. Wishlist the game on Steam to be notified the moment the first patch notes arrive.',
+      bullets: [
+        'Wishlist the game on Steam',
+        'Follow CROWFORGE Games for announcements'
+      ],
+      url: 'https://store.steampowered.com/app/4426920/Werewolf_Hunter_Night_of_Horror/'
+    }
+  ],
+  de: [
+    {
+      type: 'major',
+      dateLabel: 'Erscheint 2026',
+      version: '',
+      title: 'Werewolf Hunter: Night of Horror',
+      desc: 'Noch keine Steam-Update-News &mdash; die Jagd hat noch nicht begonnen. F&uuml;ge das Spiel deiner Steam-Wunschliste hinzu, um sofort benachrichtigt zu werden, sobald die ersten Patch Notes erscheinen.',
+      bullets: [
+        'Spiel der Steam-Wunschliste hinzuf&uuml;gen',
+        'CROWFORGE Games f&uuml;r Ank&uuml;ndigungen folgen'
+      ],
+      url: 'https://store.steampowered.com/app/4426920/Werewolf_Hunter_Night_of_Horror/'
+    }
+  ]
+};
+
 function getStaticLatestCards() {
-  return STATIC_LATEST_CARDS[currentState.lang === 'de' ? 'de' : 'en'];
+  const lang = currentState.lang === 'de' ? 'de' : 'en';
+  if (currentState.steamGame === 'werewolf') return STATIC_LATEST_CARDS_WEREWOLF[lang];
+  return STATIC_LATEST_CARDS[lang];
 }
 
 const FEATURE_CONTENT = {
@@ -1114,7 +1182,7 @@ function buildUpdateCard(item) {
     + '<h3 class="upd-title">' + escapeHtml(item.title) + '</h3>'
     + (item.desc ? '<p class="upd-desc">' + escapeHtml(item.desc) + '</p>' : '')
     + (bullets ? '<ul class="upd-list">' + bullets + '</ul>' : '')
-    + '<a href="' + escapeHtml(item.url || 'https://store.steampowered.com/news/app/3160880') + '" target="_blank" class="upd-link">' + steamText('readOnSteam') + '</a>'
+    + '<a href="' + escapeHtml(item.url || currentSteamGame().newsUrl) + '" target="_blank" class="upd-link">' + steamText('readOnSteam') + '</a>'
     + '</div>';
 }
 
@@ -1147,7 +1215,7 @@ function toDynamicUpdate(item) {
     title: item.title || steamText('updateFallback'),
     desc: desc,
     bullets: bullets,
-    url: item.url || 'https://store.steampowered.com/news/app/3160880',
+    url: item.url || currentSteamGame().newsUrl,
     image: item.image || extractSteamImageFromContents(item.contents || ''),
     date: item.date || 0
   };
@@ -1215,27 +1283,66 @@ function renderSteamFeed(items) {
   setFeedStatus('live', steamText('liveFromSteam'));
 }
 
-function handleSteamNewsResponse(data) {
-  currentState.steamItems = (data.appnews && data.appnews.newsitems) ? data.appnews.newsitems.slice().sort(function(a, b) { return (b.date || 0) - (a.date || 0); }) : [];
-  const dynamicItems = currentState.steamItems.map(toDynamicUpdate);
-  renderLatestCards(dynamicItems);
-  prependNewTimelineItems(dynamicItems);
-  renderSteamFeed(currentState.steamItems);
-  openLegalFromHash();
+function sortedSteamItems(data) {
+  if (!data || !data.appnews || !Array.isArray(data.appnews.newsitems)) return [];
+  return data.appnews.newsitems.slice().sort(function(a, b) { return (b.date || 0) - (a.date || 0); });
 }
 
-(function fetchSteamNews() {
-  fetch('/api/steam-news?appid=3160880&count=8')
+function renderCurrentSteamGame() {
+  const game = currentState.steamGame === 'werewolf' ? 'werewolf' : 'tavern';
+  const items = currentState.steamItemsByGame[game] || [];
+  currentState.steamItems = items;
+  const dynamicItems = items.map(toDynamicUpdate);
+  renderLatestCards(dynamicItems);
+  if (game === 'tavern') {
+    prependNewTimelineItems(dynamicItems);
+  }
+  renderSteamFeed(items);
+  renderSteamHeader();
+}
+
+function renderSteamHeader() {
+  const game = currentSteamGame();
+  const eyebrow = document.getElementById('steam-updates-eyebrow');
+  if (eyebrow) eyebrow.textContent = game.label;
+  const link = document.getElementById('steam-updates-all-link');
+  if (link) link.href = game.newsUrl;
+  document.querySelectorAll('[data-steam-game]').forEach(function(btn) {
+    const isActive = btn.dataset.steamGame === currentState.steamGame;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+}
+
+function fetchSteamNewsForGame(game) {
+  const appid = STEAM_GAMES[game].appid;
+  return fetch('/api/steam-news?appid=' + encodeURIComponent(appid) + '&count=8')
     .then(function(r) {
       if (!r.ok) throw new Error('Steam API failed');
       return r.json();
     })
-    .then(handleSteamNewsResponse)
-    .catch(function() {
-      renderLatestCards([]);
-      renderSteamFeed([]);
+    .then(function(data) { return sortedSteamItems(data); })
+    .catch(function() { return []; });
+}
+
+(function fetchAllSteamNews() {
+  Promise.all([fetchSteamNewsForGame('tavern'), fetchSteamNewsForGame('werewolf')])
+    .then(function(results) {
+      currentState.steamItemsByGame.tavern = results[0];
+      currentState.steamItemsByGame.werewolf = results[1];
+      renderCurrentSteamGame();
+      openLegalFromHash();
     });
 })();
+
+document.querySelectorAll('[data-steam-game]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    const next = btn.dataset.steamGame === 'werewolf' ? 'werewolf' : 'tavern';
+    if (currentState.steamGame === next) return;
+    currentState.steamGame = next;
+    renderCurrentSteamGame();
+  });
+});
 
 </script>
 
@@ -1592,7 +1699,6 @@ function setLang(lang) {
 
   setHtml('#games .section-eyebrow', t.gamesEyebrow);
   setHtml('#games .section-title', t.gamesTitle);
-  setHtml('#steam-updates .section-eyebrow', t.updatesEyebrow);
   setHtml('#steam-updates .section-title', t.updatesTitle);
   setHtml('#features-title', t.featuresTitle);
   setHtml('#updates .section-eyebrow', t.chronicleEyebrow);
@@ -1617,7 +1723,7 @@ function setLang(lang) {
   if (gameMeta[0]) gameMeta[0].innerHTML = t.tavernMeta;
   if (gameMeta[1]) gameMeta[1].innerHTML = t.werewolfMeta;
 
-  setHtml('.upd-head .btn-ghost', t.updatesButton);
+  setHtml('#steam-updates-all-link', t.updatesButton);
 
   const statLabels = document.querySelectorAll('.studio-stat-label');
   if (statLabels[0]) statLabels[0].innerHTML = t.statYear;
@@ -1645,7 +1751,7 @@ function setLang(lang) {
     else if (href === '#privacy') el.innerHTML = t.footerPrivacy;
   });
 
-  renderSteamFeed(currentState.steamItems);
+  renderCurrentSteamGame();
   openLegalFromHash();
 }
 
