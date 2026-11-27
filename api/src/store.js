@@ -19,14 +19,46 @@ class ApiError extends Error {
   }
 }
 
+// --- Hidden players ----------------------------------------------------------------------------
+// games/{g}/hiddenPlayers/{playerKey} (written by the dashboard): the player keeps playing and sees
+// their own rank, but is left out of every top list and does not push others down.
+// playerKey = entry document id ("steam:<id>" or "name:<name>").
+
+const hiddenCache = new Map();
+const HIDDEN_CACHE_MS = 30 * 1000;
+
+async function hiddenPlayers(gameId) {
+  const cached = hiddenCache.get(gameId);
+  if (cached && Date.now() - cached.at < HIDDEN_CACHE_MS) return cached.keys;
+  let keys = new Set();
+  try {
+    const snap = await gameRef(gameId).collection("hiddenPlayers").get();
+    keys = new Set(snap.docs.map((doc) => doc.id));
+  } catch (error) {
+    console.error("hiddenPlayers read failed", error);
+    if (cached) return cached.keys;
+  }
+  hiddenCache.set(gameId, { at: Date.now(), keys });
+  return keys;
+}
+
+/** Hidden entries of one collection with a value above `value` (they must not count for ranks). */
+async function hiddenAbove(collection, hidden, field, value, ownKey) {
+  const keys = [...hidden].filter((key) => key !== ownKey);
+  if (!keys.length) return 0;
+  const docs = await db.getAll(...keys.map((key) => collection.doc(key)));
+  return docs.filter((doc) => doc.exists && (Number(doc.data()[field]) || 0) > value).length;
+}
+
 // --- Leaderboard -------------------------------------------------------------------------------
 
 const topCache = new Map();
 const TOP_CACHE_MS = 30 * 1000;
 
-async function rankOf(gameId, boardId, score) {
-  const snap = await entriesRef(gameId, boardId).where("score", ">", score).count().get();
-  return snap.data().count + 1;
+async function rankOf(gameId, boardId, score, ownKey) {
+  const ref = entriesRef(gameId, boardId);
+  const [snap, hidden] = await Promise.all([ref.where("score", ">", score).count().get(), hiddenPlayers(gameId)]);
+  return snap.data().count - (await hiddenAbove(ref, hidden, "score", score, ownKey)) + 1;
 }
 
 async function getLeaderboard(gameId, boardId, { limit, name, steamId }) {
@@ -35,10 +67,12 @@ async function getLeaderboard(gameId, boardId, { limit, name, steamId }) {
   if (!cached || Date.now() - cached.at > TOP_CACHE_MS) {
     // A player can have a Steam entry (new builds) and a name entry (old builds via sheet):
     // read a few more and keep only the best entry per name.
-    const snap = await entriesRef(gameId, boardId).orderBy("score", "desc").limit(Math.min(300, limit * 3)).get();
+    const hidden = await hiddenPlayers(gameId);
+    const snap = await entriesRef(gameId, boardId).orderBy("score", "desc").limit(Math.min(300 + hidden.size, limit * 3 + hidden.size)).get();
     const seen = new Set();
     const entries = [];
     for (const doc of snap.docs) {
+      if (hidden.has(doc.id)) continue;
       const d = doc.data();
       const key = String(d.nameLower || d.name || doc.id).toLowerCase();
       if (seen.has(key)) continue;
@@ -59,9 +93,13 @@ async function getLeaderboard(gameId, boardId, { limit, name, steamId }) {
 
   let me = null;
   let best = null;
+  let bestKey = null;
   if (steamId) {
     const doc = await entriesRef(gameId, boardId).doc(steamPlayerKey(steamId)).get();
-    if (doc.exists) best = doc.data();
+    if (doc.exists) {
+      best = doc.data();
+      bestKey = doc.id;
+    }
   }
   if (name) {
     const [byId, snap] = await Promise.all([
@@ -70,10 +108,13 @@ async function getLeaderboard(gameId, boardId, { limit, name, steamId }) {
     ]);
     for (const doc of [byId, ...snap.docs].filter((d) => d.exists)) {
       const d = doc.data();
-      if (!best || d.score > best.score) best = d;
+      if (!best || d.score > best.score) {
+        best = d;
+        bestKey = doc.id;
+      }
     }
   }
-  if (best) me = { rank: await rankOf(gameId, boardId, best.score), name: best.name, score: best.score };
+  if (best) me = { rank: await rankOf(gameId, boardId, best.score, bestKey), name: best.name, score: best.score };
   return { entries: cached.entries, me };
 }
 
@@ -112,7 +153,7 @@ async function submitScore(gameId, boardId, board, { name, score, version, steam
   if (result.improved) {
     for (const key of topCache.keys()) if (key.startsWith(`${gameId}/${boardId}/`)) topCache.delete(key);
   }
-  return { ...result, rank: await rankOf(gameId, boardId, result.best) };
+  return { ...result, rank: await rankOf(gameId, boardId, result.best, ref.id) };
 }
 
 // --- Tickets -----------------------------------------------------------------------------------
@@ -260,8 +301,12 @@ async function getCounterValue(gameId, counterId, steamId) {
   const doc = await ref.doc(steamPlayerKey(steamId)).get();
   if (!doc.exists) return { counterId, value: 0, rank: null, exists: false };
   const value = Number(doc.data().value) || 0;
-  const above = await ref.where("value", ">", value).count().get();
-  return { counterId, value, rank: above.data().count + 1, exists: true };
+  return { counterId, value, rank: await counterRank(gameId, ref, value, doc.id), exists: true };
+}
+
+async function counterRank(gameId, ref, value, ownKey) {
+  const [above, hidden] = await Promise.all([ref.where("value", ">", value).count().get(), hiddenPlayers(gameId)]);
+  return above.data().count - (await hiddenAbove(ref, hidden, "value", value, ownKey)) + 1;
 }
 
 const counterTopCache = new Map();
@@ -273,8 +318,12 @@ async function getCounterLeaderboard(gameId, counterId, { period, offset, limit,
   const cacheKey = `${gameId}/${counterId}/${info.key}/${limit}`;
   let cached = counterTopCache.get(cacheKey);
   if (!cached || Date.now() - cached.at > COUNTER_CACHE_MS) {
-    const snap = await ref.orderBy("value", "desc").limit(limit).get();
-    const entries = snap.docs.map((doc, i) => ({ rank: i + 1, name: doc.data().name, value: Number(doc.data().value) || 0 }));
+    const hidden = await hiddenPlayers(gameId);
+    const snap = await ref.orderBy("value", "desc").limit(limit + hidden.size).get();
+    const entries = snap.docs
+      .filter((doc) => !hidden.has(doc.id))
+      .slice(0, limit)
+      .map((doc, i) => ({ rank: i + 1, name: doc.data().name, value: Number(doc.data().value) || 0 }));
     cached = { at: Date.now(), entries };
     counterTopCache.set(cacheKey, cached);
   }
@@ -283,8 +332,7 @@ async function getCounterLeaderboard(gameId, counterId, { period, offset, limit,
     const doc = await ref.doc(steamPlayerKey(steamId)).get();
     if (doc.exists) {
       const value = Number(doc.data().value) || 0;
-      const above = await ref.where("value", ">", value).count().get();
-      me = { rank: above.data().count + 1, name: doc.data().name, value };
+      me = { rank: await counterRank(gameId, ref, value, doc.id), name: doc.data().name, value };
     }
   }
   return { counterId, ...info, entries: cached.entries, me };

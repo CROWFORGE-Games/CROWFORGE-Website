@@ -43,6 +43,7 @@ games/{gameId}/leaderboards/{boardId}/entries/{playerKey}   name, score, version
 games/{gameId}/tickets/{ticketId}                            sheet_* (from sheet) or api_* (from game)
 games/{gameId}/counters/{counterId}/periods/{all|dYYYY-MM-DD|wYYYY-WW|mYYYY-MM}/entries/steam:{id}   value, name, slots{slotId: n}
 games/{gameId}/counterFlags/{auto}                           adds above the plausibility limit
+games/{gameId}/hiddenPlayers/{playerKey}                     written by the dashboard: entry id (steam:{id} or name:{name}) left out of every leaderboard and counter top list and of other players' ranks
 games/{gameId}/commands/{commandId}                          written by the dashboard: target (lowercase player name), action, param, createdAt, expiresAt
 games/{gameId}/sync/{name}                                   row hashes of the last sheet sync
 ```
