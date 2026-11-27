@@ -14,6 +14,7 @@ steam.authenticateTicket = async ({ appId, ticket }) => {
 const store = require("../src/store");
 const calls = [];
 store.getLeaderboard = async (g, b, opts) => { calls.push(["get", g, b, opts]); return { entries: [], me: null }; };
+store.getLeaderboardStats = async (g, b) => { calls.push(["stats", g, b]); if (b === "boom") throw new Error("x"); return { players: 3, total: 42 }; };
 store.submitScore = async (g, b, board, s) => { calls.push(["score", g, b, s]); return { best: s.score, improved: true, rank: 1 }; };
 store.createTicket = async (g, t) => { calls.push(["ticket", g, t]); return { id: "api_x", duplicate: false }; };
 store.getCommands = async (g, o) => { calls.push(["commands", g, o]); return { commands: [{ id: "c1", action: "GiveGold", param: "50", createdAt: null }], serverTime: "t" }; };
@@ -37,6 +38,15 @@ test("leaderboard read is public and clamps limit", async () => {
   const res = await fetch(base + "/v1/games/tavern-legends/leaderboards/beer-tapped?limit=500&name=Bob");
   assert.strictEqual(res.status, 200);
   assert.deepStrictEqual(calls.at(-1)[3], { limit: 100, name: "Bob" });
+});
+
+test("leaderboard stats only with stats=1", async () => {
+  let res = await fetch(base + "/v1/games/tavern-legends/leaderboards/beer-tapped?limit=30");
+  assert.strictEqual((await res.json()).stats, undefined);
+  res = await fetch(base + "/v1/games/tavern-legends/leaderboards/beer-tapped?limit=30&stats=1");
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual((await res.json()).stats, { players: 3, total: 42 });
+  assert.deepStrictEqual(calls.at(-1), ["stats", "tavern-legends", "beer-tapped"]);
 });
 
 test("unknown board is 404", async () => {

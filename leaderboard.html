@@ -228,30 +228,18 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 
 <script>
 (function() {
-  var SHEET_ID = '1qh8yL1pgwBEGJ10cJZvfYOJhZKdeCrc5f9pkJ31nYy4';
-
   function fmt(n) {
     return n.toLocaleString('en-US');
   }
 
-  function parseCSV(text) {
-    var lines = text.replace(/^\uFEFF/, '').trim().split(/\r?\n/);
-    var players = [];
-    for (var i = 1; i < lines.length; i++) {  // skip header row
-      var cols = lines[i].split(',');
-      var name  = (cols[0] || '').trim().replace(/^"|"$/g,'');
-      var beers = parseInt((cols[1] || '0').trim().replace(/^"|"$/g,''), 10);
-      var normalizedName = name.toLowerCase();
-      if (name && normalizedName !== 'steamname' && normalizedName !== 'steam name' && !isNaN(beers) && beers > 0) {
-        players.push({name: name, beers: beers});
-      }
-    }
-    // sort descending just in case
-    players.sort(function(a,b){ return b.beers - a.beers; });
-    return players;
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function(c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
   }
 
   function buildCard(rank, name, beers, maxBeers) {
+    name = esc(name);
     var pct = Math.round(beers / maxBeers * 1000) / 10;
     var cls, rankHtml, barColor;
     if (rank === 1) {
@@ -276,6 +264,7 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
   }
 
   function buildRow(rank, name, beers, maxBeers) {
+    name = esc(name);
     var pct = Math.round(beers / maxBeers * 1000) / 10;
     return '<div class="lb-row" role="row" aria-label="Rank ' + rank + ', ' + name + ', ' + fmt(beers) + ' beers tapped">'
       + '<span class="lb-row-rank" role="cell">#' + rank + '</span>'
@@ -285,10 +274,10 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
       + '</div>';
   }
 
-  function render(players) {
+  function render(players, stats) {
     var display = players.slice(0, 30);
     var maxBeers = display[0].beers;
-    var totalBeers = players.reduce(function(s,p){ return s + p.beers; }, 0);
+    var totalBeers = stats && stats.total ? stats.total : players.reduce(function(s,p){ return s + p.beers; }, 0);
 
     // Stats
     document.getElementById('stat-players').textContent = display.length;
@@ -322,12 +311,12 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
     el.textContent = msg;
   }
 
-  fetch('/api/leaderboard?sheetId=' + encodeURIComponent(SHEET_ID))
+  fetch('/api/leaderboard')
     .then(function(r) { if (!r.ok) throw new Error('Network error'); return r.json(); })
     .then(function(payload) {
       var players = Array.isArray(payload.players) ? payload.players : [];
       if (!players.length) throw new Error('No data found');
-      render(players);
+      render(players, payload.stats);
     })
     .catch(function() {
       showError('Could not load leaderboard. Please try again later.');

@@ -9,11 +9,12 @@ const COOLDOWN_SECONDS = 45;
 const MIN_ELAPSED_MS = 3500;
 const rateLimitStore = new Map();
 const steamNewsCache = new Map();
-const leaderboardCache = new Map();
+let leaderboardCache = null;
 const twitchCategoryStatsCache = new Map();
 let twitchTokenCache = null;
 const STEAM_NEWS_CACHE_MS = 10 * 60 * 1000;
 const LEADERBOARD_CACHE_MS = 5 * 60 * 1000;
+const CROWFORGE_API_URL = String(process.env.CROWFORGE_API_URL || "https://crowforge-api-bl6rxddhbq-ey.a.run.app").replace(/\/+$/, "");
 const TWITCH_CATEGORY_STATS_CACHE_MS = 60 * 1000;
 
 const MIME_TYPES = {
@@ -75,23 +76,6 @@ function getCachedSteamNews(cacheKey) {
 
 function setCachedSteamNews(cacheKey, payload) {
   steamNewsCache.set(cacheKey, {
-    createdAt: Date.now(),
-    payload
-  });
-}
-
-function getCachedLeaderboard(cacheKey) {
-  const cached = leaderboardCache.get(cacheKey);
-  if (!cached) return null;
-  if (Date.now() - cached.createdAt > LEADERBOARD_CACHE_MS) {
-    leaderboardCache.delete(cacheKey);
-    return null;
-  }
-  return cached.payload;
-}
-
-function setCachedLeaderboard(cacheKey, payload) {
-  leaderboardCache.set(cacheKey, {
     createdAt: Date.now(),
     payload
   });
@@ -188,49 +172,34 @@ async function fetchSteamNews(appId, count) {
   return payload;
 }
 
-function parseLeaderboardCsv(text) {
-  const lines = String(text || "")
-    .replace(/^\uFEFF/, "")
-    .split(/\r?\n/)
-    .filter(Boolean);
-
-  const players = [];
-  for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split(",");
-    const name = String(cols[0] || "").trim().replace(/^"|"$/g, "");
-    const beers = Number.parseInt(String(cols[1] || "0").trim().replace(/^"|"$/g, ""), 10);
-    const normalizedName = name.toLowerCase();
-    if (!name || normalizedName === "steamname" || normalizedName === "steam name") continue;
-    if (!Number.isFinite(beers) || beers <= 0) continue;
-    players.push({ name, beers });
+// Beer Tapped leaderboard from crowforge-api (Firestore). Hidden players are already removed there.
+// On an API error the last good list is served, so the page does not go blank.
+async function fetchLeaderboard() {
+  if (leaderboardCache && Date.now() - leaderboardCache.createdAt < LEADERBOARD_CACHE_MS) {
+    return leaderboardCache.payload;
   }
-
-  players.sort((a, b) => b.beers - a.beers);
-  return players;
-}
-
-async function fetchLeaderboard(sheetId) {
-  const cacheKey = String(sheetId || "default");
-  const cached = getCachedLeaderboard(cacheKey);
-  if (cached) return cached;
-
-  const csvUrl = `https://docs.google.com/spreadsheets/d/${encodeURIComponent(sheetId)}/export?format=csv&gid=0`;
-  const response = await fetch(csvUrl, {
-    headers: {
-      "User-Agent": "CROWFORGE Website/1.0"
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch leaderboard.");
+  try {
+    const apiUrl = `${CROWFORGE_API_URL}/v1/games/tavern-legends/leaderboards/beer-tapped?limit=100&stats=1`;
+    const response = await fetch(apiUrl, {
+      headers: { "User-Agent": "CROWFORGE Website/1.0" },
+      signal: AbortSignal.timeout(8000)
+    });
+    if (!response.ok) throw new Error(`crowforge-api answered ${response.status}`);
+    const data = await response.json();
+    const players = (Array.isArray(data.entries) ? data.entries : [])
+      .map((entry) => ({ name: String(entry.name || "").trim(), beers: Number(entry.score) || 0 }))
+      .filter((player) => player.name && player.beers > 0);
+    const stats = data.stats && Number.isFinite(Number(data.stats.total))
+      ? { players: Number(data.stats.players) || 0, total: Number(data.stats.total) || 0 }
+      : null;
+    const payload = { players, stats };
+    leaderboardCache = { createdAt: Date.now(), payload };
+    return payload;
+  } catch (error) {
+    console.error("Leaderboard fetch failed", error);
+    if (leaderboardCache) return leaderboardCache.payload;
+    throw new Error("Leaderboard unavailable.");
   }
-
-  const text = await response.text();
-  const payload = {
-    players: parseLeaderboardCsv(text)
-  };
-  setCachedLeaderboard(cacheKey, payload);
-  return payload;
 }
 
 async function fetchTwitchAppAccessToken(forceRefresh = false) {
@@ -576,8 +545,7 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 405, { message: "Method not allowed." });
     }
     try {
-      const sheetId = String(requestUrl.searchParams.get("sheetId") || "1qh8yL1pgwBEGJ10cJZvfYOJhZKdeCrc5f9pkJ31nYy4").trim();
-      const payload = await fetchLeaderboard(sheetId);
+      const payload = await fetchLeaderboard();
       return sendJson(res, 200, payload);
     } catch (error) {
       return sendJson(res, 502, {

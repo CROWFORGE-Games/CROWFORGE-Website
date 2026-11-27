@@ -137,6 +137,15 @@ async function getLeaderboard(req, res, url, gameId, boardId) {
   const name = text(url.searchParams.get("name"), 64, "name");
   const steamId = text(url.searchParams.get("steamId"), 20, "steamId");
   const payload = await store.getLeaderboard(gameId, boardId, /^\d+$/.test(steamId) ? { limit, name, steamId } : { limit, name });
+  if (url.searchParams.get("stats") === "1") {
+    // Optional totals for the website; never fail the list because of them.
+    try {
+      payload.stats = await store.getLeaderboardStats(gameId, boardId);
+    } catch (error) {
+      console.error("leaderboard stats failed", error);
+      payload.stats = null;
+    }
+  }
   send(res, 200, payload, { "Access-Control-Allow-Origin": "*" });
 }
 
