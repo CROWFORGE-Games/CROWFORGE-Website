@@ -262,6 +262,13 @@ async function postCounterSet(req, res, gameId, counterId) {
   send(res, 200, result);
 }
 
+async function getCounterValue(req, res, url, gameId, counterId) {
+  lookupCounter(gameId, counterId);
+  const steamId = text(url.searchParams.get("steamId"), 20, "steamId");
+  if (!/^\d{5,20}$/.test(steamId)) throw new store.ApiError(422, "steamId is required.");
+  send(res, 200, await store.getCounterValue(gameId, counterId, steamId), { "Access-Control-Allow-Origin": "*" });
+}
+
 async function getCounterLeaderboard(req, res, url, gameId, counterId) {
   lookupCounter(gameId, counterId);
   const period = url.searchParams.get("period") || "all";
@@ -281,6 +288,7 @@ const TICKETS = /^\/v1\/games\/([a-z0-9-]+)\/tickets$/;
 const COMMANDS = /^\/v1\/games\/([a-z0-9-]+)\/commands$/;
 const COUNTER_ADD = /^\/v1\/games\/([a-z0-9-]+)\/counters\/([a-z0-9-]+)\/add$/;
 const COUNTER_SET = /^\/v1\/games\/([a-z0-9-]+)\/counters\/([a-z0-9-]+)\/set$/;
+const COUNTER_VALUE = /^\/v1\/games\/([a-z0-9-]+)\/counters\/([a-z0-9-]+)\/value$/;
 const COUNTER_BOARD = /^\/v1\/games\/([a-z0-9-]+)\/counters\/([a-z0-9-]+)\/leaderboard$/;
 const STEAM_AUTH = /^\/v1\/games\/([a-z0-9-]+)\/auth\/steam$/;
 
@@ -300,6 +308,7 @@ async function route(req, res) {
   if (req.method === "GET" && (m = COMMANDS.exec(path))) return getCommands(req, res, url, m[1]);
   if (req.method === "POST" && (m = COUNTER_ADD.exec(path))) return postCounterAdd(req, res, m[1], m[2]);
   if (req.method === "POST" && (m = COUNTER_SET.exec(path))) return postCounterSet(req, res, m[1], m[2]);
+  if (req.method === "GET" && (m = COUNTER_VALUE.exec(path))) return getCounterValue(req, res, url, m[1], m[2]);
   if (req.method === "GET" && (m = COUNTER_BOARD.exec(path))) return getCounterLeaderboard(req, res, url, m[1], m[2]);
   if (req.method === "POST" && (m = STEAM_AUTH.exec(path))) return postSteamAuth(req, res, m[1]);
   if (req.method === "POST" && path === "/internal/sync") return postSync(req, res);

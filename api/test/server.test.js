@@ -22,6 +22,7 @@ config.games["tavern-legends"].scoreRequiresSteam = false; // most tests post by
 store.addToCounter = async (g, c, counter, a) => { calls.push(["counter", g, c, a]); return { accepted: Math.min(a.amount, 60), flagged: a.amount > 60, total: 5, periods: { day: 5, week: 5, month: 5 } }; };
 store.registerCounter = async (g, c) => { calls.push(["register", g, c]); };
 store.setCounterValue = async (g, c, a) => { calls.push(["set", g, c, a]); return { value: a.value, previous: 4 }; };
+store.getCounterValue = async (g, c, id) => { calls.push(["value", g, c, id]); return { counterId: c, value: 7, rank: 2, exists: true }; };
 store.getCounterLeaderboard = async (g, c, o) => { calls.push(["counterBoard", g, c, o]); return { counterId: c, period: o.period, key: "w", entries: [], me: null }; };
 const { server } = require("../src/server");
 
@@ -222,4 +223,12 @@ test("counter set stores the given value", async () => {
   assert.deepStrictEqual(await res.json(), { value: 5, previous: 4 });
   assert.deepStrictEqual(calls.at(-1)[3], { steamId: "76561190000000001", name: "SteamMathi", value: 5, slotId: "", version: "" });
   assert.deepStrictEqual(calls.at(-2), ["register", "werewolf-hunter", "killedwerewolves"]);
+});
+
+test("counter value read by steamId", async () => {
+  let res = await fetch(base + "/v1/games/werewolf-hunter/counters/killedwerewolves/value");
+  assert.strictEqual(res.status, 422);
+  res = await fetch(base + "/v1/games/werewolf-hunter/counters/killedwerewolves/value?steamId=76561190000000001");
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(await res.json(), { counterId: "killedwerewolves", value: 7, rank: 2, exists: true });
 });
